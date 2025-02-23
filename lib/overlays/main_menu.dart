@@ -18,6 +18,7 @@ class _MainMenuState extends State<MainMenu> {
   @override
   void initState() {
     super.initState();
+    widget.game.isGameOver = true;
     maxScoreFuture = GameScoreManager.getRecord();
   }
 
@@ -67,6 +68,7 @@ class _MainMenuState extends State<MainMenu> {
                 child: ElevatedButton(
                   onPressed: () {
                     widget.game.overlays.remove('MainMenu');
+                    widget.game.isGameOver = false;
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,

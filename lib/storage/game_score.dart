@@ -8,6 +8,6 @@ class GameScoreManager {
 
   static Future<int> getRecord() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt("record")!;
+    return prefs.getInt("record") ?? 0;
   }
 }
