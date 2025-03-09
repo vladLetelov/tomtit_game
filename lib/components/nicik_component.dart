@@ -1,15 +1,20 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/animation.dart';
 
-class Nicik extends SpriteComponent {
-  Nicik() {
+import '../game/tomtit_game.dart';
+
+class NicikComponent extends SpriteComponent with HasGameReference<TomtitGame>, CollisionCallbacks{
+  NicikComponent() {
     size = Vector2(30, 30);
   }
 
   @override
   Future<void> onLoad() async {
     sprite = await Sprite.load('nicik.png');
+    size = Vector2.all(30);
+    add(RectangleHitbox());
     super.onLoad();
   }
 

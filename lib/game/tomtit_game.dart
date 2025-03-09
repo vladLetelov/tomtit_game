@@ -9,19 +9,24 @@ import 'dart:math';
 import '../components/sinica_component.dart';
 import '../components/meteorit_component.dart';
 import '../components/semechko_component.dart';
-import '../components/nicik.dart'; // Импортируем Nicik
-import 'package:flutter/material.dart'; // Для отображения диалогового окна
+import '../components/nicik_component.dart';
+import 'package:flutter/material.dart';
 
-class TomtitGame extends FlameGame {
+class TomtitGame extends FlameGame with HasCollisionDetection {
   late SinicaComponent sinica;
   late SpriteComponent background;
   final double bulletSpeed = 300;
   final double meteorSpeed = 150;
-  final double nicikSpeed = 200; // Скорость ницика
+  final double nicikSpeed = 200;
   double direction = 0;
+
+  /*
+  * Таймеры спавна
+  * */
   late Timer _bulletTimer;
   late Timer _meteorTimer;
-  late Timer _nicikTimer; // Таймер для спавна нициков
+  late Timer _nicikTimer;
+
   final Random _random = Random();
   ValueNotifier<int> scoreNotifier = ValueNotifier<int>(0);
   bool isGameOver = false;
@@ -33,15 +38,15 @@ class TomtitGame extends FlameGame {
       ..size = size;
     add(background);
 
+    debugMode = true;
+
     sinica = SinicaComponent()
-      ..sprite = await loadSprite('sinica.png')
-      ..size = Vector2(50, 50)
       ..position = Vector2((size.x / 2) - 25, size.y - 50);
     add(sinica);
 
     _bulletTimer = Timer(0.5, onTick: fireBullet, repeat: true);
     _meteorTimer = Timer(0.2, onTick: spawnMeteor, repeat: true);
-    _nicikTimer = Timer(1.0, onTick: spawnNicik, repeat: true); // Спавн нициков каждую секунду
+    _nicikTimer = Timer(1.0, onTick: spawnNicik, repeat: true);
 
     overlays.add('ScoreOverlay');
   }
@@ -49,13 +54,12 @@ class TomtitGame extends FlameGame {
   @override
   void update(double dt) {
     super.update(dt);
-    if (isGameOver) return; // Если игра закончена, не обновляем объекты
+    if (isGameOver) return;
 
     _bulletTimer.update(dt);
     _meteorTimer.update(dt);
-    _nicikTimer.update(dt); // Обновляем таймер нициков
+    _nicikTimer.update(dt);
 
-    // Удаляем объекты, вышедшие за границы экрана
     children.whereType<MeteoritComponent>().toList().forEach((component) {
       if (component.y < -component.height || component.y > size.y) {
         component.removeFromParent();
@@ -63,49 +67,16 @@ class TomtitGame extends FlameGame {
     });
 
     children.whereType<SemechkoComponent>().toList().forEach((component) {
-      if (component.y < -component.height || component.y > size.y) {
+      if (component.y < -component.height || component.y > size.y + component.height) {
         component.removeFromParent();
       }
     });
 
-    children.whereType<Nicik>().toList().forEach((component) {
-      if (component.y < -component.height || component.y > size.y) {
+    children.whereType<NicikComponent>().toList().forEach((component) {
+      if (component.y < -component.height || component.y > size.y + component.height) {
         component.removeFromParent();
       }
     });
-
-    checkCollisions();
-    checkBulletMeteorCollisions();
-  }
-
-  void checkCollisions() {
-    for (var meteor in children.whereType<MeteoritComponent>()) {
-      if (meteor.toRect().overlaps(sinica.toRect())) {
-        endGame();
-        return;
-      }
-    }
-
-    // Столкновение с нициком
-    for (var nicik in children.whereType<Nicik>()) {
-      if (nicik.toRect().overlaps(sinica.toRect())) {
-        scoreNotifier.value += 1;
-        nicik.removeFromParent();
-      }
-    }
-  }
-
-  void checkBulletMeteorCollisions() {
-    for (var bullet in children.whereType<SemechkoComponent>()) {
-      for (var meteor in children.whereType<MeteoritComponent>()) {
-        if (bullet.toRect().overlaps(meteor.toRect())) {
-          // Удаляем семечку и метеорит при столкновении
-          bullet.removeFromParent();
-          meteor.removeFromParent();
-          break; // Прерываем внутренний цикл, чтобы не проверять другие метеориты
-        }
-      }
-    }
   }
 
   void endGame() {
@@ -117,8 +88,8 @@ class TomtitGame extends FlameGame {
     overlays.add("GameOver");
   }
 
-  // Перезапуск игры
   void restartGame() {
+    print("aAAAAsdASDASD");
     isGameOver = false;
     scoreNotifier.value = 0;
     children.clear();
@@ -129,7 +100,7 @@ class TomtitGame extends FlameGame {
     var bullet = SemechkoComponent()
       ..sprite = await loadSprite('semechko.png')
       ..size = Vector2(10, 10)
-      ..position = Vector2(sinica.x + sinica.width / 2 - 5, sinica.y - 10);
+      ..position = Vector2(sinica.x - 5, sinica.y - 10);
 
     add(bullet);
 
@@ -142,8 +113,6 @@ class TomtitGame extends FlameGame {
 
   void spawnMeteor() async {
     var meteor = MeteoritComponent()
-      ..sprite = await loadSprite('meteorit.png')
-      ..size = Vector2(30, 30)
       ..position = Vector2(_random.nextDouble() * (size.x - 30), -30);
 
     add(meteor);
@@ -156,9 +125,7 @@ class TomtitGame extends FlameGame {
   }
 
   void spawnNicik() async {
-    var nicik = Nicik()
-      ..sprite = await loadSprite('nicik.png') // Загрузите спрайт для ницика
-      ..size = Vector2(30, 30)
+    var nicik = NicikComponent()
       ..position = Vector2(_random.nextDouble() * (size.x - 30), -30);
 
     add(nicik);
