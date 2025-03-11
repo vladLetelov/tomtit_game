@@ -11,15 +11,13 @@ class MeteoritComponent extends SpriteComponent
     sprite = await Sprite.load('meteorit.png');
     size = Vector2.all(30);
     anchor = Anchor.center;
-    add(RectangleHitbox(isSolid: true));
-    super.onLoad();
-  }
-
-  void spawnMeteor(double meteorSpeed, double screenHeight) {
+    position = Vector2( (game.random.nextDouble() * (game.size.x - 30)) , (-30));
+    add(RectangleHitbox());
     add(MoveEffect.by(
-      Vector2(0, screenHeight),
-      EffectController(duration: screenHeight / meteorSpeed, curve: Curves.linear),
+      Vector2(0, game.size.y + size.y * 2),
+      EffectController(duration: game.size.y / game.meteorSpeed, curve: Curves.linear),
       onComplete: () => removeFromParent(),
     ));
+    super.onLoad();
   }
 }

@@ -12,7 +12,15 @@ class SemechkoComponent extends SpriteComponent
     sprite = await Sprite.load('semechko.png');
     size = Vector2.all(10);
     anchor = Anchor.center;
-    add(RectangleHitbox(isSolid: true));
+    position = Vector2(
+        game.sinica.x - 5, game.sinica.y - 10
+    );
+    add(RectangleHitbox());
+    add(MoveEffect.by(
+      Vector2(0, -game.size.y),
+      EffectController(duration: game.size.y / game.bulletSpeed, curve: Curves.linear),
+      onComplete: () => removeFromParent(),
+    ));
     super.onLoad();
   }
 
@@ -24,13 +32,5 @@ class SemechkoComponent extends SpriteComponent
       other.removeFromParent();
       removeFromParent();
     }
-  }
-
-  void moveBullet(double bulletSpeed, double screenHeight) {
-    add(MoveEffect.by(
-      Vector2(0, -screenHeight),
-      EffectController(duration: screenHeight / bulletSpeed, curve: Curves.linear),
-      onComplete: () => removeFromParent(),
-    ));
   }
 }

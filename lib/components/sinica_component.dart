@@ -9,6 +9,8 @@ class SinicaComponent extends SpriteComponent
     with DragCallbacks, HasGameReference<TomtitGame>, CollisionCallbacks  {
   late Vector2 _dragStartPosition;
   late Vector2 _dragOffset;
+  bool _shouldRemove = false;
+  bool _skipDragUpdates = false;
 
   @override
   Future<void> onLoad() async {
@@ -23,7 +25,10 @@ class SinicaComponent extends SpriteComponent
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
     if (other is MeteoritComponent) {
+      other.removeFromParent();
+      _shouldRemove = true;
       game.endGame();
+      removeFromParent();
     }
 
     if (other is NicikComponent) {
@@ -41,7 +46,12 @@ class SinicaComponent extends SpriteComponent
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
-    super.onDragUpdate(event);
-    position = _dragStartPosition + (event.localStartPosition - _dragOffset);
+    if (_shouldRemove && !_skipDragUpdates) {
+      _skipDragUpdates = true;
+    }
+    if (!_skipDragUpdates) {
+      super.onDragUpdate(event);
+      position = _dragStartPosition + (event.localStartPosition - _dragOffset);
+    }
   }
 }
