@@ -9,8 +9,8 @@ class ScoreOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 20, // Отступ сверху
-      right: 20, // Отступ справа
+      top: 20,
+      right: 20,
       child: ValueListenableBuilder<int>(
         valueListenable: game.scoreNotifier,
         builder: (context, score, child) {
@@ -20,6 +20,7 @@ class ScoreOverlay extends StatelessWidget {
               color: Colors.white,
               fontSize: 24,
               fontWeight: FontWeight.bold,
+              textBaseline: TextBaseline.alphabetic,
             ),
           );
         },

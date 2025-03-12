@@ -2,6 +2,9 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tomtit_game/components/background_component.dart';
+import 'package:tomtit_game/enums/level_step.dart';
+import 'package:tomtit_game/models/level_model.dart';
+import 'package:tomtit_game/storage/game_score.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -12,15 +15,19 @@ import '../components/nicik_component.dart';
 import 'package:flutter/material.dart';
 
 class TomtitGame extends FlameGame with HasCollisionDetection {
+  TomtitGame({required this.levelModel});
+
   late SinicaComponent sinica;
   late SpriteComponent background;
-  final double bulletSpeed = 300;
-  final double meteorSpeed = 150;
-  final double nicikSpeed = 200;
-  double direction = 0;
+  final LevelModel levelModel;
+  /*
+  * load sprites only on start of the game for optimization
+  * */
+  late Sprite meteoritSprite;
+  late Sprite nicikSprite;
 
   /*
-  * Таймеры спавна
+  * Timers of spawn
   * */
   late Timer _bulletTimer;
   late Timer _meteorTimer;
@@ -29,22 +36,32 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
   final Random random = Random();
   ValueNotifier<int> scoreNotifier = ValueNotifier<int>(0);
   bool isGameOver = false;
+  
+  /*
+  * for understand need update step or no
+  * */
+  late int lastLevel;
+  late LevelStep step;
 
   @override
   Future<void> onLoad() async {
-    background = BackgroundComponent()
-      ..size = size;
-    add(background);
+    GameScoreManager.getLastLevel().then((val) {
+      lastLevel = val;
+    });
+    GameScoreManager.getLastLevelStep().then((val) {
+      step = val;
+    });
+    meteoritSprite = await Sprite.load('meteorit.png');
+    nicikSprite = await Sprite.load('nicik.png');
+    sinica = SinicaComponent();
+    addAll([
+      BackgroundComponent(),
+      sinica
+    ]);
 
-    // debugMode = true;
-
-    sinica = SinicaComponent()
-      ..position = Vector2((size.x / 2) - 25, size.y - 50);
-    add(sinica);
-
-    _bulletTimer = Timer(0.5, onTick: () => add(SemechkoComponent()), repeat: true);
-    _meteorTimer = Timer(0.2, onTick: () => add(MeteoritComponent()), repeat: true);
-    _nicikTimer = Timer(1.0, onTick: () => add(NicikComponent()), repeat: true);
+    _bulletTimer = Timer(levelModel.bulletFrequency, onTick: () => add(SemechkoComponent()), repeat: true);
+    _meteorTimer = Timer(levelModel.meteorFrequency, onTick: () => add(MeteoritComponent()), repeat: true);
+    _nicikTimer = Timer(levelModel.nicikFrequency, onTick: () => add(NicikComponent()), repeat: true);
 
     overlays.add('ScoreOverlay');
   }
@@ -59,7 +76,7 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
     _nicikTimer.update(dt);
   }
 
-  void endGame() {
+  void endGame() async{
     isGameOver = true;
     showGameOverDialog();
   }
@@ -71,7 +88,15 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
   void restartGame() {
     isGameOver = false;
     scoreNotifier.value = 0;
-    removeWhere((component) => true);
     onLoad();
+  }
+
+  void onCaughtNicik() async {
+    scoreNotifier.value += 1;
+    if (scoreNotifier.value == levelModel.scoreForNextLevel) {
+      if (lastLevel == levelModel.levelNumber && step == LevelStep.level) {
+        await GameScoreManager.saveLastLevelStep(LevelStep.video);
+      }
+    }
   }
 }

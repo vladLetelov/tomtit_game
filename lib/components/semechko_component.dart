@@ -18,7 +18,7 @@ class SemechkoComponent extends SpriteComponent
     add(RectangleHitbox());
     add(MoveEffect.by(
       Vector2(0, -game.size.y),
-      EffectController(duration: game.size.y / game.bulletSpeed, curve: Curves.linear),
+      EffectController(duration: game.size.y / game.levelModel.bulletSpeed, curve: Curves.linear),
       onComplete: () => removeFromParent(),
     ));
     super.onLoad();

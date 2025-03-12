@@ -17,6 +17,7 @@ class SinicaComponent extends SpriteComponent
     sprite = await Sprite.load('sinica.png');
     size = Vector2.all(50);
     anchor = Anchor.center;
+    position = Vector2((game.size.x / 2) - 25, game.size.y - 50);
     add(RectangleHitbox());
     super.onLoad();
   }
@@ -32,7 +33,7 @@ class SinicaComponent extends SpriteComponent
     }
 
     if (other is NicikComponent) {
-      game.scoreNotifier.value += 1;
+      game.onCaughtNicik();
       other.removeFromParent();
     }
   }
