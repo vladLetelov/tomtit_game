@@ -80,8 +80,9 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
           child: Center(
             child: Container(
               padding: const EdgeInsets.all(20.0),
-              height: 300,
-              width: 450,
+              constraints: const BoxConstraints(
+                maxHeight: 500, // Ограничение высоты
+              ),
               decoration: BoxDecoration(
                 color: deepDarkPurple.withOpacity(0.9),
                 border: Border.all(
@@ -93,6 +94,7 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
                 ),
               ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
@@ -111,8 +113,10 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 10,
+                    runSpacing: 10,
                     children: [
                       ElevatedButton(
                         onPressed: () {
@@ -139,7 +143,6 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.pushReplacement(
@@ -189,7 +192,22 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Вопросы для уровня'),
+        backgroundColor: deepDarkPurple,
+        title: const Text('Вопросы'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app_outlined, color: Colors.white), // Иконка выхода
+            tooltip: 'Выйти в меню',
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => LevelSelectionScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Container(
         decoration: const BoxDecoration(

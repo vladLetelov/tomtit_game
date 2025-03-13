@@ -11,19 +11,31 @@ class ScoreOverlay extends StatelessWidget {
     return Positioned(
       top: 20,
       right: 20,
-      child: ValueListenableBuilder<int>(
-        valueListenable: game.scoreNotifier,
-        builder: (context, score, child) {
-          return Text(
-            'Score: $score',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              textBaseline: TextBaseline.alphabetic,
-            ),
-          );
-        },
+      child: Material(
+        color: Colors.transparent,
+        child: ValueListenableBuilder<int>(
+          valueListenable: game.scoreNotifier,
+          builder: (context, score, child) {
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
+                border: Border.all(
+                  width: 2,
+                  color: Colors.deepPurple
+                ),
+              ),
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                'Score: $score',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

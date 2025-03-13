@@ -33,6 +33,7 @@ class _GameOverState extends State<GameOver> {
       child: Center(
         child: Container(
           padding: const EdgeInsets.all(10.0),
+          height: 500,
           decoration: BoxDecoration(
             color: deepDarkPurple.withOpacity(0.7),
             border: Border.all(
@@ -70,31 +71,32 @@ class _GameOverState extends State<GameOver> {
                     onTap: () {
                       widget.game.removeWhere((component) => true);
                       Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => LevelVideoScreen(level: widget.game.levelModel)
-                          )
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => LevelVideoScreen(level: widget.game.levelModel),
+                        ),
                       );
                     },
                     text: "Перейти к фрагменту истории",
                   ),
                   const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 10, // Отступ между кнопками
+                    runSpacing: 10, // Отступ между строками кнопок
                     children: [
                       DefaultGameButton(
-                          onTap: () {
-                            widget.game.removeWhere((component) => true);
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) => LevelSelectionScreen()
-                                )
-                            );
-                          },
-                          text: 'Выход в меню'
+                        onTap: () {
+                          widget.game.removeWhere((component) => true);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => LevelSelectionScreen(),
+                            ),
+                          );
+                        },
+                        text: 'Выход в меню',
                       ),
-                      const SizedBox(width: 10),
                       DefaultGameButton(
                         onTap: () {
                           widget.game.removeWhere((component) => true);
@@ -104,24 +106,26 @@ class _GameOverState extends State<GameOver> {
                         text: "Играть заново",
                       ),
                     ],
-                  )
+                  ),
                 ],
-              ) : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              )
+                  : Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 10,
+                runSpacing: 10,
                 children: [
                   DefaultGameButton(
                     onTap: () {
                       widget.game.removeWhere((component) => true);
                       Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => LevelSelectionScreen()
-                          )
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => LevelSelectionScreen(),
+                        ),
                       );
                     },
-                    text: 'Выход в меню'
+                    text: 'Выход в меню',
                   ),
-                  const SizedBox(width: 10),
                   DefaultGameButton(
                     onTap: () {
                       widget.game.removeWhere((component) => true);
@@ -131,7 +135,7 @@ class _GameOverState extends State<GameOver> {
                     text: "Попробовать снова",
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

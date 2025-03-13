@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tomtit_game/enums/level_step.dart';
 import 'package:tomtit_game/screens/level_questions_screen.dart';
+import 'package:tomtit_game/screens/level_selection_screen.dart';
 import 'package:tomtit_game/storage/game_score.dart';
 import 'package:tomtit_game/theme/colors.dart';
 import 'package:video_player/video_player.dart';
@@ -89,7 +90,24 @@ class _LevelVideoScreenState extends State<LevelVideoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Видео для уровня')),
+      appBar: AppBar(
+        backgroundColor: deepDarkPurple,
+        title: const Text('Видео для уровня'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app, color: Colors.white), // Иконка выхода
+            tooltip: 'Выйти в меню',
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => LevelSelectionScreen(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: backgroundGradient,
