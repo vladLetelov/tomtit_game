@@ -12,14 +12,14 @@ class NicikComponent extends SpriteComponent with HasGameReference<TomtitGame>, 
 
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load('nicik.png');
+    sprite = game.nicikSprite;
     size = Vector2.all(30);
     anchor = Anchor.center;
     position = Vector2( (game.random.nextDouble() * (game.size.x - 30)), (-30) );
     add(RectangleHitbox());
     add(MoveEffect.by(
       Vector2(0, game.size.y + size.y * 2),
-      EffectController(duration: game.size.y / game.nicikSpeed, curve: Curves.linear),
+      EffectController(duration: game.size.y / game.levelModel.nicikSpeed, curve: Curves.linear),
       onComplete: () => removeFromParent(),
     ));
     super.onLoad();

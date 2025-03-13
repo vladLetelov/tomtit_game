@@ -30,6 +30,7 @@ environment:
 dependencies:
   flame: 1.22.0
   shared_preferences: 2.3.0
+  video_player: ^2.4.5
   flutter:
     sdk: flutter
 
@@ -66,7 +67,7 @@ flutter:
     - assets/images/semechko.png
     - assets/images/meteorit.png
     - assets/images/nicik.png
-
+    - assets/videos/zaglushkaVideo.mp4
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
