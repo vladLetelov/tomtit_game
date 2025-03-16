@@ -7,10 +7,9 @@ import 'package:tomtit_game/game/tomtit_game.dart';
 
 class SinicaComponent extends SpriteComponent
     with DragCallbacks, HasGameReference<TomtitGame>, CollisionCallbacks  {
-  late Vector2 _dragStartPosition;
-  late Vector2 _dragOffset;
   bool _shouldRemove = false;
   bool _skipDragUpdates = false;
+  int _lastUpdate = 0;
 
   @override
   Future<void> onLoad() async {
@@ -18,7 +17,8 @@ class SinicaComponent extends SpriteComponent
     size = Vector2.all(50);
     anchor = Anchor.center;
     position = Vector2((game.size.x / 2) - 25, game.size.y - 50);
-    add(RectangleHitbox());
+    add(RectangleHitbox()
+      ..collisionType = CollisionType.active);
     super.onLoad();
   }
 
@@ -39,20 +39,17 @@ class SinicaComponent extends SpriteComponent
   }
 
   @override
-  void onDragStart(DragStartEvent event) {
-    super.onDragStart(event);
-    _dragStartPosition = position;
-    _dragOffset = event.localPosition;
-  }
-
-  @override
   void onDragUpdate(DragUpdateEvent event) {
+
     if (_shouldRemove && !_skipDragUpdates) {
       _skipDragUpdates = true;
     }
     if (!_skipDragUpdates) {
-      super.onDragUpdate(event);
-      position = _dragStartPosition + (event.localStartPosition - _dragOffset);
+      final now = DateTime.now().millisecondsSinceEpoch;
+      if (now - _lastUpdate < 16) return; // Ограничение 60 FPS (1000ms / 60)
+
+      _lastUpdate = now;
+      position.add(event.localDelta);
     }
   }
 }

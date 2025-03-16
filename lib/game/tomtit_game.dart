@@ -15,7 +15,17 @@ import '../components/nicik_component.dart';
 import 'package:flutter/material.dart';
 
 class TomtitGame extends FlameGame with HasCollisionDetection {
-  TomtitGame({required this.levelModel});
+  TomtitGame({required this.levelModel}) {
+    Sprite.load('meteorit.webp').then((val) {
+      meteoritSprite = val;
+    });
+    Sprite.load('nicik.webp').then((val) {
+      nicikSprite = val;
+    });
+    Sprite.load('semechko.webp').then((val) {
+      semechkoSprite = val;
+    });
+  }
 
   late SinicaComponent sinica;
   late SpriteComponent background;
@@ -46,15 +56,13 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
 
   @override
   Future<void> onLoad() async {
+    add(FpsTextComponent());
     GameScoreManager.getLastLevel().then((val) {
       lastLevel = val;
     });
     GameScoreManager.getLastLevelStep().then((val) {
       step = val;
     });
-    meteoritSprite = await Sprite.load('meteorit.webp');
-    nicikSprite = await Sprite.load('nicik.webp');
-    semechkoSprite = await Sprite.load('semechko.webp');
     sinica = SinicaComponent();
     addAll([
       BackgroundComponent(),

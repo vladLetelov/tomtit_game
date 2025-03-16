@@ -12,7 +12,7 @@ class MeteoritComponent extends SpriteComponent
     size = Vector2.all(30);
     anchor = Anchor.center;
     position = Vector2( (game.random.nextDouble() * (game.size.x - 30)) , (-30));
-    add(RectangleHitbox());
+    add(RectangleHitbox()..collisionType = CollisionType.passive);
     add(MoveEffect.by(
       Vector2(0, game.size.y + size.y * 2),
       EffectController(duration: game.size.y / game.levelModel.meteorSpeed, curve: Curves.linear),

@@ -15,7 +15,7 @@ class SemechkoComponent extends SpriteComponent
     position = Vector2(
         game.sinica.x - 5, game.sinica.y - 10
     );
-    add(RectangleHitbox());
+    add(RectangleHitbox()..collisionType = CollisionType.active);
     add(MoveEffect.by(
       Vector2(0, -game.size.y),
       EffectController(duration: game.size.y / game.levelModel.bulletSpeed, curve: Curves.linear),
