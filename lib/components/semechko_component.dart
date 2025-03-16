@@ -9,7 +9,7 @@ class SemechkoComponent extends SpriteComponent
     with HasGameReference<TomtitGame>, CollisionCallbacks {
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load('semechko.png');
+    sprite = game.semechkoSprite;
     size = Vector2.all(10);
     anchor = Anchor.center;
     position = Vector2(

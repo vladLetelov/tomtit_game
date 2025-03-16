@@ -25,6 +25,7 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
   * */
   late Sprite meteoritSprite;
   late Sprite nicikSprite;
+  late Sprite semechkoSprite;
 
   /*
   * Timers of spawn
@@ -51,8 +52,9 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
     GameScoreManager.getLastLevelStep().then((val) {
       step = val;
     });
-    meteoritSprite = await Sprite.load('meteorit.png');
-    nicikSprite = await Sprite.load('nicik.png');
+    meteoritSprite = await Sprite.load('meteorit.webp');
+    nicikSprite = await Sprite.load('nicik.webp');
+    semechkoSprite = await Sprite.load('semechko.webp');
     sinica = SinicaComponent();
     addAll([
       BackgroundComponent(),
