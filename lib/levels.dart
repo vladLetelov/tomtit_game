@@ -18,36 +18,102 @@ final Map<int, LevelModel> levels = {
     scoreForNextLevel: 1,
     videoPath: "zaglushkaVideo.mp4",
     questions: [
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
-      QuestionModel(
-          question: "Сколько рук у человека (по стандарту)",
-          variants: [
-            "1 рука",
-            "0 рук",
-            "5 рук",
-            "2 руки"
-          ],
-          rightAnswer: 3
-      ),
-      QuestionModel(
-          question: "Что есть у каждого человека",
-          variants: [
-            "Руки",
-            "Ноги",
-            "Сознание",
-            "Статус человека"
-          ],
-          rightAnswer: 3
-      ),
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека222",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)222",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека222",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека333",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)333",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека333",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ]
     ]
   ),
   2: LevelModel(
@@ -66,36 +132,102 @@ final Map<int, LevelModel> levels = {
     scoreForNextLevel: 12,
     videoPath: "zaglushkaVideo.mp4",
     questions: [
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
-      QuestionModel(
-          question: "Сколько рук у человека (по стандарту)",
-          variants: [
-            "1 рука",
-            "0 рук",
-            "5 рук",
-            "2 руки"
-          ],
-          rightAnswer: 3
-      ),
-      QuestionModel(
-          question: "Что есть у каждого человека",
-          variants: [
-            "Руки",
-            "Ноги",
-            "Сознание",
-            "Статус человека"
-          ],
-          rightAnswer: 3
-      ),
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека222",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)222",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека222",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека333",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)333",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека333",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ]
     ]
   ),
   3: LevelModel(
@@ -114,36 +246,102 @@ final Map<int, LevelModel> levels = {
     scoreForNextLevel: 15,
     videoPath: "zaglushkaVideo.mp4",
     questions: [
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
-      QuestionModel(
-          question: "Сколько рук у человека (по стандарту)",
-          variants: [
-            "1 рука",
-            "0 рук",
-            "5 рук",
-            "2 руки"
-          ],
-          rightAnswer: 3
-      ),
-      QuestionModel(
-          question: "Что есть у каждого человека",
-          variants: [
-            "Руки",
-            "Ноги",
-            "Сознание",
-            "Статус человека"
-          ],
-          rightAnswer: 3
-      ),
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека222",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)222",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека222",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека333",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)333",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека333",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ]
     ]
   ),
   4: LevelModel(
@@ -162,36 +360,102 @@ final Map<int, LevelModel> levels = {
     scoreForNextLevel: 17,
     videoPath: "zaglushkaVideo.mp4",
     questions: [
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
-      QuestionModel(
-          question: "Сколько рук у человека (по стандарту)",
-          variants: [
-            "1 рука",
-            "0 рук",
-            "5 рук",
-            "2 руки"
-          ],
-          rightAnswer: 3
-      ),
-      QuestionModel(
-          question: "Что есть у каждого человека",
-          variants: [
-            "Руки",
-            "Ноги",
-            "Сознание",
-            "Статус человека"
-          ],
-          rightAnswer: 3
-      ),
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека222",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)222",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека222",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека333",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)333",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека333",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ]
     ]
   ),
   5: LevelModel(
@@ -210,36 +474,102 @@ final Map<int, LevelModel> levels = {
     scoreForNextLevel: 20,
     videoPath: "zaglushkaVideo.mp4",
     questions: [
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека222",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)222",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека222",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека333",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)333",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека333",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ]
     ]
   ),
   6: LevelModel(
@@ -258,36 +588,102 @@ final Map<int, LevelModel> levels = {
     scoreForNextLevel: 25,
     videoPath: "zaglushkaVideo.mp4",
     questions: [
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека222",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)222",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека222",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека333",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)333",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека333",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ]
     ]
   ),
   7: LevelModel(
@@ -306,36 +702,102 @@ final Map<int, LevelModel> levels = {
     scoreForNextLevel: 30,
     videoPath: "zaglushkaVideo.mp4",
     questions: [
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: [
-            "1 Палец",
-            "2 Пальца",
-            "5 Пальцев",
-            "4 Пальца"
-          ],
-          rightAnswer: 2
-      ),
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека222",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)222",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека222",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ],
+      [
+        QuestionModel(
+            question: "Сколько пальцев на руке человека333",
+            variants: [
+              "1 Палец",
+              "2 Пальца",
+              "5 Пальцев",
+              "4 Пальца"
+            ],
+            rightAnswer: 2
+        ),
+        QuestionModel(
+            question: "Сколько рук у человека (по стандарту)333",
+            variants: [
+              "1 рука",
+              "0 рук",
+              "5 рук",
+              "2 руки"
+            ],
+            rightAnswer: 3
+        ),
+        QuestionModel(
+            question: "Что есть у каждого человека333",
+            variants: [
+              "Руки",
+              "Ноги",
+              "Сознание",
+              "Статус человека"
+            ],
+            rightAnswer: 3
+        ),
+      ]
     ]
   ),
 };

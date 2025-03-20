@@ -15,7 +15,7 @@ class LevelModel {
   final double threeBulletsBuffChance;
   final double scoreForNextLevel;
   final String videoPath;
-  final List<QuestionModel> questions;
+  final List<List<QuestionModel>> questions;
 
   LevelModel({
     required this.levelNumber,

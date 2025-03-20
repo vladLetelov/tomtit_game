@@ -6,10 +6,9 @@ import 'package:tomtit_game/components/nicik_component.dart';
 import 'package:tomtit_game/game/tomtit_game.dart';
 
 class SinicaComponent extends SpriteComponent
-    with DragCallbacks, HasGameReference<TomtitGame>, CollisionCallbacks  {
+    with DragCallbacks, HasGameReference<TomtitGame>, CollisionCallbacks {
   bool _shouldRemove = false;
-  bool _skipDragUpdates = false;
-  int _lastUpdate = 0;
+  Vector2 _dragDelta = Vector2.zero();
 
   @override
   Future<void> onLoad() async {
@@ -17,8 +16,8 @@ class SinicaComponent extends SpriteComponent
     size = Vector2.all(50);
     anchor = Anchor.center;
     position = Vector2((game.size.x / 2) - 25, game.size.y - 50);
-    add(RectangleHitbox()
-      ..collisionType = CollisionType.active);
+    add(RectangleHitbox()..collisionType = CollisionType.active);
+    priority = 10;
     super.onLoad();
   }
 
@@ -31,7 +30,6 @@ class SinicaComponent extends SpriteComponent
       game.endGame();
       removeFromParent();
     }
-
     if (other is NicikComponent) {
       game.onCaughtNicik();
       other.removeFromParent();
@@ -40,16 +38,16 @@ class SinicaComponent extends SpriteComponent
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
+    if (_shouldRemove) return;
+    _dragDelta.add(event.localDelta); // Копим смещение, но не меняем позицию сразу
+  }
 
-    if (_shouldRemove && !_skipDragUpdates) {
-      _skipDragUpdates = true;
+  @override
+  void update(double dt) {
+    if (_dragDelta.length2 > 0) {
+      position.add(_dragDelta); // Обновляем позицию один раз в кадр
+      _dragDelta.setZero(); // Обнуляем смещение после применения
     }
-    if (!_skipDragUpdates) {
-      final now = DateTime.now().millisecondsSinceEpoch;
-      if (now - _lastUpdate < 16) return; // Ограничение 60 FPS (1000ms / 60)
-
-      _lastUpdate = now;
-      position.add(event.localDelta);
-    }
+    super.update(dt);
   }
 }

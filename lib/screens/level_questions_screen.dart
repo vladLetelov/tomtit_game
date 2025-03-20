@@ -4,6 +4,7 @@ import 'package:tomtit_game/enums/level_step.dart';
 import 'package:tomtit_game/game/tomtit_game.dart';
 import 'package:tomtit_game/levels.dart';
 import 'package:tomtit_game/models/level_model.dart';
+import 'package:tomtit_game/models/question_model.dart';
 import 'package:tomtit_game/overlays/game_over.dart';
 import 'package:tomtit_game/overlays/score_overlay.dart';
 import 'package:tomtit_game/screens/level_selection_screen.dart';
@@ -15,9 +16,11 @@ class LevelQuestionsScreen extends StatefulWidget {
   const LevelQuestionsScreen({
     super.key,
     required this.level,
+    required this.currentQuestionsSet
   });
 
   final LevelModel level;
+  final int currentQuestionsSet;
 
   @override
   State<LevelQuestionsScreen> createState() => _LevelQuestionsScreenState();
@@ -41,7 +44,7 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
   }
 
   void _handleAnswer(int selectedIndex) {
-    final currentQuestion = widget.level.questions[_currentQuestionIndex];
+    final QuestionModel currentQuestion = widget.level.questions[widget.currentQuestionsSet][_currentQuestionIndex];
 
     setState(() {
       // Если ответ правильный, кнопка становится зеленой
@@ -49,7 +52,7 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
         _buttonColors[selectedIndex] = Colors.green;
         // Переход к следующему вопросу через 1 секунду
         Future.delayed(const Duration(seconds: 1), () {
-          if (_currentQuestionIndex < widget.level.questions.length - 1) {
+          if (_currentQuestionIndex < widget.level.questions[widget.currentQuestionsSet].length - 1) {
             setState(() {
               _currentQuestionIndex++;
               // Сбрасываем цвета кнопок для следующего вопроса
@@ -188,7 +191,7 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentQuestion = widget.level.questions[_currentQuestionIndex];
+    final currentQuestion = widget.level.questions[widget.currentQuestionsSet][_currentQuestionIndex];
 
     return Scaffold(
       appBar: AppBar(
@@ -196,7 +199,7 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
         title: const Text('Вопросы'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.exit_to_app_outlined, color: Colors.white), // Иконка выхода
+            icon: const Icon(Icons.exit_to_app_outlined, color: Colors.white),
             tooltip: 'Выйти в меню',
             onPressed: () {
               Navigator.pushReplacement(

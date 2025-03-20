@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:tomtit_game/components/utils/level_card_connector.dart';
@@ -70,10 +72,13 @@ class LevelStepCard extends StatelessWidget {
           icon: Icons.question_answer,
           onTap: isQuestionsUnlocked ? () {
             Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => LevelQuestionsScreen(level: level)
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => LevelQuestionsScreen(
+                    level: level,
+                    currentQuestionsSet: Random().nextInt(level.questions.length)
                 )
+              )
             );
           } : null,
           isLocked: !isQuestionsUnlocked,

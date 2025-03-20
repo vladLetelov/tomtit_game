@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:tomtit_game/enums/level_step.dart';
 import 'package:tomtit_game/screens/level_questions_screen.dart';
@@ -82,7 +84,10 @@ class _LevelVideoScreenState extends State<LevelVideoScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (context) => LevelQuestionsScreen(level: widget.level)
+        builder: (context) => LevelQuestionsScreen(
+          level: widget.level,
+          currentQuestionsSet: Random().nextInt(widget.level.questions.length)
+        )
       )
     );
   }
