@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tomtit_game/components/background_component.dart';
+import 'package:tomtit_game/components/rocket_animation_component.dart';
 import 'package:tomtit_game/enums/level_step.dart';
 import 'package:tomtit_game/models/level_model.dart';
 import 'package:tomtit_game/storage/game_score.dart';
@@ -53,10 +54,18 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
   * */
   late int lastLevel;
   late LevelStep step;
+  bool gameStarted = false;
+
+  /*
+  * Pools of components
+  * */
+  final List<MeteoritComponent> meteorPool = [];
+  final List<NicikComponent> nicikPool = [];
+  final List<SemechkoComponent> semechkoPool = [];
 
   @override
   Future<void> onLoad() async {
-    add(FpsTextComponent());
+    add(FpsTextComponent(position: Vector2(20, 20)));
     GameScoreManager.getLastLevel().then((val) {
       lastLevel = val;
     });
@@ -68,22 +77,65 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
       BackgroundComponent(),
       sinica
     ]);
+    if (meteorPool.isEmpty) {
+      for (int i = 0; i < 50; i++) {
+        meteorPool.add(MeteoritComponent());
+      }
+      for (int i = 0; i < 5; i++) {
+        nicikPool.add(NicikComponent());;
+      }
+      for (int i = 0; i < 10; i++) {
+        semechkoPool.add(SemechkoComponent());
+      }
+    }
 
-    _bulletTimer = Timer(levelModel.bulletFrequency, onTick: () => add(SemechkoComponent()), repeat: true);
-    _meteorTimer = Timer(levelModel.meteorFrequency, onTick: () => add(MeteoritComponent()), repeat: true);
-    _nicikTimer = Timer(levelModel.nicikFrequency, onTick: () => add(NicikComponent()), repeat: true);
+    _bulletTimer = Timer(levelModel.bulletFrequency, onTick: spawnSemechko, repeat: true);
+    _meteorTimer = Timer(levelModel.meteorFrequency, onTick: spawnMeteor, repeat: true);
+    _nicikTimer = Timer(levelModel.nicikFrequency, onTick: spawnNicik, repeat: true);
 
     overlays.add('ScoreOverlay');
+    add(RocketAnimationComponent());
   }
 
   @override
   void update(double dt) {
     super.update(dt);
     if (isGameOver) return;
+    if (gameStarted) {
+      _bulletTimer.update(dt);
+      _meteorTimer.update(dt);
+      _nicikTimer.update(dt);
+    }
+  }
 
-    _bulletTimer.update(dt);
-    _meteorTimer.update(dt);
-    _nicikTimer.update(dt);
+  void spawnMeteor() {
+    if (meteorPool.isNotEmpty) {
+      final meteor = meteorPool.removeLast();
+      add(meteor);
+      meteor.reset();
+    } else {
+      print("No meteorits");
+    }
+  }
+
+  void spawnNicik() {
+    if (nicikPool.isNotEmpty) {
+      final nicik = nicikPool.removeLast();
+      add(nicik);
+      nicik.reset();
+    } else {
+      print("No nicik");
+    }
+  }
+
+  void spawnSemechko() {
+    if (semechkoPool.isNotEmpty) {
+      final semechko = semechkoPool.removeLast();
+      add(semechko);
+      semechko.reset();
+    } else {
+      print("No semechko");
+    }
   }
 
   void endGame() async{

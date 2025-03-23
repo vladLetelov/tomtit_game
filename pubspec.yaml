@@ -68,6 +68,7 @@ flutter:
     - assets/images/meteorit.webp
     - assets/images/nicik.webp
     - assets/videos/zaglushkaVideo.mp4
+    - assets/images/sinica_on_rocket.webp
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

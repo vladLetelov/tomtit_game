@@ -11,13 +11,21 @@ class MeteoritComponent extends SpriteComponent
     sprite = game.meteoritSprite;
     size = Vector2.all(30);
     anchor = Anchor.center;
-    position = Vector2( (game.random.nextDouble() * (game.size.x - 30)) , (-30));
     add(RectangleHitbox()..collisionType = CollisionType.passive);
+    super.onLoad();
+  }
+
+  void reset() {
+    children.removeWhere((component) => component is MoveEffect);
+    position = Vector2((game.random.nextDouble() * (game.size.x - 30)), (-30));
     add(MoveEffect.by(
       Vector2(0, game.size.y + size.y * 2),
       EffectController(duration: game.size.y / game.levelModel.meteorSpeed, curve: Curves.linear),
-      onComplete: () => removeFromParent(),
+      onComplete: () {
+        removeFromParent();
+        game.meteorPool.add(this);
+      },
     ));
-    super.onLoad();
+    print(children);
   }
 }

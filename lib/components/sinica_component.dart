@@ -29,10 +29,12 @@ class SinicaComponent extends SpriteComponent
       _shouldRemove = true;
       game.endGame();
       removeFromParent();
+      game.meteorPool.add(other);
     }
     if (other is NicikComponent) {
       game.onCaughtNicik();
       other.removeFromParent();
+      game.nicikPool.add(other);
     }
   }
 
