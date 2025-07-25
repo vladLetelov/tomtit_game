@@ -1,4 +1,5 @@
 import 'package:tomtit_game/models/question_model.dart';
+import 'package:tomtit_game/models/history_model.dart';
 
 class LevelModel {
   final int levelNumber;
@@ -16,6 +17,10 @@ class LevelModel {
   final double scoreForNextLevel;
   final String videoPath;
   final List<QuestionModel> questions;
+  final List<HistoryModel> history;
+  final String historyButtonPath;
+  final HistoryModel? correctCard;
+  final HistoryModel? incorrectCard;
 
   LevelModel({
     required this.levelNumber,
@@ -32,6 +37,10 @@ class LevelModel {
     required this.threeBulletsBuffChance,
     required this.scoreForNextLevel,
     required this.videoPath,
-    required this.questions
+    required this.questions,
+    required this.history,
+    required this.historyButtonPath,
+    this.correctCard,
+    this.incorrectCard,
   });
 }

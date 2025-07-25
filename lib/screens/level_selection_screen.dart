@@ -52,9 +52,18 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
             final bool isLocked = levelNumber > lastLevel;
 
             // Определяем шаги, которые доступны
-            bool isLevelUnlocked = levelNumber < lastLevel || (levelNumber == lastLevel && lastLevelStep.index >= LevelStep.level.index);
-            bool isVideoUnlocked = levelNumber < lastLevel || (levelNumber == lastLevel && lastLevelStep.index >= LevelStep.video.index);
-            bool isQuestionsUnlocked = levelNumber < lastLevel || (levelNumber == lastLevel && lastLevelStep.index >= LevelStep.questions.index);
+            bool isLevelUnlocked = levelNumber < lastLevel ||
+                (levelNumber == lastLevel &&
+                    lastLevelStep.index >= LevelStep.level.index);
+            bool isVideoUnlocked = levelNumber < lastLevel ||
+                (levelNumber == lastLevel &&
+                    lastLevelStep.index >= LevelStep.video.index);
+            bool isQuestionsUnlocked = levelNumber < lastLevel ||
+                (levelNumber == lastLevel &&
+                    lastLevelStep.index >= LevelStep.questions.index);
+            bool isHistoryUnlocked = levelNumber < lastLevel ||
+                (levelNumber == lastLevel &&
+                    lastLevelStep.index >= LevelStep.history.index);
 
             return LevelStepCard(
               level: levelEntry.value,
@@ -62,6 +71,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
               isLevelUnlocked: isLevelUnlocked,
               isVideoUnlocked: isVideoUnlocked,
               isQuestionsUnlocked: isQuestionsUnlocked,
+              isHistoryUnlocked: isHistoryUnlocked,
             );
           },
           separatorBuilder: (context, index) => const Center(

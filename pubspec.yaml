@@ -68,6 +68,16 @@ flutter:
     - assets/images/meteorit.webp
     - assets/images/nicik.webp
     - assets/videos/zaglushkaVideo.mp4
+    - assets/images/HistoryBtn1.png
+    - assets/images/HistoryBtn2.png
+    - assets/images/HistoryBtn3.png
+    - assets/images/HistoryBtn4.png
+    - assets/images/HistoryBtn5.png
+    - assets/images/HistoryBtn6.png
+    - assets/images/HistoryBtn7.png
+    - assets/images/BackgroundHistoryCard.png
+    - assets/images/BackgroundHistoryPage.jpg
+    - assets/images/Planets.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

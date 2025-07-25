@@ -29,4 +29,19 @@ class GameScoreManager {
       orElse: () => LevelStep.level,
     );
   }
+
+  static Future<void> saveLevelProgress(int levelNumber, LevelStep step) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("level_${levelNumber}_progress", step.name);
+  }
+
+  static Future<LevelStep> getLevelProgress(int levelNumber) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String stepString =
+        prefs.getString("level_${levelNumber}_progress") ?? "level";
+    return LevelStep.values.firstWhere(
+      (e) => e.name == stepString,
+      orElse: () => LevelStep.level,
+    );
+  }
 }

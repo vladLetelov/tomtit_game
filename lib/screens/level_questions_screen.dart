@@ -1,15 +1,11 @@
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:tomtit_game/enums/level_step.dart';
-import 'package:tomtit_game/game/tomtit_game.dart';
-import 'package:tomtit_game/levels.dart';
 import 'package:tomtit_game/models/level_model.dart';
-import 'package:tomtit_game/overlays/game_over.dart';
-import 'package:tomtit_game/overlays/score_overlay.dart';
 import 'package:tomtit_game/screens/level_selection_screen.dart';
 import 'package:tomtit_game/storage/game_score.dart';
 import 'package:tomtit_game/theme/colors.dart';
 import 'package:tomtit_game/theme/styles/text_styles.dart';
+import 'package:tomtit_game/screens/level_histories_screen.dart';
 
 class LevelQuestionsScreen extends StatefulWidget {
   const LevelQuestionsScreen({
@@ -25,7 +21,12 @@ class LevelQuestionsScreen extends StatefulWidget {
 
 class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
   int _currentQuestionIndex = 0;
-  List<Color> _buttonColors = [Colors.deepPurple, Colors.deepPurple, Colors.deepPurple, Colors.deepPurple]; // Для 4 кнопок
+  List<Color> _buttonColors = [
+    Colors.deepPurple,
+    Colors.deepPurple,
+    Colors.deepPurple,
+    Colors.deepPurple
+  ]; // Для 4 кнопок
   late int lastLevel;
   late LevelStep step;
 
@@ -53,13 +54,16 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
             setState(() {
               _currentQuestionIndex++;
               // Сбрасываем цвета кнопок для следующего вопроса
-              _buttonColors = [Colors.deepPurple, Colors.deepPurple, Colors.deepPurple, Colors.deepPurple];
+              _buttonColors = [
+                Colors.deepPurple,
+                Colors.deepPurple,
+                Colors.deepPurple,
+                Colors.deepPurple
+              ];
             });
           } else {
-            if (lastLevel == widget.level.levelNumber && lastLevel != 7) { // HERE 7 IS COUNT OF LEVELS
-              GameScoreManager.saveLastLevelStep(LevelStep.level);
-              GameScoreManager.saveLastLevel(lastLevel + 1);
-            }
+            GameScoreManager.saveLevelProgress(
+                widget.level.levelNumber, LevelStep.questions);
             _showTestCompletionDialog();
           }
         });
@@ -123,7 +127,8 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (BuildContext context) => LevelSelectionScreen(),
+                              builder: (BuildContext context) =>
+                                  LevelSelectionScreen(),
                             ),
                           );
                         },
@@ -148,12 +153,8 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => GameWidget<TomtitGame>.controlled(
-                                gameFactory: () => TomtitGame(levelModel: levels[lastLevel + 1]!),
-                                overlayBuilderMap: {
-                                  'GameOver': (_, game) => GameOver(game: game),
-                                  'ScoreOverlay': (_, game) => ScoreOverlay(game: game),
-                                },
+                              builder: (context) => LevelHistoryesScreen(
+                                level: widget.level,
                               ),
                             ),
                           );
@@ -167,7 +168,7 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
                           ),
                         ),
                         child: const Text(
-                          'Следующий уровень',
+                          'Перейти к истории',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
@@ -185,7 +186,6 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final currentQuestion = widget.level.questions[_currentQuestionIndex];
@@ -196,7 +196,7 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
         title: const Text('Вопросы'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.exit_to_app_outlined, color: Colors.white), // Иконка выхода
+            icon: const Icon(Icons.exit_to_app_outlined, color: Colors.white),
             tooltip: 'Выйти в меню',
             onPressed: () {
               Navigator.pushReplacement(
@@ -210,9 +210,7 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
         ],
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: backgroundGradient
-        ),
+        decoration: const BoxDecoration(gradient: backgroundGradient),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -237,8 +235,10 @@ class _LevelQuestionsScreenState extends State<LevelQuestionsScreen> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 60), // Увеличиваем высоту кнопок
-                        backgroundColor: _buttonColors[index], // Цвет каждой кнопки
+                        minimumSize: const Size(
+                            double.infinity, 60), // Увеличиваем высоту кнопок
+                        backgroundColor:
+                            _buttonColors[index], // Цвет каждой кнопки
                       ),
                       child: Text(
                         currentQuestion.variants[index],

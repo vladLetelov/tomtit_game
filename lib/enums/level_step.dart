@@ -1,1 +1,1 @@
-enum LevelStep { level, video, questions }
+enum LevelStep { level, video, questions, history }
