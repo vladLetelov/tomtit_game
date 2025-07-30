@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tomtit_game/models/history_model.dart';
 import 'package:tomtit_game/theme/styles/text_styles.dart';
+import 'package:tomtit_game/components/game_buttons/history_button.dart';
+import 'package:tomtit_game/storage/game_score.dart';
 
 class HistoryCard extends StatefulWidget {
   final HistoryModel historyItem;
@@ -11,6 +13,7 @@ class HistoryCard extends StatefulWidget {
   final int totalCount;
   final PageController pageController;
   final Function(bool)? onQuestionAnswered;
+  final int levelNumber;
 
   const HistoryCard({
     super.key,
@@ -22,7 +25,9 @@ class HistoryCard extends StatefulWidget {
     required this.pageController,
     this.onQuestionAnswered,
     this.isActive = false,
+    required this.levelNumber,
   });
+
   @override
   State<HistoryCard> createState() => _HistoryCardState();
 }
@@ -30,6 +35,9 @@ class HistoryCard extends StatefulWidget {
 class _HistoryCardState extends State<HistoryCard> {
   int? _selectedQuestionIndex;
   List<List<bool>> _selectedAnswers = [];
+  bool _isQuestionAnswered = false;
+  bool _resultCardShown = false;
+  bool? _lastAnswerCorrect;
 
   @override
   void initState() {
@@ -38,7 +46,62 @@ class _HistoryCardState extends State<HistoryCard> {
     if (widget.historyItem.questions != null &&
         widget.historyItem.questions!.isNotEmpty) {
       _selectedQuestionIndex = 0;
+      _loadQuestionState();
     }
+    _checkForResultCard();
+  }
+
+  void _checkForResultCard() {
+    if (widget.historyItem.isResultCard) {
+      setState(() {
+        _resultCardShown = true;
+      });
+      return;
+    }
+
+    if (_selectedQuestionIndex != null) {
+      final wasShown = GameScoreManager.wasQuestionResultShown(
+        widget.levelNumber,
+        _selectedQuestionIndex!,
+      );
+      final isCorrect = GameScoreManager.getQuestionResultCorrectness(
+        widget.levelNumber,
+        _selectedQuestionIndex!,
+      );
+
+      if (wasShown == true) {
+        setState(() {
+          _resultCardShown = true;
+          _lastAnswerCorrect = isCorrect;
+          _isQuestionAnswered = true;
+        });
+      }
+    }
+  }
+
+  void _loadQuestionState() {
+    if (_selectedQuestionIndex == null) return;
+
+    // Проверяем, был ли ответ на текущий вопрос
+    final isAnswered = GameScoreManager.getQuestionResult(
+            widget.levelNumber, _selectedQuestionIndex!) !=
+        null;
+
+    if (isAnswered) {
+      // Загружаем сохраненные ответы
+      final question = widget.historyItem.questions![_selectedQuestionIndex!];
+      for (int i = 0; i < question.answers.length; i++) {
+        _selectedAnswers[_selectedQuestionIndex!][i] =
+            GameScoreManager.getQuestionResult(
+                    widget.levelNumber, _selectedQuestionIndex!,
+                    answerIndex: i) ??
+                false;
+      }
+    }
+
+    setState(() {
+      _isQuestionAnswered = isAnswered;
+    });
   }
 
   void _initializeAnswers() {
@@ -51,7 +114,7 @@ class _HistoryCardState extends State<HistoryCard> {
     }
   }
 
-  void _checkAnswers() {
+  Future<void> _checkAnswers() async {
     final currentQuestion =
         widget.historyItem.questions![_selectedQuestionIndex!];
     bool allCorrect = true;
@@ -60,9 +123,33 @@ class _HistoryCardState extends State<HistoryCard> {
       if (currentQuestion.answers[i].isCorrect !=
           _selectedAnswers[_selectedQuestionIndex!][i]) {
         allCorrect = false;
-        break;
       }
+      // Сохраняем каждый ответ
+      await GameScoreManager.saveQuestionAnswer(
+        widget.levelNumber,
+        _selectedQuestionIndex!,
+        i,
+        _selectedAnswers[_selectedQuestionIndex!][i],
+      );
     }
+
+    // Сохраняем факт ответа на вопрос и результат
+    await GameScoreManager.saveQuestionResult(
+      widget.levelNumber,
+      _selectedQuestionIndex!,
+      allCorrect,
+    );
+
+    // Сохраняем, что карточка результата была показана
+    await GameScoreManager.saveResultCardShown(
+      widget.levelNumber,
+      _selectedQuestionIndex!,
+    );
+
+    setState(() {
+      _isQuestionAnswered = true;
+      _lastAnswerCorrect = allCorrect;
+    });
 
     if (widget.onQuestionAnswered != null) {
       widget.onQuestionAnswered!(allCorrect);
@@ -75,95 +162,136 @@ class _HistoryCardState extends State<HistoryCard> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.85,
-            height: MediaQuery.of(context).size.height * 0.5,
-            margin: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0),
-              border: widget.isActive
-                  ? Border.all(color: Colors.deepPurple, width: 2)
-                  : null,
-              image: DecorationImage(
-                image: AssetImage(widget.backgroundImage),
-                fit: BoxFit.cover,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.9),
-                  blurRadius: 10,
-                  spreadRadius: 2,
-                  offset: const Offset(0, 4),
+          if (widget.historyItem.isImageOnly)
+            HistoryGameButton(
+              onTap: () {},
+              backgroundImage: widget.historyItem.pathImg!,
+            )
+          else
+            Container(
+              width: MediaQuery.of(context).size.width * 0.85,
+              height: MediaQuery.of(context).size.height * 0.5,
+              margin: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.0),
+                border: widget.isActive
+                    ? Border.all(color: Colors.deepPurple, width: 2)
+                    : null,
+                image: DecorationImage(
+                  image: AssetImage(widget.backgroundImage),
+                  fit: BoxFit.cover,
                 ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 4),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: const Color.fromARGB(255, 255, 208, 66),
-                              width: 2,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.9),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 4),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: widget.historyItem.isResultCard
+                                    ? (widget.historyItem.isCorrect ?? false)
+                                        ? const Color.fromARGB(255, 2, 255, 23)
+                                        : const Color.fromARGB(255, 252, 0, 0)
+                                    : const Color.fromARGB(255, 255, 208, 66),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(30),
                             ),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Text(
-                            widget.historyItem.title,
-                            style: TextStyles.defaultStyle.copyWith(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: const Color.fromARGB(255, 255, 208, 66),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        if (widget.historyItem.questions != null &&
-                            widget.historyItem.questions!.isNotEmpty)
-                          _buildQuestionSection()
-                        else
-                          Expanded(
-                            child: Center(
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                child: Text(
-                                  widget.historyItem.description,
-                                  style: TextStyles.defaultStyle.copyWith(
-                                    fontSize: 16,
-                                    color: Colors.white.withOpacity(0.9),
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
+                            child: Text(
+                              widget.historyItem.title,
+                              style: TextStyles.defaultStyle.copyWith(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: widget.historyItem.isResultCard
+                                    ? (widget.historyItem.isCorrect ?? false)
+                                        ? const Color.fromARGB(255, 2, 255, 23)
+                                        : const Color.fromARGB(255, 252, 0, 0)
+                                    : const Color.fromARGB(255, 255, 208, 66),
                               ),
                             ),
                           ),
-                      ],
+                          const SizedBox(height: 24),
+                          if (widget.historyItem.questions != null &&
+                              widget.historyItem.questions!.isNotEmpty)
+                            _buildQuestionSection()
+                          else
+                            Expanded(
+                              child: Center(
+                                child: _buildContentSection(),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                _buildBottomSection(),
-              ],
+                  _buildBottomSection(),
+                ],
+              ),
             ),
-          ),
-          Positioned(
-            right: 10,
-            top: -20,
-            child: Image.asset(
-              widget.planetImage,
-              width: 100,
-              height: 100,
-              fit: BoxFit.contain,
+          if (!widget.historyItem.isImageOnly)
+            Positioned(
+              right: 15,
+              top: -30,
+              child: Image.asset(
+                widget.planetImage,
+                width: 100,
+                height: 100,
+                fit: BoxFit.contain,
+              ),
             ),
-          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildContentSection() {
+    return Flexible(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.historyItem.description != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Text(
+                  widget.historyItem.description!,
+                  style: TextStyles.defaultStyle.copyWith(
+                    fontSize: 16,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            if (widget.historyItem.pathImg != null)
+              Flexible(
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.6,
+                  ),
+                  child: Image.asset(
+                    widget.historyItem.pathImg!,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -187,34 +315,68 @@ class _HistoryCardState extends State<HistoryCard> {
             ),
             const SizedBox(height: 16),
             ...List.generate(currentQuestion.answers.length, (index) {
+              final isCorrectAnswer = currentQuestion.answers[index].isCorrect;
+              final isSelected =
+                  _selectedAnswers[_selectedQuestionIndex!][index];
+
+              Color? buttonColor;
+              Color textColor = Colors.white;
+              Color borderColor = Colors.white;
+
+              if (_isQuestionAnswered) {
+                // Всегда показываем правильные ответы зелёным
+                if (isCorrectAnswer) {
+                  buttonColor = Colors.green.withOpacity(0.3);
+                  borderColor = Colors.green;
+                  textColor = Colors.green;
+                }
+                // Показываем выбранные неправильные ответы красным
+                else {
+                  buttonColor = Colors.red.withOpacity(0.3);
+                  borderColor = Colors.red;
+                  textColor = Colors.red;
+                }
+              } else {
+                buttonColor = isSelected
+                    ? const Color.fromARGB(255, 255, 208, 66)
+                    : Colors.transparent;
+              }
+
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _selectedAnswers[_selectedQuestionIndex!]
-                            [index]
-                        ? const Color.fromARGB(255, 255, 208, 66)
-                        : Colors.transparent,
+                    backgroundColor: buttonColor,
                     minimumSize: const Size(double.infinity, 40),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
-                      side: const BorderSide(
-                        color: Colors.white, // Белая рамка
-                        width: 1.0, // Толщина рамки
+                      side: BorderSide(
+                        color: borderColor,
+                        width: 1.0,
                       ),
                     ),
                     elevation: 0,
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _selectedAnswers[_selectedQuestionIndex!][index] =
-                          !_selectedAnswers[_selectedQuestionIndex!][index];
-                    });
-                  },
-                  child: Text(
-                    currentQuestion.answers[index].answerText,
-                    style: TextStyles.defaultStyle.copyWith(
-                      color: Colors.white,
+                  onPressed: _isQuestionAnswered
+                      ? null
+                      : () {
+                          setState(() {
+                            _selectedAnswers[_selectedQuestionIndex!][index] =
+                                !_selectedAnswers[_selectedQuestionIndex!]
+                                    [index];
+                          });
+                        },
+                  child: Center(
+                    child: Text(
+                      currentQuestion.answers[index].answerText,
+                      textAlign: TextAlign.center,
+                      style: TextStyles.defaultStyle.copyWith(
+                        fontSize: 14,
+                        color: textColor,
+                        fontWeight: _isQuestionAnswered && isCorrectAnswer
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
                     ),
                   ),
                 ),
@@ -232,7 +394,8 @@ class _HistoryCardState extends State<HistoryCard> {
       child: Column(
         children: [
           if (widget.historyItem.questions != null &&
-              widget.historyItem.questions!.isNotEmpty)
+              widget.historyItem.questions!
+                  .isNotEmpty) // Убрали проверку на _isQuestionAnswered
             Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
               child: Row(
@@ -246,13 +409,14 @@ class _HistoryCardState extends State<HistoryCard> {
                       onPressed: () {
                         setState(() {
                           _selectedQuestionIndex = _selectedQuestionIndex! + 1;
+                          _loadQuestionState();
                         });
                       },
                     )
                   else if (_selectedQuestionIndex != null)
                     _buildNavigationButton(
                       text: 'Проверить',
-                      onPressed: _checkAnswers,
+                      onPressed: _isQuestionAnswered ? () => {} : _checkAnswers,
                     ),
                 ],
               ),
@@ -322,7 +486,7 @@ class _HistoryCardState extends State<HistoryCard> {
       child: Text(
         text,
         style: TextStyles.defaultStyle.copyWith(
-          fontSize: 20,
+          fontSize: 16,
           color: Colors.black.withOpacity(0.7),
         ),
       ),

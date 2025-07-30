@@ -1,101 +1,36 @@
 import 'package:tomtit_game/models/level_model.dart';
-import 'package:tomtit_game/models/question_model.dart';
 import 'package:tomtit_game/models/history_model.dart';
 
 final Map<int, LevelModel> levels = {
   1: LevelModel(
     levelNumber: 1,
     background: 'background.jpg',
-    bulletSpeed: 300,
-    meteorSpeed: 150,
-    nicikSpeed: 200,
-    bulletFrequency: 0.5,
-    meteorFrequency: 0.2,
-    nicikFrequency: 2.0,
-    angryBirdBuffChance: 0.05,
-    bulletFrequencyBuffChance: 0.05,
-    extraLifeBuffChance: 0.03,
-    threeBulletsBuffChance: 0.04,
+    bulletSpeed: 360,
+    meteorSpeed: 180,
+    nicikSpeed: 230,
+    bulletFrequency: 0.35,
+    meteorFrequency: 1.4,
+    nicikFrequency: 3.5,
+    angryBirdBuffChance: 0.08,
+    bulletFrequencyBuffChance: 0.08,
+    extraLifeBuffChance: 0.06,
+    threeBulletsBuffChance: 0.07,
     scoreForNextLevel: 1,
-    videoPath: "zaglushkaVideo.mp4",
-    questions: [
-      QuestionModel(
-          question: "Сколько пальцев на руке человека",
-          variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-          rightAnswer: 2),
-      QuestionModel(
-          question: "Сколько рук у человека (по стандарту)",
-          variants: ["1 рука", "0 рук", "5 рук", "2 руки"],
-          rightAnswer: 3),
-      QuestionModel(
-          question: "Что есть у каждого человека",
-          variants: ["Руки", "Ноги", "Сознание", "Статус человека"],
-          rightAnswer: 3),
-    ],
+    timeLimit: 60,
     history: [
       HistoryModel(
-          title: 'КОНЕЦ 60-Х ГОДОВ',
+          title: '',
+          isImageOnly: true,
+          pathImg: '/images/modulesImages/Module1Btn.png'),
+      HistoryModel(
+          title: 'ПРОРЫВ',
+          description: 'Эпоха прорывов в космосе и вычислительной технике.'),
+      HistoryModel(
+          title: 'СТАРТ',
           description:
-              'На базе Ленинградского электротехнического института (ЛЭТИ) создана научная лаборатория.'),
-      HistoryModel(
-          title: 'ГЛАВНАЯ ЗАДАЧА',
-          description:
-              'Решение сложных проблем обработки, идентификации и распознавания сигналов в различных прикладных сферах.'),
-      HistoryModel(
-          title: 'ПЕРВЫЕ СОТРУДНИКИ',
-          description:
-              'Александр Владимирович Экало, Вениамин Викторович Романцев, Евгений Валентинович Постников – по настоящий день работают в НИЦ СПБ ЭТУ.'),
-      HistoryModel(
-          title: '2 АВГУСТА 1990 ГОДА',
-          description: 'Зарегистрировано малое предприятие «НИЦ ЛЭТИ».'),
-      HistoryModel(
-          title: 'ПРОФИЛЬ ДЕЯТЕЛЬНОСТИ',
-          description:
-              'Оказание услуг в решении производственных и научно-технических проблем в области радиотехники, информатики, электроники и электротехники.'),
-      HistoryModel(
-          title: 'СТАНОВЛЕНИЕ И РАЗВИТИЕ',
-          description:
-              'Большой вклад в становление и развитие предприятия внес первый и бессменный на протяжении 18 лет директор НИЦ Олег Иванович Корнилов.'),
-      HistoryModel(
-          title: 'ЛИЧНЫЙ ВКЛАД',
-          description:
-              'А.В. Экало сформировал стратегические направления НИЦ и создал команды разработчиков.'),
-      HistoryModel(
-        title: "ВОПРОС",
-        description: "",
-        questions: [
-          Question(
-            questionText: "Помоги СИНИЦЕ разобраться, что это за место?",
-            answers: [
-              Answer(answerText: "НИИ телевидения (ВНИИТ)", isCorrect: false),
-              Answer(
-                  answerText: "НИИ радиотехники и телекоммуникаций (НИИРТ)",
-                  isCorrect: false),
-              Answer(answerText: "ЛЭТИ", isCorrect: true),
-            ],
-          ),
-        ],
-      ),
-      HistoryModel(
-          title: 'НИЦИКИ',
-          description:
-              'Отвечай на вопросы правильно и зарабатывай НИЦИКИ, внутреннюю валюту в игре.'),
+              'В это время СИНиЦА НИЦа начинает свое космическое путешествие.'),
     ],
-    historyButtonPath: 'assets/images/HistoryBtn1.png',
-    correctCard: HistoryModel(
-      title: 'ПРАВИЛЬНО',
-      description:
-          'Синица угадала место! Первым шагом в истории предприятии стало создание научной лаборатории в Ленинградском электротехническом институте (ЛЭТИ) под руководством проректора В.И. Тимохина.',
-      isResultCard: true,
-      isCorrect: true,
-    ),
-    incorrectCard: HistoryModel(
-      title: 'НЕПРАВИЛЬНО',
-      description:
-          'На самом деле Синица оказалась в стенах Ленинградского электротехнического университета (ЛЭТИ), именно здесь родилась лаборатория под руководством проректора В.И. Тимохина, которая стала отправной точкой в жизни компании.',
-      isResultCard: true,
-      isCorrect: false,
-    ),
+    historyButtonPath: '/images/modulesImages/Module1Btn.png',
   ),
   2: LevelModel(
       levelNumber: 2,
@@ -110,57 +45,66 @@ final Map<int, LevelModel> levels = {
       bulletFrequencyBuffChance: 0.06,
       extraLifeBuffChance: 0.04,
       threeBulletsBuffChance: 0.05,
-      scoreForNextLevel: 12,
-      videoPath: "zaglushkaVideo.mp4",
-      questions: [
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-        QuestionModel(
-            question: "Сколько рук у человека (по стандарту)",
-            variants: ["1 рука", "0 рук", "5 рук", "2 руки"],
-            rightAnswer: 3),
-        QuestionModel(
-            question: "Что есть у каждого человека",
-            variants: ["Руки", "Ноги", "Сознание", "Статус человека"],
-            rightAnswer: 3),
-      ],
+      scoreForNextLevel: 5,
+      timeLimit: 30,
       history: [
         HistoryModel(
-            title: 'НИЦ СПб ЭТУ',
-            description:
-                'Динамично развивающаяся компания, объединяющая передовые IT-технологии, уникальные научные достижения и проверенные временем практики.'),
+            title: '',
+            pathImg: '/images/modulesImages/Module2Btn.png',
+            isImageOnly: true),
         HistoryModel(
-            title: 'ЗА 35 ЛЕТ СО ДНЯ ОСНОВАНИЯ',
-            description:
-                'НИЦ заняло передовые позиции на рынке информационных технологий.'),
+          title: '',
+          pathImg: '/images/modulesImages/Module2Image1.png',
+          isImageOnly: true,
+        ),
         HistoryModel(
-            title: 'РАЗРАБОТКА',
+            title: 'РОЖДЕНИЕ',
             description:
-                'НИЦ – системный интегратор и разработчик информационного и ПО вычислительных комплексов и автоматизированных систем обработки данных.'),
+                'Преодолевая время и пространство синица попала в момент зарождения компании'),
         HistoryModel(
-            title: 'ЛИДЕРСТВО',
-            description:
-                'НИЦ – один из ведущих предприятий отрасли по разработке и сервисному обслуживанию информационных систем.'),
+          title: "ВОПРОС",
+          description: "",
+          questions: [
+            Question(
+              questionText: "Помоги СИНИЦЕ разобраться, что это за место?",
+              answers: [
+                Answer(answerText: "НИИ телевидения (ВНИИТ)", isCorrect: false),
+                Answer(
+                    answerText: "НИИ радиотехники и телекоммуникаций (НИИРТ)",
+                    isCorrect: false),
+                Answer(answerText: "ЛЭТИ", isCorrect: true),
+              ],
+            ),
+          ],
+        ),
         HistoryModel(
-            title: 'АВТОМАТИЗАЦИЯ И АНАЛИЗ',
+            title: 'НИЦИКИ',
             description:
-                'НИЦ разработал и ввел в эксплуатацию целое поколение автоматизированных систем и комплексов сбора, обработки и анализа измерительной информации.'),
+                'Отвечай на вопросы правильно и зарабатывай НИЦИКИ, внутреннюю валюту в игре.'),
         HistoryModel(
-            title: 'НАУКА',
+            title: 'ПЕРВЫЕ СОТРУДНИКИ',
             description:
-                'Большое внимание уделяет инновационным разработкам и сотрудничеству в научно-технических направлениях.'),
+                'Здесь Синица познакомилась с первыми сотрудниками организации Александром Владимировичем Экало, Вениамином Викторовичем Романцевым, Евгением Валентиновичем Постниковым, которые по настоящее время продолжают работают в НИЦ.'),
         HistoryModel(
-            title: 'СОТРУДНИЧЕСТВО',
-            description:
-                'НПО «СТАРЛАЙН»  – разработаны программные модули для системы технического зрения беспилотного тягача.'),
-        HistoryModel(
-            title: 'ИННОВАЦИЯ И РАЗВИТИЕ',
-            description:
-                'MVP – работа с БПЛА и применением средств искусственного интеллекта.'),
+            title: '',
+            pathImg: '/images/modulesImages/Module2Image2.png',
+            isImageOnly: true),
       ],
-      historyButtonPath: 'assets/images/HistoryBtn2.png'),
+      correctCard: HistoryModel(
+        title: 'ПРАВИЛЬНО',
+        description:
+            'Синица угадала место! Первым шагом в истории предприятии стало создание научной лаборатории в Ленинградском электротехническом институте (ЛЭТИ) под руководством проректора В.И. Тимохина.',
+        isResultCard: true,
+        isCorrect: true,
+      ),
+      incorrectCard: HistoryModel(
+        title: 'НЕПРАВИЛЬНО',
+        description:
+            'На самом деле Синица оказалась в стенах Ленинградского электротехнического университета (ЛЭТИ), именно здесь родилась лаборатория под руководством проректора В.И. Тимохина, которая стала отправной точкой в жизни компании.',
+        isResultCard: true,
+        isCorrect: false,
+      ),
+      historyButtonPath: '/images/modulesImages/Module2Btn.png'),
   3: LevelModel(
       levelNumber: 3,
       background: 'background.jpg',
@@ -174,120 +118,161 @@ final Map<int, LevelModel> levels = {
       bulletFrequencyBuffChance: 0.07,
       extraLifeBuffChance: 0.05,
       threeBulletsBuffChance: 0.06,
-      scoreForNextLevel: 15,
-      videoPath: "zaglushkaVideo.mp4",
-      questions: [
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-        QuestionModel(
-            question: "Сколько рук у человека (по стандарту)",
-            variants: ["1 рука", "0 рук", "5 рук", "2 руки"],
-            rightAnswer: 3),
-        QuestionModel(
-            question: "Что есть у каждого человека",
-            variants: ["Руки", "Ноги", "Сознание", "Статус человека"],
-            rightAnswer: 3),
-      ],
+      scoreForNextLevel: 7,
+      timeLimit: 60,
+      sinicaSize: 100.0,
       history: [
         HistoryModel(
-            title: 'НИЦ',
-            description:
-                'НИЦ гордится внутренними ресурсами и проектами, которые помогают каждому сотруднику развиваться и достигать успеха.'),
+            title: '',
+            isImageOnly: true,
+            pathImg: 'assets/images/modulesImages/Module3Btn.png'),
         HistoryModel(
-            title: 'ЛОКАЛЬНЫЕ ИИ-ПЛАТФОРМЫ',
-            description:
-                '«НейроПоиск» и «ИИ-помощник» – поддерживают сотрудников в их ежедневной деятельности.'),
+            title: '',
+            isImageOnly: true,
+            pathImg: '/images/modulesImages/Module3Image1.png'),
         HistoryModel(
-            title: 'БИБЛИОТЕКА НИЦ',
-            description:
-                'Печатные и электронные материалы (книги, журналы, научные публикации и др.)'),
+            title: '',
+            isImageOnly: true,
+            pathImg: '/images/modulesImages/Module3Image2.png'),
         HistoryModel(
-            title: 'LMS-СИСТЕМА',
-            description: 'Уникальные курсы для непрерывного развития.'),
+          title: "ВОПРОС",
+          description: "",
+          questions: [
+            Question(
+              questionText:
+                  "Помоги Синице правильно определить основную сферу деятельности компании",
+              answers: [
+                Answer(
+                    answerText:
+                        "Производство инструментов и приборов для измерения, тестирования и навигации",
+                    isCorrect: false),
+                Answer(
+                    answerText:
+                        "Научные исследования и разработки в области естественных и технических наук",
+                    isCorrect: true),
+                Answer(
+                    answerText:
+                        "Деятельность, связанная с использованием вычислительной техники и информационных технологий",
+                    isCorrect: false),
+              ],
+            ),
+          ],
+        ),
         HistoryModel(
-            title: 'БАЗА ЗНАНИЙ (WIKI)',
+            title: 'Стратегические направления компании',
             description:
-                'Актуальная информация и полезные материалы по ключевым проектам и направлениям НИЦ, справочные материалы для решения рабочих задач.'),
+                'Под руководством главного конструктора и основателя компании Александра Владимировича Экало были сформированы стратегические направления деятельности и созданы первые команды разработчиков.'),
         HistoryModel(
-            title: 'КАРЬЕРНОЕ РАЗВИТИЕ',
-            description:
-                'Система наставничества и кадрового резерва – помогаем расти внутри компании.'),
-        HistoryModel(
-            title: 'КОРПОРАТИВНЫЙ УНИВЕРСИТЕТ',
-            description:
-                'ЦРТРИС – уникальная возможность получить практический опыт работы в передовых областях и научных сферах.'),
+            title: '',
+            pathImg: '/images/modulesImages/Module2Image2.png',
+            isImageOnly: true),
       ],
-      historyButtonPath: 'assets/images/HistoryBtn3.png'),
+      correctCard: HistoryModel(
+        title: 'ПРАВИЛЬНО',
+        description:
+            'Ура! Регистрация пройдена, теперь НИЦ СПб ЭТУ независимая коммерческая компания, которая помогает решать сложные проблемы обработки, идентификации и распознавания сигналов.',
+        isResultCard: true,
+        isCorrect: true,
+      ),
+      incorrectCard: HistoryModel(
+        title: 'НЕПРАВИЛЬНО',
+        description:
+            'На самом деле основной сферой деятельности компании стали «Научные исследования и разработки в области естественных и технических наук». ',
+        isResultCard: true,
+        isCorrect: false,
+      ),
+      historyButtonPath: 'assets/images/modulesImages/Module3Btn.png'),
   4: LevelModel(
       levelNumber: 4,
       background: 'background.jpg',
       bulletSpeed: 360,
       meteorSpeed: 180,
-      nicikSpeed: 230,
-      bulletFrequency: 0.35,
-      meteorFrequency: 1.4,
-      nicikFrequency: 3.5,
-      angryBirdBuffChance: 0.08,
-      bulletFrequencyBuffChance: 0.08,
-      extraLifeBuffChance: 0.06,
-      threeBulletsBuffChance: 0.07,
-      scoreForNextLevel: 17,
-      videoPath: "zaglushkaVideo.mp4",
-      questions: [
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-        QuestionModel(
-            question: "Сколько рук у человека (по стандарту)",
-            variants: ["1 рука", "0 рук", "5 рук", "2 руки"],
-            rightAnswer: 3),
-        QuestionModel(
-            question: "Что есть у каждого человека",
-            variants: ["Руки", "Ноги", "Сознание", "Статус человека"],
-            rightAnswer: 3),
-      ],
+      nicikSpeed: 200,
+      bulletFrequency: 0.5,
+      meteorFrequency: 0.2,
+      nicikFrequency: 2.0,
+      angryBirdBuffChance: 0.05,
+      bulletFrequencyBuffChance: 0.05,
+      extraLifeBuffChance: 0.03,
+      threeBulletsBuffChance: 0.04,
+      scoreForNextLevel: 15,
+      hasNiciks: false,
+      hasColoredSinicis: true,
+      coloredSinicaFrequency: 0.2,
+      coloredSinicaSpeed: 200,
+      timeLimit: 120,
       history: [
         HistoryModel(
-            title: 'КОЛЛЕКТИВ НИЦ',
-            description:
-                'Основа научно-производственного коллектива – научные сотрудники, преподаватели, аспиранты и студенты ведущих кафедр университета: МО ЭВМ, ВМ-1, ВТ.'),
+            title: '',
+            isImageOnly: true,
+            pathImg: '/images/modulesImages/Module4Btn.png'),
         HistoryModel(
-            title: 'ДЕЯТЕЛЬНОСТЬ',
+            title: 'КОМПАНИЯ',
             description:
-                'НИЦ занимается проектированием, разработкой, реинжинирингом, мониторингом и сервисным обслуживанием IT-систем.'),
+                'Синица всегда присматривает за своей любимой компанией, тем временем компания НИЦ СПБ ЭТУ выросла, набрала команду, проекты и активно покоряет рынок информационных технологий.'),
         HistoryModel(
-            title: 'ОСНОВНОЕ НАПРАВЛЕНИЕ',
+            title: 'ГЕОГРАФИЯ КОМПАНИИ',
             description:
-                'Разработка средств автоматического сбора и обработки измерительной информации.'),
+                'Компания НИЦ СПб ЭТУ охватила космодромы и полигоны Плесецк, Байконур, Копьяр и др. География проекта развернулась от Калининграда до Камчатки.'),
         HistoryModel(
-            title: 'КОНСТРУКТОРСКОЕ НАПРАВЛЕНИЕ',
-            description:
-                'Проектирование и разработка автоматизированных систем.'),
+          title: "ВОПРОС",
+          description: "",
+          questions: [
+            Question(
+              questionText:
+                  "Вопрос, как назывался один из первых, фундаментально значимых проектов компании?",
+              answers: [
+                Answer(answerText: "ОКР Обработка", isCorrect: true),
+                Answer(answerText: "Практика СЗИ", isCorrect: false),
+                Answer(answerText: "Указчик КВ", isCorrect: false),
+              ],
+            ),
+          ],
+        ),
         HistoryModel(
-            title: 'ПРОГРАММИРОВАНИЕ',
+            title: '35 ЛЕТ',
             description:
-                'Разработчиком информационного и программного обеспечения, создание обучающих систем и программных тренажеров.'),
+                '35 лет – целая эпоха в мире технологий. От первых автоматизированных систем до искусственного интеллекта – НИЦ СПб ЭТУ не просто шел в ногу со временем. Компания создавала это время.'),
         HistoryModel(
-            title: 'НАУЧНОЕ НАПРАВЛЕНИЕ',
-            description:
-                'Разработка интеллектуальных транспортных систем на основе ГЛОНАСС/GPS, систем видеонаблюдения и анализа изображений.'),
+          title: "ВОПРОС",
+          description: "",
+          questions: [
+            Question(
+              questionText: "На каких ценностях базируется работа компании?",
+              answers: [
+                Answer(answerText: "Результативность", isCorrect: true),
+                Answer(answerText: "Сотрудники", isCorrect: true),
+                Answer(answerText: "Ответственность", isCorrect: true),
+                Answer(answerText: "Клиентоориентированность", isCorrect: true),
+                Answer(answerText: "Устойчивое развитие", isCorrect: true),
+              ],
+            ),
+          ],
+        ),
         HistoryModel(
-            title: 'АНАЛИТИЧЕСКОЕ НАПРАВЛЕНИЕ',
+            title: 'ИСТОРИЯ НИЦ СПб ЭТУ',
             description:
-                'Разработка систем планирования, документооборота и поддержки принятия управленческих решений.'),
+                'История НИЦ СПб ЭТУ – это история людей, идей и важных решений, ведущих в будущее.'),
         HistoryModel(
-            title: 'СОПРОВОЖДЕНИЕ И СЕРВИС',
-            description:
-                'Эксплуатация и обслуживание программного обеспечения и IT-систем.'),
-        HistoryModel(
-            title: 'СОБСТВЕННОЕ ПРОИЗВОДСТВО',
-            description:
-                'Сборка и изготовление продуктов НИЦ, испытания изделий, отгрузка готовой продукции заказчикам.'),
+            title: '',
+            isImageOnly: true,
+            pathImg: '/images/modulesImages/Module4Image1.png'),
       ],
-      historyButtonPath: 'assets/images/HistoryBtn4.png'),
+      correctCard: HistoryModel(
+        title: 'ПРАВИЛЬНО',
+        description:
+            'Верно! Одним из первых фундаментальных проектов компании стал ОКР «Обработка» (обработка и анализ измерительной информации).',
+        isResultCard: true,
+        isCorrect: true,
+      ),
+      incorrectCard: HistoryModel(
+        title: 'НЕПРАВИЛЬНО',
+        description:
+            'Зафиксируем важное уточнение, именно ОКР «Обработка» стал отправной точкой: с анализа и обработки измерительных данных начался наш путь в отрасли.',
+        isResultCard: true,
+        isCorrect: false,
+      ),
+      historyButtonPath: '/images/modulesImages/Module4Btn.png'),
   5: LevelModel(
       levelNumber: 5,
       background: 'background.jpg',
@@ -302,21 +287,7 @@ final Map<int, LevelModel> levels = {
       extraLifeBuffChance: 0.07,
       threeBulletsBuffChance: 0.08,
       scoreForNextLevel: 20,
-      videoPath: "zaglushkaVideo.mp4",
-      questions: [
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-      ],
+      tripleSinicaMode: true,
       history: [
         HistoryModel(
             title: 'ЦЕННОСТЬ НИЦ',
@@ -366,21 +337,6 @@ final Map<int, LevelModel> levels = {
       extraLifeBuffChance: 0.08,
       threeBulletsBuffChance: 0.09,
       scoreForNextLevel: 25,
-      videoPath: "zaglushkaVideo.mp4",
-      questions: [
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-      ],
       history: [
         HistoryModel(
             title: 'ИНДИВИДУАЛЬНЫЙ ПОДХОД',
@@ -421,21 +377,6 @@ final Map<int, LevelModel> levels = {
       extraLifeBuffChance: 0.09,
       threeBulletsBuffChance: 0.10,
       scoreForNextLevel: 30,
-      videoPath: "zaglushkaVideo.mp4",
-      questions: [
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-        QuestionModel(
-            question: "Сколько пальцев на руке человека",
-            variants: ["1 Палец", "2 Пальца", "5 Пальцев", "4 Пальца"],
-            rightAnswer: 2),
-      ],
       history: [
         HistoryModel(
             title: 'СТРАТЕГИЧЕСКАЯ ЦЕЛЬ НИЦ',

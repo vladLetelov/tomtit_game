@@ -5,7 +5,6 @@ import 'package:tomtit_game/levels.dart';
 import 'package:tomtit_game/storage/game_score.dart';
 import 'package:tomtit_game/theme/colors.dart';
 import 'package:tomtit_game/theme/styles/text_styles.dart';
-import 'package:tomtit_game/enums/level_step.dart';
 
 class LevelSelectionScreen extends StatefulWidget {
   const LevelSelectionScreen({super.key});
@@ -15,9 +14,6 @@ class LevelSelectionScreen extends StatefulWidget {
 }
 
 class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
-  int lastLevel = 1;
-  LevelStep lastLevelStep = LevelStep.level;
-
   @override
   void initState() {
     super.initState();
@@ -25,12 +21,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   }
 
   Future<void> _loadLastProgress() async {
-    int savedLevel = await GameScoreManager.getLastLevel();
-    LevelStep savedStep = await GameScoreManager.getLastLevelStep();
-    setState(() {
-      lastLevel = savedLevel;
-      lastLevelStep = savedStep;
-    });
+    await GameScoreManager.init();
   }
 
   @override
@@ -43,42 +34,48 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
       body: Container(
         padding: const EdgeInsets.all(12),
         decoration: const BoxDecoration(gradient: backgroundGradient),
-        child: ListView.separated(
-          padding: const EdgeInsets.all(16.0),
-          itemCount: levels.length,
-          itemBuilder: (context, index) {
-            final levelEntry = levels.entries.elementAt(index);
-            final int levelNumber = levelEntry.value.levelNumber;
-            final bool isLocked = levelNumber > lastLevel;
-
-            // Определяем шаги, которые доступны
-            bool isLevelUnlocked = levelNumber < lastLevel ||
-                (levelNumber == lastLevel &&
-                    lastLevelStep.index >= LevelStep.level.index);
-            bool isVideoUnlocked = levelNumber < lastLevel ||
-                (levelNumber == lastLevel &&
-                    lastLevelStep.index >= LevelStep.video.index);
-            bool isQuestionsUnlocked = levelNumber < lastLevel ||
-                (levelNumber == lastLevel &&
-                    lastLevelStep.index >= LevelStep.questions.index);
-            bool isHistoryUnlocked = levelNumber < lastLevel ||
-                (levelNumber == lastLevel &&
-                    lastLevelStep.index >= LevelStep.history.index);
-
-            return LevelStepCard(
-              level: levelEntry.value,
-              isLocked: isLocked,
-              isLevelUnlocked: isLevelUnlocked,
-              isVideoUnlocked: isVideoUnlocked,
-              isQuestionsUnlocked: isQuestionsUnlocked,
-              isHistoryUnlocked: isHistoryUnlocked,
-            );
+        child: FutureBuilder(
+          future: _buildLevelCards(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return snapshot.data ?? const SizedBox();
           },
-          separatorBuilder: (context, index) => const Center(
-            child: LevelCardConnector(),
-          ),
         ),
       ),
+    );
+  }
+
+  Future<ListView> _buildLevelCards() async {
+    List<Widget> levelCards = [];
+
+    for (var levelEntry in levels.entries) {
+      final levelNumber = levelEntry.value.levelNumber;
+
+      final bool isHistoryUnlocked = levelNumber == 1 ||
+          (await GameScoreManager.getLevelScore(levelNumber - 1)) >=
+              levels[levelNumber - 1]!.scoreForNextLevel;
+
+      final bool isLevelUnlocked =
+          await GameScoreManager.isLevelHistoryCompleted(levelNumber) &&
+              await GameScoreManager.areLevelRequirementsMet(levelNumber);
+
+      levelCards.add(LevelStepCard(
+        level: levelEntry.value,
+        isLocked: !isHistoryUnlocked,
+        isLevelUnlocked: isLevelUnlocked,
+        isHistoryUnlocked: isHistoryUnlocked,
+      ));
+
+      if (levelNumber < levels.length) {
+        levelCards.add(const Center(child: LevelCardConnector()));
+      }
+    }
+
+    return ListView(
+      padding: const EdgeInsets.all(16.0),
+      children: levelCards,
     );
   }
 }

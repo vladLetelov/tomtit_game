@@ -12,21 +12,20 @@ class SemechkoComponent extends SpriteComponent
     sprite = game.semechkoSprite;
     size = Vector2.all(10);
     anchor = Anchor.center;
-    position = Vector2(
-        game.sinica.x - 5, game.sinica.y - 10
-    );
+    position = Vector2(game.sinica.x - 5, game.sinica.y - 10);
     add(RectangleHitbox());
     add(MoveEffect.by(
       Vector2(0, -game.size.y),
-      EffectController(duration: game.size.y / game.levelModel.bulletSpeed, curve: Curves.linear),
+      EffectController(
+          duration: game.size.y / game.levelModel.bulletSpeed,
+          curve: Curves.linear),
       onComplete: () => removeFromParent(),
     ));
     super.onLoad();
   }
 
   @override
-  void onCollision(
-      Set<Vector2> intersectionPoints, PositionComponent other) {
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
     if (other is MeteoritComponent) {
       other.removeFromParent();

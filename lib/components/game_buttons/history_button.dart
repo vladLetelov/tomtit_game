@@ -8,21 +8,21 @@ class HistoryGameButton extends StatelessWidget {
     this.isLocked = false,
   });
 
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final String backgroundImage;
   final bool isLocked;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return TextButton(
       onPressed: isLocked ? null : onTap,
-      style: ElevatedButton.styleFrom(
+      style: TextButton.styleFrom(
         backgroundColor: Colors.transparent,
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: isLocked ? Colors.grey : Colors.deepPurple,
+            color: isLocked ? Colors.grey : Colors.transparent,
           ),
         ),
       ),
