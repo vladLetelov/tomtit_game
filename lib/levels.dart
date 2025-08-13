@@ -66,6 +66,7 @@ final Map<int, LevelModel> levels = {
           description: "",
           questions: [
             Question(
+              id: "level2_question1",
               questionText: "Помоги СИНИЦЕ разобраться, что это за место?",
               answers: [
                 Answer(answerText: "НИИ телевидения (ВНИИТ)", isCorrect: false),
@@ -139,6 +140,7 @@ final Map<int, LevelModel> levels = {
           description: "",
           questions: [
             Question(
+              id: "level3_question1",
               questionText:
                   "Помоги Синице правильно определить основную сферу деятельности компании",
               answers: [
@@ -219,6 +221,7 @@ final Map<int, LevelModel> levels = {
           description: "",
           questions: [
             Question(
+              id: "level4_question1",
               questionText:
                   "Вопрос, как назывался один из первых, фундаментально значимых проектов компании?",
               answers: [
@@ -238,6 +241,7 @@ final Map<int, LevelModel> levels = {
           description: "",
           questions: [
             Question(
+              id: "level4_question2",
               questionText: "На каких ценностях базируется работа компании?",
               answers: [
                 Answer(answerText: "Результативность", isCorrect: true),

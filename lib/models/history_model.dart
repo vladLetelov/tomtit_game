@@ -26,10 +26,12 @@ class HistoryModel {
 }
 
 class Question {
+  final String id; // Уникальный идентификатор вопроса
   final String questionText; // Текст вопроса
   final List<Answer> answers; // Список ответов
 
   Question({
+    required this.id,
     required this.questionText,
     required this.answers,
   });

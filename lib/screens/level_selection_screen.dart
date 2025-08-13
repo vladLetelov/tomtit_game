@@ -54,12 +54,12 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
       final levelNumber = levelEntry.value.levelNumber;
 
       final bool isHistoryUnlocked = levelNumber == 1 ||
-          (await GameScoreManager.getLevelScore(levelNumber - 1)) >=
+          (GameScoreManager.getLevelScore(levelNumber - 1)) >=
               levels[levelNumber - 1]!.scoreForNextLevel;
 
       final bool isLevelUnlocked =
-          await GameScoreManager.isLevelHistoryCompleted(levelNumber) &&
-              await GameScoreManager.areLevelRequirementsMet(levelNumber);
+          GameScoreManager.isLevelHistoryCompleted(levelNumber) &&
+              GameScoreManager.areLevelRequirementsMet(levelNumber);
 
       levelCards.add(LevelStepCard(
         level: levelEntry.value,

@@ -43,7 +43,7 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
 
   @override
   Future<void> onLoad() async {
-    lastLevel = await GameScoreManager.getLastUnlockedLevel();
+    lastLevel = GameScoreManager.getLastUnlockedLevel();
 
     meteoritSprite = await Sprite.load('meteorit.webp');
     nicikSprite = await Sprite.load('nicik.webp');
@@ -115,7 +115,7 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
     if (scoreNotifier.value >= levelModel.scoreForNextLevel) {
       await GameScoreManager.setLevelCompleted(levelModel.levelNumber);
       if (levelModel.levelNumber ==
-          await GameScoreManager.getLastUnlockedLevel()) {
+          GameScoreManager.getLastUnlockedLevel()) {
         await GameScoreManager.setLevelUnlocked(levelModel.levelNumber + 1);
       }
     }

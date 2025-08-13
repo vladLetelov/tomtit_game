@@ -165,4 +165,74 @@ class GameScoreManager {
       isCorrect,
     );
   }
+
+  // Новые методы для работы с уникальными ID вопросов
+
+  static Future<void> saveQuestionAnswerById(
+    int levelNumber,
+    String questionId,
+    int answerIndex,
+    bool isSelected,
+  ) async {
+    await _prefs!.setBool(
+      'level_${levelNumber}_question_${questionId}_answer_$answerIndex',
+      isSelected,
+    );
+  }
+
+  static bool? getQuestionResultById(int levelNumber, String questionId,
+      {int? answerIndex}) {
+    if (answerIndex != null) {
+      return _prefs!.getBool(
+          'level_${levelNumber}_question_${questionId}_answer_$answerIndex');
+    }
+    return _prefs!.getBool('level_${levelNumber}_question_$questionId');
+  }
+
+  static Future<void> saveQuestionResultById(
+    int levelNumber,
+    String questionId,
+    bool isCorrect,
+  ) async {
+    await _prefs!.setBool(
+      'level_${levelNumber}_question_$questionId',
+      isCorrect,
+    );
+  }
+
+  static Future<void> saveResultCardShownById(
+      int levelNumber, String questionId) async {
+    await _prefs!.setBool(
+      'level_${levelNumber}_question_${questionId}_result_shown',
+      true,
+    );
+  }
+
+  static bool? wasQuestionResultShownById(int levelNumber, String questionId) {
+    return _prefs!.getBool(
+      'level_${levelNumber}_question_${questionId}_result_shown',
+    );
+  }
+
+  static bool? getQuestionResultCorrectnessById(
+      int levelNumber, String questionId) {
+    return _prefs!.getBool(
+      'level_${levelNumber}_question_${questionId}_result_correct',
+    );
+  }
+
+  static Future<void> saveQuestionResultCardById(
+    int levelNumber,
+    String questionId,
+    bool isCorrect,
+  ) async {
+    await _prefs!.setBool(
+      'level_${levelNumber}_question_${questionId}_result_shown',
+      true,
+    );
+    await _prefs!.setBool(
+      'level_${levelNumber}_question_${questionId}_result_correct',
+      isCorrect,
+    );
+  }
 }

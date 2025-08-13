@@ -16,7 +16,7 @@ class ScoreOverlay extends StatelessWidget {
   Future<void> _unlockNextHistory() async {
     final nextLevelId = game.currentLevel + 1;
     final isAlreadyUnlocked =
-        await GameScoreManager.isLevelHistoryCompleted(nextLevelId);
+        GameScoreManager.isLevelHistoryCompleted(nextLevelId);
 
     if (!isAlreadyUnlocked && _isLevelPassed()) {
       await GameScoreManager.setLevelHistoryCompleted(nextLevelId);

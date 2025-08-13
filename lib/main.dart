@@ -7,7 +7,7 @@ void main() async {
   debugPaintSizeEnabled = false;
   await GameScoreManager.init();
   runApp(
-    MaterialApp(
+    const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LevelSelectionScreen(),
     ),

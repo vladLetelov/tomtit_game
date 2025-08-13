@@ -1,6 +1,5 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:tomtit_game/enums/level_step.dart';
 import 'package:tomtit_game/game/tomtit_game.dart';
 import 'package:tomtit_game/levels.dart';
 import 'package:tomtit_game/models/level_model.dart';
@@ -29,8 +28,6 @@ class LevelHistoryesScreen extends StatefulWidget {
 class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
   late PageController _pageController;
   int _currentHistoryIndex = 0;
-  late int lastLevel;
-  late LevelStep step;
   bool? _lastAnswerCorrect;
   bool _alreadyAnswered = false;
   String? _currentCountdownImage;
@@ -62,12 +59,13 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
       final item = widget.level.history[i];
       if (item.questions != null && item.questions!.isNotEmpty) {
         for (var q = 0; q < item.questions!.length; q++) {
-          final result = await GameScoreManager.getQuestionResult(
+          final questionId = item.questions![q].id;
+          final result = GameScoreManager.getQuestionResultById(
             widget.level.levelNumber,
-            q,
+            questionId,
           );
           if (result != null) {
-            _questionResults[q] = result;
+            _questionResults[i] = result; // Используем индекс истории, а не вопроса
           }
         }
       }
@@ -256,43 +254,44 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                             ),
                           ),
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    GameWidget<TomtitGame>.controlled(
-                                  gameFactory: () => TomtitGame(
-                                      levelModel: levels[lastLevel + 1]!),
-                                  overlayBuilderMap: {
-                                    'GameOver': (_, game) =>
-                                        GameOver(game: game),
-                                    'ScoreOverlay': (_, game) =>
-                                        ScoreOverlay(game: game),
-                                    'TimeOverlay': (_, game) =>
-                                        TimeOverlay(game: game),
-                                  },
+                        if (levels.containsKey(widget.level.levelNumber + 1))
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      GameWidget<TomtitGame>.controlled(
+                                    gameFactory: () => TomtitGame(
+                                        levelModel: levels[widget.level.levelNumber + 1]!),
+                                    overlayBuilderMap: {
+                                      'GameOver': (_, game) =>
+                                          GameOver(game: game),
+                                      'ScoreOverlay': (_, game) =>
+                                          ScoreOverlay(game: game),
+                                      'TimeOverlay': (_, game) =>
+                                          TimeOverlay(game: game),
+                                    },
+                                  ),
                                 ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              minimumSize: const Size(150, 45),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: const BorderSide(color: Colors.deepPurple),
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            minimumSize: const Size(150, 45),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: const BorderSide(color: Colors.deepPurple),
+                            ),
+                            child: const Text(
+                              'Следующий уровень',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                          child: const Text(
-                            'Следующий уровень',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ],

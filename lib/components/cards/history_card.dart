@@ -38,6 +38,7 @@ class _HistoryCardState extends State<HistoryCard> {
   bool _isQuestionAnswered = false;
   bool _resultCardShown = false;
   bool? _lastAnswerCorrect;
+  String? _currentQuestionId;
 
   @override
   void initState() {
@@ -46,6 +47,7 @@ class _HistoryCardState extends State<HistoryCard> {
     if (widget.historyItem.questions != null &&
         widget.historyItem.questions!.isNotEmpty) {
       _selectedQuestionIndex = 0;
+      _currentQuestionId = widget.historyItem.questions![0].id;
       _loadQuestionState();
     }
     _checkForResultCard();
@@ -59,14 +61,14 @@ class _HistoryCardState extends State<HistoryCard> {
       return;
     }
 
-    if (_selectedQuestionIndex != null) {
-      final wasShown = GameScoreManager.wasQuestionResultShown(
+    if (_selectedQuestionIndex != null && _currentQuestionId != null) {
+      final wasShown = GameScoreManager.wasQuestionResultShownById(
         widget.levelNumber,
-        _selectedQuestionIndex!,
+        _currentQuestionId!,
       );
-      final isCorrect = GameScoreManager.getQuestionResultCorrectness(
+      final isCorrect = GameScoreManager.getQuestionResultCorrectnessById(
         widget.levelNumber,
-        _selectedQuestionIndex!,
+        _currentQuestionId!,
       );
 
       if (wasShown == true) {
@@ -82,18 +84,20 @@ class _HistoryCardState extends State<HistoryCard> {
   void _loadQuestionState() {
     if (_selectedQuestionIndex == null) return;
 
+    final question = widget.historyItem.questions![_selectedQuestionIndex!];
+    _currentQuestionId = question.id;
+    
     // Проверяем, был ли ответ на текущий вопрос
-    final isAnswered = GameScoreManager.getQuestionResult(
-            widget.levelNumber, _selectedQuestionIndex!) !=
+    final isAnswered = GameScoreManager.getQuestionResultById(
+            widget.levelNumber, _currentQuestionId!) !=
         null;
 
     if (isAnswered) {
       // Загружаем сохраненные ответы
-      final question = widget.historyItem.questions![_selectedQuestionIndex!];
       for (int i = 0; i < question.answers.length; i++) {
         _selectedAnswers[_selectedQuestionIndex!][i] =
-            GameScoreManager.getQuestionResult(
-                    widget.levelNumber, _selectedQuestionIndex!,
+            GameScoreManager.getQuestionResultById(
+                    widget.levelNumber, _currentQuestionId!,
                     answerIndex: i) ??
                 false;
       }
@@ -125,25 +129,25 @@ class _HistoryCardState extends State<HistoryCard> {
         allCorrect = false;
       }
       // Сохраняем каждый ответ
-      await GameScoreManager.saveQuestionAnswer(
+      await GameScoreManager.saveQuestionAnswerById(
         widget.levelNumber,
-        _selectedQuestionIndex!,
+        _currentQuestionId!,
         i,
         _selectedAnswers[_selectedQuestionIndex!][i],
       );
     }
 
     // Сохраняем факт ответа на вопрос и результат
-    await GameScoreManager.saveQuestionResult(
+    await GameScoreManager.saveQuestionResultById(
       widget.levelNumber,
-      _selectedQuestionIndex!,
+      _currentQuestionId!,
       allCorrect,
     );
 
     // Сохраняем, что карточка результата была показана
-    await GameScoreManager.saveResultCardShown(
+    await GameScoreManager.saveResultCardShownById(
       widget.levelNumber,
-      _selectedQuestionIndex!,
+      _currentQuestionId!,
     );
 
     setState(() {
@@ -409,6 +413,7 @@ class _HistoryCardState extends State<HistoryCard> {
                       onPressed: () {
                         setState(() {
                           _selectedQuestionIndex = _selectedQuestionIndex! + 1;
+                          _currentQuestionId = widget.historyItem.questions![_selectedQuestionIndex!].id;
                           _loadQuestionState();
                         });
                       },

@@ -37,7 +37,7 @@ class _GameOverState extends State<GameOver> {
     await GameScoreManager.saveLastLevel(levelNumber);
 
     // Сохраняем лучший счёт
-    final previousScore = await GameScoreManager.getLevelScore(levelNumber);
+    final previousScore = GameScoreManager.getLevelScore(levelNumber);
     if (widget.game.scoreNotifier.value > previousScore) {
       await GameScoreManager.setLevelScore(
           levelNumber, widget.game.scoreNotifier.value);
@@ -97,7 +97,7 @@ class _GameOverState extends State<GameOver> {
                               context,
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    LevelSelectionScreen(),
+                                    const LevelSelectionScreen(),
                               ),
                             );
                           },
@@ -116,7 +116,7 @@ class _GameOverState extends State<GameOver> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        LevelSelectionScreen(),
+                                        const LevelSelectionScreen(),
                                   ),
                                 );
                               },
@@ -146,7 +146,7 @@ class _GameOverState extends State<GameOver> {
                               context,
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    LevelSelectionScreen(),
+                                    const LevelSelectionScreen(),
                               ),
                             );
                           },
