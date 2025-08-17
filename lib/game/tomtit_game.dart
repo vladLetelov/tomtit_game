@@ -11,6 +11,7 @@ import '../components/meteorit_component.dart';
 import '../components/semechko_component.dart';
 import '../components/nicik_component.dart';
 import '../components/ColoredSinicaComponent.dart';
+import '../components/black_hole_component.dart';
 import 'package:flutter/material.dart';
 
 class TomtitGame extends FlameGame with HasCollisionDetection {
@@ -38,6 +39,8 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
   final Random random = Random();
   ValueNotifier<int> scoreNotifier = ValueNotifier<int>(0);
   bool isGameOver = false;
+  bool isBlackHoleMode = false;
+  BlackHoleComponent? blackHole;
 
   late int lastLevel;
 
@@ -81,7 +84,13 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
       _timeLimitTimer = Timer(1, onTick: () {
         timeLeftNotifier.value--;
         if (timeLeftNotifier.value <= 0) {
-          endGame();
+          // Для второго уровня запускаем черную дыру вместо обычного окончания
+          if (levelModel.levelNumber == 2) {
+            print('Timer ended on level 2, starting black hole mode');
+            startBlackHoleMode();
+          } else {
+            endGame();
+          }
         }
       }, repeat: true);
       overlays.add('TimeOverlay');
@@ -114,17 +123,36 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
     // Проверяем, был ли достигнут необходимый счет перед завершением игры
     if (scoreNotifier.value >= levelModel.scoreForNextLevel) {
       await GameScoreManager.setLevelCompleted(levelModel.levelNumber);
-      if (levelModel.levelNumber ==
-          GameScoreManager.getLastUnlockedLevel()) {
+      if (levelModel.levelNumber == GameScoreManager.getLastUnlockedLevel()) {
         await GameScoreManager.setLevelUnlocked(levelModel.levelNumber + 1);
+      }
+
+      // Для 6 уровня показываем слайдшоу победы
+      if (levelModel.levelNumber == 6 &&
+          levelModel.victorySlideshowImages != null &&
+          levelModel.victorySlideshowImages!.isNotEmpty) {
+        showVictorySlideshow();
+        return;
       }
     }
 
     showGameOverDialog();
   }
 
+  void showVictorySlideshow() {
+    overlays.remove('ScoreOverlay');
+    overlays.remove('TimeOverlay');
+    overlays.add('VictorySlideshow');
+  }
+
   void showGameOverDialog() {
-    overlays.add("GameOver");
+    if (levelModel.levelNumber == 6 &&
+        scoreNotifier.value >= levelModel.scoreForNextLevel) {
+      // Для 6 уровня показываем специальный диалог
+      overlays.add("GameCompleted");
+    } else {
+      overlays.add("GameOver");
+    }
   }
 
   void restartGame() {
@@ -152,5 +180,70 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
   // Общая обработка сбора
   void onCollectItem() {
     scoreNotifier.value += 1;
+  }
+
+  // Метод для запуска режима черной дыры
+  void startBlackHoleMode() async {
+    print('startBlackHoleMode called');
+    if (isBlackHoleMode) {
+      print('Black hole mode already active, returning');
+      return; // Избегаем повторного запуска
+    }
+
+    isBlackHoleMode = true;
+    print('Black hole mode activated');
+
+    // Останавливаем все таймеры
+    _timeLimitTimer?.stop();
+    _bulletTimer.stop();
+    _meteorTimer.stop();
+    _nicikTimer?.stop();
+    _coloredSinicaTimer?.stop();
+    print('All timers stopped');
+
+    // Удаляем все движущиеся объекты кроме синицы
+    children.whereType<MeteoritComponent>().forEach((meteorit) {
+      meteorit.removeFromParent();
+    });
+    children.whereType<SemechkoComponent>().forEach((semechko) {
+      semechko.removeFromParent();
+    });
+    children.whereType<NicikComponent>().forEach((nicik) {
+      nicik.removeFromParent();
+    });
+    children.whereType<ColoredSinicaComponent>().forEach((coloredSinica) {
+      coloredSinica.removeFromParent();
+    });
+    print('All game objects removed');
+
+    // Создаем и добавляем черную дыру
+    try {
+      blackHole = BlackHoleComponent();
+      await add(blackHole!);
+      print('Black hole component added successfully');
+    } catch (e) {
+      print('Error adding black hole: $e');
+    }
+
+    // Скрываем таймер, так как он больше не нужен
+    overlays.remove('TimeOverlay');
+    print('Timer overlay removed');
+  }
+
+  // Метод для завершения игры через черную дыру
+  void endGameByBlackHole() async {
+    isGameOver = true;
+
+    // Проверяем, был ли достигнут необходимый счет перед завершением игры
+    if (scoreNotifier.value >= levelModel.scoreForNextLevel) {
+      await GameScoreManager.setLevelCompleted(levelModel.levelNumber);
+      if (levelModel.levelNumber == GameScoreManager.getLastUnlockedLevel()) {
+        await GameScoreManager.setLevelUnlocked(levelModel.levelNumber + 1);
+      }
+    }
+
+    // Небольшая задержка перед показом диалога для эффектности
+    await Future.delayed(const Duration(milliseconds: 1000));
+    showGameOverDialog();
   }
 }

@@ -63,6 +63,7 @@ flutter:
 
   assets:
     - assets/images/background.jpg
+    - assets/images/black_hole.png
     - assets/images/sinica.png
     - assets/images/sinicaRed.png
     - assets/images/sinicaBlue.png
@@ -85,6 +86,12 @@ flutter:
     - assets/images/modulesImages/Module3Image2.png
     - assets/images/modulesImages/Module4Btn.png
     - assets/images/modulesImages/Module4Image1.png
+    - assets/images/modulesImages/Module5Btn.png
+    - assets/images/modulesImages/Module5Image1.png
+    - assets/images/modulesImages/Module6Btn.png
+    - assets/images/EndSlideShow/FinalImage1.png
+    - assets/images/EndSlideShow/FinalImage2.png
+    - assets/images/EndSlideShow/FinalImage3.png
     - assets/images/Timer/1.png
     - assets/images/Timer/2.png
     - assets/images/Timer/3.png

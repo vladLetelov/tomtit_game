@@ -292,124 +292,148 @@ final Map<int, LevelModel> levels = {
       threeBulletsBuffChance: 0.08,
       scoreForNextLevel: 20,
       tripleSinicaMode: true,
+      timeLimit: 120,
       history: [
         HistoryModel(
-            title: 'ЦЕННОСТЬ НИЦ',
-            description:
-                'НИЦ стремится к открытости и доступности информации.'),
+            title: '',
+            isImageOnly: true,
+            pathImg: '/images/modulesImages/Module5Btn.png'),
         HistoryModel(
-            title: 'ЭФФЕКТИВНАЯ КОММУНИКАЦИЯ',
+            title: 'ЧИСЛЕННОСТЬ',
             description:
-                'Внедряются проекты по взаимодействию с руководителями, специалистами департаментов и подразделений.'),
+                'За последние три года численность сотрудников компании выросла более чем в два раза.'),
         HistoryModel(
-            title: 'ОТКРЫТОСТЬ',
-            description:
-                '2021 год – запущен проект «Есть вопрос!». Здесь можно задать интересующий вопрос руководству или линейному специалисту.'),
+          title: "ВОПРОС",
+          description: "",
+          questions: [
+            Question(
+              id: "level5_question1",
+              questionText: "Что Синица может предложить сотрудникам?",
+              answers: [
+                Answer(
+                    answerText: "Программы заботы о здоровье сотрудников",
+                    isCorrect: true),
+                Answer(
+                    answerText:
+                        "Программы роста, развития и построения карьеры",
+                    isCorrect: true),
+                Answer(
+                    answerText: "Семейные бонусные программы", isCorrect: true),
+                Answer(
+                    answerText:
+                        "Гибкий подход организации работы, функционалу и бонусированию.",
+                    isCorrect: true),
+              ],
+            ),
+          ],
+        ),
         HistoryModel(
-            title: 'АКТУАЛЬНАЯ ИНФОРМАЦИЯ',
+            title: 'ЛЮДИ',
             description:
-                '2024 год – запущен телеграм-канал СиНИЦа. Важные объявлениям, новости из жизни НИЦ, юмор и полезная информация теперь всегда под рукой!'),
+                'Талантливые люди – главный актив НИЦ. Мы создаем среду, где каждый специалист может раскрыть свой потенциал и расти вместе с компанией.'),
         HistoryModel(
-            title: 'КОРПОРАТИВНЫЕ МЕРОПРИЯТИЯ',
-            description:
-                'Гендерные и профессиональные праздники, День космонавтики, День программиста, Новый год для сотрудников и их детей.'),
-        HistoryModel(
-            title: 'ПОДДЕРЖКА',
-            description:
-                'Welcome-тренинги и адаптационные встречи – помощь и поддержка для новых сотрудников НИЦ.'),
-        HistoryModel(
-            title: 'LikeНИЦ',
-            description:
-                'Сервис благодарности и учета личной активности. Проявляйте инициативу и собирайте НИЦики – корпоративную валюту!'),
-        HistoryModel(
-            title: 'ниЦУМ',
-            description:
-                'Корпоративный онлайн-магазин. Обменивайте НИЦики на корпоративный мерч!'),
+            title: '',
+            isImageOnly: true,
+            pathImg: '/images/modulesImages/Module5Image1.png'),
       ],
-      historyButtonPath: 'assets/images/HistoryBtn5.png'),
+      correctCard: HistoryModel(
+        title: 'ПРАВИЛЬНО',
+        description:
+            'Построение справедливой системы мотивации. Удержание ключевых специалистов и развитие научно-технического потенциала – приоритет для компании. Мы создаем индивидуальную корпоративную культуру, повышающую вовлеченность сотрудников в работу, при которой стратегически важными направлениями являются программы профессионального роста, корпоративного обучения.',
+        isResultCard: true,
+        isCorrect: true,
+      ),
+      incorrectCard: HistoryModel(
+        title: 'НЕПРАВИЛЬНО',
+        description:
+            'Построение справедливой системы мотивации. Удержание ключевых специалистов и развитие научно-технического потенциала – приоритет для компании. Мы создаем индивидуальную корпоративную культуру, повышающую вовлеченность сотрудников в работу, при которой стратегически важными направлениями являются программы профессионального роста, корпоративного обучения.',
+        isResultCard: true,
+        isCorrect: false,
+      ),
+      historyButtonPath: '/images/modulesImages/Module5Btn.png'),
   6: LevelModel(
-      levelNumber: 6,
-      background: 'background.jpg',
-      bulletSpeed: 400,
-      meteorSpeed: 200,
-      nicikSpeed: 250,
-      bulletFrequency: 0.25,
-      meteorFrequency: 1.0,
-      nicikFrequency: 2.5,
-      angryBirdBuffChance: 0.10,
-      bulletFrequencyBuffChance: 0.10,
-      extraLifeBuffChance: 0.08,
-      threeBulletsBuffChance: 0.09,
-      scoreForNextLevel: 25,
-      history: [
-        HistoryModel(
-            title: 'ИНДИВИДУАЛЬНЫЙ ПОДХОД',
-            description:
-                'В НИЦ ценят каждого сотрудника и стремятся создавать комфортные условия для работы и жизни.'),
-        HistoryModel(
-            title: 'БОНУСЫ И ЛЬГОТЫ',
-            description: 'Значимая составляющая корпоративной политики НИЦ.'),
-        HistoryModel(
-            title: 'ПРОГРАММА ДМС',
-            description:
-                'Позволяет сотрудникам заботиться о своем здоровье и получать необходимую медицинскую помощь.'),
-        HistoryModel(
-            title: 'ПРОГРАММА ЦЕЛЕВОГО ОБУЧЕНИЯ',
-            description:
-                'Молодые сотрудники и дети сотрудников могут поступить на целевое обучение в высшие учебные заведения Санкт-Петербурга.'),
-        HistoryModel(
-            title: 'КОРПОРАТИВНЫЙ СПОРТ',
-            description:
-                'Возможность приобрести абонемент в любой спортивный клуб с компенсацией от компании.'),
-        HistoryModel(
-            title: 'КОМФОРТНЫЙ ОФИС',
-            description:
-                'Кофе-поинт, помещение для приема пищи для перерыва, настольный теннис.'),
-      ],
-      historyButtonPath: 'assets/images/HistoryBtn6.png'),
-  7: LevelModel(
-      levelNumber: 7,
-      background: 'background.jpg',
-      bulletSpeed: 420,
-      meteorSpeed: 210,
-      nicikSpeed: 260,
-      bulletFrequency: 0.2,
-      meteorFrequency: 0.8,
-      nicikFrequency: 2.0,
-      angryBirdBuffChance: 0.11,
-      bulletFrequencyBuffChance: 0.11,
-      extraLifeBuffChance: 0.09,
-      threeBulletsBuffChance: 0.10,
-      scoreForNextLevel: 30,
-      history: [
-        HistoryModel(
-            title: 'СТРАТЕГИЧЕСКАЯ ЦЕЛЬ НИЦ',
-            description:
-                'Устойчивое развитие Общества как надежного партнера с уникальными наукоемкими технологиями и социально-ориентированного работодателя.'),
-        HistoryModel(
-            title: 'КОМПЛЕКСНЫЕ РЕШЕНИЯ',
-            description:
-                'НИЦ – клиентоориентированная компания, предлагающая комплексные программно-аппаратные решения на всех этапах жизненного цикла.'),
-        HistoryModel(
-            title: 'КВАЛИФИЦИРОВАННЫЕ СПЕЦИАЛИСТЫ',
-            description:
-                'Обладают уникальными знаниями и большим спектром научно-технических разработок.'),
-        HistoryModel(
-            title: 'НОВЕЙШИЕ ТЕХНОЛОГИИ',
-            description:
-                'ИИ, машинное обучение, компьютерное зрение, комплексная безопасность, обработку Big Data, связь и передача данных, БПЛА-системы и многое другое.'),
-        HistoryModel(
-            title: 'ДОЛГОСРОЧНЫЕ КОНТРАКТЫ',
-            description:
-                'Прочные деловые отношения с государственными структурами и возможность получения долгосрочных контрактов.'),
-        HistoryModel(
-            title: 'ВЫСОКИЙ УРОВЕНЬ РАБОТЫ',
-            description:
-                'Отлаженные бизнес-процессы, система менеджмента качества и гибкость к изменениям, гарантирующие высокий уровень работы.'),
-        HistoryModel(
-            title: 'ДОЛГОСРОЧНЫЕ ПЕРСПЕКТИВЫ',
-            description:
-                'Одно из приоритетных направлений развития в 2025 году станет внедрение искусственного интеллекта во все процессы компании.'),
-      ],
-      historyButtonPath: 'assets/images/HistoryBtn7.png'),
+    levelNumber: 6,
+    background: 'background.jpg',
+    bulletSpeed: 400,
+    meteorSpeed: 200,
+    nicikSpeed: 250,
+    bulletFrequency: 0.25,
+    meteorFrequency: 1.0,
+    nicikFrequency: 2.5,
+    angryBirdBuffChance: 0.10,
+    bulletFrequencyBuffChance: 0.10,
+    extraLifeBuffChance: 0.08,
+    threeBulletsBuffChance: 0.09,
+    scoreForNextLevel: 1,
+    timeLimit: 80,
+    history: [
+      HistoryModel(
+          title: '',
+          isImageOnly: true,
+          pathImg: '/images/modulesImages/Module6Btn.png'),
+      HistoryModel(
+          title: 'ВЕКТОР ДВИЖЕНИЯ',
+          description:
+              'Наш вектор движения—развивать государственный и коммерческий рынок, создавать качественные продукты и решения, помогать клиентам добиваться целей, продвигать существующие продукты внедрять инновации, развивать команду и оставаться лидерами в технологиях. Это залог нашего успеха и роста.'),
+      HistoryModel(
+          title: 'ИННОВАЦИИ',
+          description:
+              'Компания разрабатываем и внедряем новейшие технологии: искусственный интеллект, машинное обучение, компьютерное зрение, комплексная безопасность, обработку Big Data, связь и передача данных, беспилотные системы и многое другое.'),
+      HistoryModel(
+          title: 'УНИКАЛЬНОСТЬ',
+          description:
+              'Постоянные инновации, сбалансированное управление финансами, выращивание и удержание талантов, гибкость и управление изменениями, клиенториентированность – то, что делает НИЦ уникальной организацией.'),
+      HistoryModel(
+          title: 'СТРАТЕГИЯ',
+          description:
+              'НИЦ вступает в новый этап своего развития, утверждая стратегию на 2025–2030 годы. Это не просто документ - это философия будущего. В её основе лежит концепция «стратегия ментальных перемен».'),
+      HistoryModel(
+        title: "ВОПРОС",
+        description: "",
+        questions: [
+          Question(
+            id: "level6_question1",
+            questionText:
+                "Что из перечисленного относится к стратегическим целям компании?",
+            answers: [
+              Answer(
+                  answerText: "Пунктуальность как стандарт", isCorrect: true),
+              Answer(
+                  answerText: "Внедрение дресс-кода по пятницам",
+                  isCorrect: false),
+              Answer(
+                  answerText: "Ежегодный рост собственного объема работ (СОР)",
+                  isCorrect: true),
+              Answer(answerText: "Возврат на инвестиции", isCorrect: true),
+              Answer(answerText: "Ежегодная рентабельность", isCorrect: true),
+              Answer(answerText: "HR-прорыв", isCorrect: true),
+              Answer(
+                  answerText: "Победить в конкурсе на лучший Telegram чат.",
+                  isCorrect: false),
+            ],
+          ),
+        ],
+      ),
+    ],
+    correctCard: HistoryModel(
+      title: 'ПРАВИЛЬНО',
+      description:
+          'К стратегическим целям компании относятся пунктуальность как стандарт, ежегодный рост собственного объема работ, возврат на инвестиции, ежегодная рентабельность и HR-прорыв.',
+      isResultCard: true,
+      isCorrect: true,
+    ),
+    incorrectCard: HistoryModel(
+      title: 'НЕПРАВИЛЬНО',
+      description:
+          'К стратегическим целям компании относятся пунктуальность как стандарт, ежегодный рост собственного объема работ, возврат на инвестиции, ежегодная рентабельность и HR-прорыв.',
+      isResultCard: true,
+      isCorrect: false,
+    ),
+    historyButtonPath: '/images/modulesImages/Module6Btn.png',
+    victorySlideshowImages: [
+      '/images/EndSlideShow/FinalImage1.png',
+      '/images/EndSlideShow/FinalImage2.png',
+      '/images/EndSlideShow/FinalImage3.png',
+    ],
+  ),
 };

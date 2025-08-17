@@ -25,6 +25,7 @@ class LevelModel {
   final int? timeLimit;
   final double sinicaSize;
   final bool? tripleSinicaMode;
+  final List<String>? victorySlideshowImages;
 
   LevelModel({
     required this.levelNumber,
@@ -51,5 +52,6 @@ class LevelModel {
     this.timeLimit,
     this.sinicaSize = 50.0,
     this.tripleSinicaMode = false,
+    this.victorySlideshowImages,
   });
 }
