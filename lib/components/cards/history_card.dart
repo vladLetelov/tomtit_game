@@ -174,7 +174,7 @@ class _HistoryCardState extends State<HistoryCard> {
           else
             Container(
               width: MediaQuery.of(context).size.width * 0.85,
-              height: MediaQuery.of(context).size.height * 0.5,
+              height: MediaQuery.of(context).size.height * 0.7,
               margin: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.0),
@@ -264,39 +264,39 @@ class _HistoryCardState extends State<HistoryCard> {
   }
 
   Widget _buildContentSection() {
-    return Flexible(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (widget.historyItem.description != null &&
-                widget.historyItem.description!.trim().isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: Text(
-                  widget.historyItem.description!,
-                  style: TextStyles.defaultStyle.copyWith(
-                    fontSize: 16,
-                    color: Colors.white.withOpacity(0.9),
-                  ),
-                  textAlign: TextAlign.left,
+    print('description: ${widget.historyItem.description}');
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.historyItem.description != null &&
+              widget.historyItem.description!.trim().isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Text(
+                widget.historyItem.description!,
+                style: TextStyles.defaultStyle.copyWith(
+                  fontSize: 13, // уменьшено на 3 пункта
+                  color: Colors.white.withOpacity(0.9),
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          if (widget.historyItem.pathImg != null)
+            Flexible(
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight:
+                      MediaQuery.of(context).size.height * 0.45, // было 0.6
+                ),
+                child: Image.asset(
+                  widget.historyItem.pathImg!,
+                  fit: BoxFit.contain,
                 ),
               ),
-            if (widget.historyItem.pathImg != null)
-              Flexible(
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.6,
-                  ),
-                  child: Image.asset(
-                    widget.historyItem.pathImg!,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
@@ -313,7 +313,7 @@ class _HistoryCardState extends State<HistoryCard> {
             Text(
               currentQuestion.questionText,
               style: TextStyles.defaultStyle.copyWith(
-                fontSize: 16,
+                fontSize: 13,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -376,7 +376,7 @@ class _HistoryCardState extends State<HistoryCard> {
                       currentQuestion.answers[index].answerText,
                       textAlign: TextAlign.center,
                       style: TextStyles.defaultStyle.copyWith(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: textColor,
                         fontWeight: _isQuestionAnswered && isCorrectAnswer
                             ? FontWeight.bold

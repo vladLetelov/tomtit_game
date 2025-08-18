@@ -109,11 +109,11 @@ final Map<int, LevelModel> levels = {
   3: LevelModel(
       levelNumber: 3,
       background: 'background.jpg',
-      bulletSpeed: 340,
+      bulletSpeed: 380,
       meteorSpeed: 170,
       nicikSpeed: 220,
       bulletFrequency: 0.37,
-      meteorFrequency: 0.13,
+      meteorFrequency: 1.2,
       nicikFrequency: 2.0,
       angryBirdBuffChance: 0.07,
       bulletFrequencyBuffChance: 0.07,
@@ -121,7 +121,7 @@ final Map<int, LevelModel> levels = {
       threeBulletsBuffChance: 0.06,
       scoreForNextLevel: 7,
       timeLimit: 60,
-      sinicaSize: 100.0,
+      sinicaSize: 70.0,
       history: [
         HistoryModel(
             title: '',
