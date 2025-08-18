@@ -86,82 +86,34 @@ class _GameOverState extends State<GameOver> {
                     : "Не повезло, вы набрали ${widget.game.scoreNotifier.value} нициков из ${widget.game.levelModel.scoreForNextLevel}",
               ),
               const SizedBox(height: 20),
-              isLevelPassed
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        DefaultGameButton(
-                          onTap: () {
-                            widget.game.removeWhere((component) => true);
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const LevelSelectionScreen(),
-                              ),
-                            );
-                          },
-                          text: "Перейти к следующему уровню",
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  DefaultGameButton(
+                    onTap: () {
+                      widget.game.removeWhere((component) => true);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const LevelSelectionScreen(),
                         ),
-                        const SizedBox(height: 10),
-                        Wrap(
-                          alignment: WrapAlignment.center,
-                          spacing: 10,
-                          runSpacing: 10,
-                          children: [
-                            DefaultGameButton(
-                              onTap: () {
-                                widget.game.removeWhere((component) => true);
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        const LevelSelectionScreen(),
-                                  ),
-                                );
-                              },
-                              text: 'Выход в меню',
-                            ),
-                            DefaultGameButton(
-                              onTap: () {
-                                widget.game.removeWhere((component) => true);
-                                widget.game.restartGame();
-                                widget.game.overlays.remove('GameOver');
-                              },
-                              text: "Играть заново",
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
-                  : Wrap(
-                      alignment: WrapAlignment.center,
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: [
-                        DefaultGameButton(
-                          onTap: () {
-                            widget.game.removeWhere((component) => true);
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const LevelSelectionScreen(),
-                              ),
-                            );
-                          },
-                          text: 'Выход в меню',
-                        ),
-                        DefaultGameButton(
-                          onTap: () {
-                            widget.game.removeWhere((component) => true);
-                            widget.game.restartGame();
-                            widget.game.overlays.remove('GameOver');
-                          },
-                          text: "Попробовать снова",
-                        ),
-                      ],
-                    ),
+                      );
+                    },
+                    text: 'Выход в меню',
+                  ),
+                  DefaultGameButton(
+                    onTap: () {
+                      widget.game.removeWhere((component) => true);
+                      widget.game.restartGame();
+                      widget.game.overlays.remove('GameOver');
+                    },
+                    text: isLevelPassed ? "Играть заново" : "Попробовать снова",
+                  ),
+                ],
+              ),
             ],
           ),
         ),

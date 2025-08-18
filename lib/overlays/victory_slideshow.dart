@@ -55,15 +55,18 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
   @override
   Widget build(BuildContext context) {
     final images = widget.game.levelModel.victorySlideshowImages!;
+    final bgImage = widget.game.levelModel.victorySlideshowBackground ??
+        'assets/images/BackgroundHistoryPage.jpg';
+    final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Stack(
       children: [
         // Фоновое изображение
         Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/BackgroundHistoryPage.jpg'),
-              fit: BoxFit.cover,
+              image: AssetImage(bgImage),
+              fit: isMobile ? BoxFit.cover : BoxFit.contain,
             ),
           ),
         ),

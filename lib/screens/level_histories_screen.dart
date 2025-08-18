@@ -65,7 +65,8 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
             questionId,
           );
           if (result != null) {
-            _questionResults[i] = result; // Используем индекс истории, а не вопроса
+            _questionResults[i] =
+                result; // Используем индекс истории, а не вопроса
           }
         }
       }
@@ -127,7 +128,7 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
     } else {
       // Проверяем, пройдена ли игра предыдущего уровня
       final prevLevelScore =
-          await GameScoreManager.getLevelScore(widget.level.levelNumber - 1);
+          GameScoreManager.getLevelScore(widget.level.levelNumber - 1);
       final prevLevelRequiredScore =
           levels[widget.level.levelNumber - 1]!.scoreForNextLevel;
 
@@ -141,14 +142,14 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
       await GameScoreManager.setLevelGameUnlocked(1);
       setState(() {
         _showCountdown = true;
-        _currentCountdownImage = '/images/Timer/3.png';
+        _currentCountdownImage = 'assets/images/Timer/3.png';
       });
 
       // Создаем список изображений в порядке отсчета
       final countdownImages = [
-        '/images/Timer/3.png',
-        '/images/Timer/2.png',
-        '/images/Timer/1.png',
+        'assets/images/Timer/3.png',
+        'assets/images/Timer/2.png',
+        'assets/images/Timer/1.png',
       ];
 
       int currentIndex = 0;
@@ -216,83 +217,38 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'Вы ознакомились со всеми фрагментами истории!',
+                      'Вы ознакомились с историей!',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    LevelSelectionScreen(),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            minimumSize: const Size(150, 45),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: const BorderSide(color: Colors.deepPurple),
-                            ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const LevelSelectionScreen(),
                           ),
-                          child: const Text(
-                            'В меню',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        minimumSize: const Size(150, 45),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: const BorderSide(color: Colors.deepPurple),
                         ),
-                        if (levels.containsKey(widget.level.levelNumber + 1))
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      GameWidget<TomtitGame>.controlled(
-                                    gameFactory: () => TomtitGame(
-                                        levelModel: levels[widget.level.levelNumber + 1]!),
-                                    overlayBuilderMap: {
-                                      'GameOver': (_, game) =>
-                                          GameOver(game: game),
-                                      'ScoreOverlay': (_, game) =>
-                                          ScoreOverlay(game: game),
-                                      'TimeOverlay': (_, game) =>
-                                          TimeOverlay(game: game),
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              minimumSize: const Size(150, 45),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(color: Colors.deepPurple),
-                              ),
-                            ),
-                            child: const Text(
-                              'Следующий уровень',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                      ],
+                      ),
+                      child: const Text(
+                        'В меню',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -316,7 +272,7 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
             icon: const Icon(Icons.exit_to_app_outlined, color: Colors.white),
             onPressed: () => Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => LevelSelectionScreen()),
+              MaterialPageRoute(builder: (_) => const LevelSelectionScreen()),
             ),
           ),
         ],

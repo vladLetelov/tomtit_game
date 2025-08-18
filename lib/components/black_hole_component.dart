@@ -1,6 +1,4 @@
 import 'package:flame/components.dart';
-import 'package:flame/game.dart';
-import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:tomtit_game/game/tomtit_game.dart';
 import 'dart:ui' as ui;

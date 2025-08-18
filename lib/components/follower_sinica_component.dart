@@ -1,33 +1,37 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/events.dart';
 import 'package:tomtit_game/components/meteorit_component.dart';
 import 'package:tomtit_game/components/nicik_component.dart';
 import 'package:tomtit_game/components/ColoredSinicaComponent.dart';
+import 'package:tomtit_game/components/sinica_component.dart';
 import 'package:tomtit_game/game/tomtit_game.dart';
 
-class SinicaComponent extends SpriteComponent
-    with DragCallbacks, HasGameReference<TomtitGame>, CollisionCallbacks {
-  late Vector2 _dragStartPosition;
-  late Vector2 _dragOffset;
+class FollowerSinicaComponent extends SpriteComponent
+    with HasGameReference<TomtitGame>, CollisionCallbacks {
+  final SinicaComponent leader;
+  final Vector2 offset;
+  final List<Vector2> _positionHistory = [];
+  final int _historyLength = 15; // Уменьшено количество кадров для более быстрого следования
+  final int _delay; // Задержка для каждого клона
   bool _shouldRemove = false;
-  bool _skipDragUpdates = false;
   
   // Переменные для притягивания к черной дыре
   bool _isBeingPulledByBlackHole = false;
   Vector2? _blackHolePosition;
   final double _pullSpeed = 200.0;
 
+  FollowerSinicaComponent(this.leader, this.offset, this._delay);
+
   @override
   Future<void> onLoad() async {
     sprite = await Sprite.load('sinica.png');
-    size = Vector2.all(game.levelModel.sinicaSize);
+    size = Vector2.all(game.levelModel.sinicaSize * 0.7); // Делаем клонов на 30% меньше
     anchor = Anchor.center;
-    position = Vector2((game.size.x / 2) - 25, game.size.y - 50);
+    position = leader.position + offset;
     add(RectangleHitbox());
     
-    // Устанавливаем высокий приоритет, чтобы синица была поверх всех объектов
-    priority = 10;
+    // Устанавливаем приоритет чуть ниже основной синицы
+    priority = 9;
     
     super.onLoad();
   }
@@ -50,25 +54,6 @@ class SinicaComponent extends SpriteComponent
   }
 
   @override
-  void onDragStart(DragStartEvent event) {
-    super.onDragStart(event);
-    _dragStartPosition = position;
-    _dragOffset = event.localPosition;
-  }
-
-  @override
-  void onDragUpdate(DragUpdateEvent event) {
-    if (_shouldRemove && !_skipDragUpdates) {
-      _skipDragUpdates = true;
-    }
-    // Если синица притягивается к черной дыре, игнорируем перетаскивание
-    if (!_skipDragUpdates && !_isBeingPulledByBlackHole) {
-      super.onDragUpdate(event);
-      position = _dragStartPosition + (event.localStartPosition - _dragOffset);
-    }
-  }
-
-  @override
   void update(double dt) {
     super.update(dt);
     
@@ -87,27 +72,42 @@ class SinicaComponent extends SpriteComponent
       
       // Проверяем, достигла ли синица черной дыры
       if (distance < 30) {
-        print('Sinica reached black hole, being absorbed');
+        print('Follower sinica reached black hole, being absorbed');
         _onAbsorbedByBlackHole();
+      }
+    } else {
+      // Обычная логика следования за лидером
+      // Добавляем текущую позицию лидера в историю
+      _positionHistory.add(leader.position.clone());
+      
+      // Ограничиваем размер истории
+      if (_positionHistory.length > _historyLength) {
+        _positionHistory.removeAt(0);
+      }
+      
+      // Используем задержку для каждого клона
+      final targetIndex = _delay.clamp(0, _positionHistory.length - 1);
+      if (_positionHistory.length > targetIndex) {
+        final targetPosition = _positionHistory[_positionHistory.length - 1 - targetIndex];
+        position = targetPosition + offset;
+      } else if (_positionHistory.isNotEmpty) {
+        // Если истории недостаточно, используем последнюю доступную позицию с смещением
+        position = _positionHistory.last + offset;
       }
     }
   }
 
   // Метод для начала притягивания к черной дыре
   void startBlackHoleAttraction(Vector2 blackHolePosition) {
-    print('Sinica: Starting black hole attraction');
+    print('Follower Sinica: Starting black hole attraction');
     _isBeingPulledByBlackHole = true;
     _blackHolePosition = blackHolePosition;
-    _skipDragUpdates = true; // Отключаем перетаскивание
-    print('Sinica: Black hole position set to $blackHolePosition');
+    print('Follower Sinica: Black hole position set to $blackHolePosition');
   }
 
   // Метод вызывается когда синица поглощается черной дырой
   void _onAbsorbedByBlackHole() {
     _shouldRemove = true;
-    // Запускаем финальную анимацию поглощения
     removeFromParent();
-    // Завершаем игру с особым эффектом для черной дыры
-    game.endGameByBlackHole();
   }
 }

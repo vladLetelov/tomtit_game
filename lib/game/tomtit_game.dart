@@ -12,6 +12,7 @@ import '../components/semechko_component.dart';
 import '../components/nicik_component.dart';
 import '../components/ColoredSinicaComponent.dart';
 import '../components/black_hole_component.dart';
+import '../components/follower_sinica_component.dart';
 import 'package:flutter/material.dart';
 
 class TomtitGame extends FlameGame with HasCollisionDetection {
@@ -20,6 +21,7 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
   late SinicaComponent sinica;
   late SpriteComponent background;
   final LevelModel levelModel;
+  List<FollowerSinicaComponent> followerSinicas = [];
 
   late Sprite meteoritSprite;
   late Sprite nicikSprite;
@@ -53,6 +55,16 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
     semechkoSprite = await Sprite.load('semechko.webp');
     sinica = SinicaComponent();
     addAll([BackgroundComponent(), sinica]);
+
+    // Добавляем клонов синицы для режима tripleSinicaMode
+    if (levelModel.tripleSinicaMode == true) {
+      final follower1 = FollowerSinicaComponent(sinica, Vector2(-30, 25), 5);
+      final follower2 = FollowerSinicaComponent(sinica, Vector2(30, 25), 5);
+      final follower3 = FollowerSinicaComponent(sinica, Vector2(0, 40), 10);
+      
+      followerSinicas = [follower1, follower2, follower3];
+      addAll(followerSinicas);
+    }
 
     _bulletTimer = Timer(levelModel.bulletFrequency,
         onTick: () => add(SemechkoComponent()), repeat: true);
@@ -89,6 +101,8 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
             print('Timer ended on level 2, starting black hole mode');
             startBlackHoleMode();
           } else {
+            // Для всех остальных уровней, включая 5-й, завершаем игру обычным способом
+            print('Timer ended on level ${levelModel.levelNumber}, ending game');
             endGame();
           }
         }
@@ -158,6 +172,7 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
   void restartGame() {
     isGameOver = false;
     scoreNotifier.value = 0;
+    followerSinicas.clear();
     onLoad();
   }
 
@@ -221,6 +236,12 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
       blackHole = BlackHoleComponent();
       await add(blackHole!);
       print('Black hole component added successfully');
+      
+      // Начинаем притягивание всех синиц к черной дыре
+      sinica.startBlackHoleAttraction(blackHole!.position);
+      for (final follower in followerSinicas) {
+        follower.startBlackHoleAttraction(blackHole!.position);
+      }
     } catch (e) {
       print('Error adding black hole: $e');
     }

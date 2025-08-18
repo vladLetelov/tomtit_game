@@ -21,7 +21,7 @@ final Map<int, LevelModel> levels = {
       HistoryModel(
           title: '',
           isImageOnly: true,
-          pathImg: '/images/modulesImages/Module1Btn.png'),
+          pathImg: 'assets/images/modulesImages/Module1Btn.png'),
       HistoryModel(
           title: 'ПРОРЫВ',
           description: 'Эпоха прорывов в космосе и вычислительной технике.'),
@@ -30,7 +30,7 @@ final Map<int, LevelModel> levels = {
           description:
               'В это время СИНиЦА НИЦа начинает свое космическое путешествие.'),
     ],
-    historyButtonPath: '/images/modulesImages/Module1Btn.png',
+    historyButtonPath: 'assets/images/modulesImages/Module1Btn.png',
   ),
   2: LevelModel(
       levelNumber: 2,
@@ -50,11 +50,11 @@ final Map<int, LevelModel> levels = {
       history: [
         HistoryModel(
             title: '',
-            pathImg: '/images/modulesImages/Module2Btn.png',
+            pathImg: 'assets/images/modulesImages/Module2Btn.png',
             isImageOnly: true),
         HistoryModel(
           title: '',
-          pathImg: '/images/modulesImages/Module2Image1.png',
+          pathImg: 'assets/images/modulesImages/Module2Image1.png',
           isImageOnly: true,
         ),
         HistoryModel(
@@ -88,7 +88,7 @@ final Map<int, LevelModel> levels = {
                 'Здесь Синица познакомилась с первыми сотрудниками организации Александром Владимировичем Экало, Вениамином Викторовичем Романцевым, Евгением Валентиновичем Постниковым, которые по настоящее время продолжают работают в НИЦ.'),
         HistoryModel(
             title: '',
-            pathImg: '/images/modulesImages/Module2Image2.png',
+            pathImg: 'assets/images/modulesImages/Module2Image2.png',
             isImageOnly: true),
       ],
       correctCard: HistoryModel(
@@ -105,7 +105,7 @@ final Map<int, LevelModel> levels = {
         isResultCard: true,
         isCorrect: false,
       ),
-      historyButtonPath: '/images/modulesImages/Module2Btn.png'),
+      historyButtonPath: 'assets/images/modulesImages/Module2Btn.png'),
   3: LevelModel(
       levelNumber: 3,
       background: 'background.jpg',
@@ -130,11 +130,11 @@ final Map<int, LevelModel> levels = {
         HistoryModel(
             title: '',
             isImageOnly: true,
-            pathImg: '/images/modulesImages/Module3Image1.png'),
+            pathImg: 'assets/images/modulesImages/Module3Image1.png'),
         HistoryModel(
             title: '',
             isImageOnly: true,
-            pathImg: '/images/modulesImages/Module3Image2.png'),
+            pathImg: 'assets/images/modulesImages/Module3Image2.png'),
         HistoryModel(
           title: "ВОПРОС",
           description: "",
@@ -166,7 +166,7 @@ final Map<int, LevelModel> levels = {
                 'Под руководством главного конструктора и основателя компании Александра Владимировича Экало были сформированы стратегические направления деятельности и созданы первые команды разработчиков.'),
         HistoryModel(
             title: '',
-            pathImg: '/images/modulesImages/Module2Image2.png',
+            pathImg: 'assets/images/modulesImages/Module2Image2.png',
             isImageOnly: true),
       ],
       correctCard: HistoryModel(
@@ -207,7 +207,7 @@ final Map<int, LevelModel> levels = {
         HistoryModel(
             title: '',
             isImageOnly: true,
-            pathImg: '/images/modulesImages/Module4Btn.png'),
+            pathImg: 'assets/images/modulesImages/Module4Btn.png'),
         HistoryModel(
             title: 'КОМПАНИЯ',
             description:
@@ -260,7 +260,7 @@ final Map<int, LevelModel> levels = {
         HistoryModel(
             title: '',
             isImageOnly: true,
-            pathImg: '/images/modulesImages/Module4Image1.png'),
+            pathImg: 'assets/images/modulesImages/Module4Image1.png'),
       ],
       correctCard: HistoryModel(
         title: 'ПРАВИЛЬНО',
@@ -276,7 +276,7 @@ final Map<int, LevelModel> levels = {
         isResultCard: true,
         isCorrect: false,
       ),
-      historyButtonPath: '/images/modulesImages/Module4Btn.png'),
+      historyButtonPath: 'assets/images/modulesImages/Module4Btn.png'),
   5: LevelModel(
       levelNumber: 5,
       background: 'background.jpg',
@@ -290,14 +290,14 @@ final Map<int, LevelModel> levels = {
       bulletFrequencyBuffChance: 0.09,
       extraLifeBuffChance: 0.07,
       threeBulletsBuffChance: 0.08,
-      scoreForNextLevel: 20,
+      scoreForNextLevel: 17,
       tripleSinicaMode: true,
       timeLimit: 120,
       history: [
         HistoryModel(
             title: '',
             isImageOnly: true,
-            pathImg: '/images/modulesImages/Module5Btn.png'),
+            pathImg: 'assets/images/modulesImages/Module5Btn.png'),
         HistoryModel(
             title: 'ЧИСЛЕННОСТЬ',
             description:
@@ -334,7 +334,7 @@ final Map<int, LevelModel> levels = {
         HistoryModel(
             title: '',
             isImageOnly: true,
-            pathImg: '/images/modulesImages/Module5Image1.png'),
+            pathImg: 'assets/images/modulesImages/Module5Image1.png'),
       ],
       correctCard: HistoryModel(
         title: 'ПРАВИЛЬНО',
@@ -350,7 +350,7 @@ final Map<int, LevelModel> levels = {
         isResultCard: true,
         isCorrect: false,
       ),
-      historyButtonPath: '/images/modulesImages/Module5Btn.png'),
+      historyButtonPath: 'assets/images/modulesImages/Module5Btn.png'),
   6: LevelModel(
     levelNumber: 6,
     background: 'background.jpg',
@@ -364,13 +364,13 @@ final Map<int, LevelModel> levels = {
     bulletFrequencyBuffChance: 0.10,
     extraLifeBuffChance: 0.08,
     threeBulletsBuffChance: 0.09,
-    scoreForNextLevel: 1,
+    scoreForNextLevel: 20,
     timeLimit: 80,
     history: [
       HistoryModel(
           title: '',
           isImageOnly: true,
-          pathImg: '/images/modulesImages/Module6Btn.png'),
+          pathImg: 'assets/images/modulesImages/Module6Btn.png'),
       HistoryModel(
           title: 'ВЕКТОР ДВИЖЕНИЯ',
           description:
@@ -429,11 +429,13 @@ final Map<int, LevelModel> levels = {
       isResultCard: true,
       isCorrect: false,
     ),
-    historyButtonPath: '/images/modulesImages/Module6Btn.png',
+    historyButtonPath: 'assets/images/modulesImages/Module6Btn.png',
     victorySlideshowImages: [
-      '/images/EndSlideShow/FinalImage1.png',
-      '/images/EndSlideShow/FinalImage2.png',
-      '/images/EndSlideShow/FinalImage3.png',
+      'assets/images/EndSlideShow/FinalImage1.png',
+      'assets/images/EndSlideShow/FinalImage2.png',
+      'assets/images/EndSlideShow/FinalImage3.png',
     ],
+    victorySlideshowBackground:
+        'assets/images/EndSlideShow/SlideShowBackground.png',
   ),
 };

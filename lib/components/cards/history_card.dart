@@ -86,7 +86,7 @@ class _HistoryCardState extends State<HistoryCard> {
 
     final question = widget.historyItem.questions![_selectedQuestionIndex!];
     _currentQuestionId = question.id;
-    
+
     // Проверяем, был ли ответ на текущий вопрос
     final isAnswered = GameScoreManager.getQuestionResultById(
             widget.levelNumber, _currentQuestionId!) !=
@@ -270,7 +270,8 @@ class _HistoryCardState extends State<HistoryCard> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (widget.historyItem.description != null)
+            if (widget.historyItem.description != null &&
+                widget.historyItem.description!.trim().isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: Text(
@@ -413,7 +414,8 @@ class _HistoryCardState extends State<HistoryCard> {
                       onPressed: () {
                         setState(() {
                           _selectedQuestionIndex = _selectedQuestionIndex! + 1;
-                          _currentQuestionId = widget.historyItem.questions![_selectedQuestionIndex!].id;
+                          _currentQuestionId = widget.historyItem
+                              .questions![_selectedQuestionIndex!].id;
                           _loadQuestionState();
                         });
                       },
@@ -431,7 +433,7 @@ class _HistoryCardState extends State<HistoryCard> {
             height: 6,
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final double indicatorWidth = 30.0;
+                const double indicatorWidth = 30.0;
                 final double maxOffset = constraints.maxWidth - indicatorWidth;
                 final double offset =
                     maxOffset * widget.currentIndex / (widget.totalCount - 1);

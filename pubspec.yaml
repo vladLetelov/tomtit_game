@@ -1,5 +1,5 @@
 name: tomtit_game
-description: "A new Flutter project."
+description: "НИЦ игра"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -92,6 +92,7 @@ flutter:
     - assets/images/EndSlideShow/FinalImage1.png
     - assets/images/EndSlideShow/FinalImage2.png
     - assets/images/EndSlideShow/FinalImage3.png
+    - assets/images/EndSlideShow/SlideShowBackground.png
     - assets/images/Timer/1.png
     - assets/images/Timer/2.png
     - assets/images/Timer/3.png
