@@ -16,7 +16,8 @@ final Map<int, LevelModel> levels = {
     extraLifeBuffChance: 0.06,
     threeBulletsBuffChance: 0.07,
     scoreForNextLevel: 1,
-    timeLimit: 60,
+    sinicaSize: 60.0,
+    // timeLimit: 60,
     history: [
       HistoryModel(
           title: '',
@@ -39,14 +40,15 @@ final Map<int, LevelModel> levels = {
       meteorSpeed: 160,
       nicikSpeed: 210,
       bulletFrequency: 0.45,
-      meteorFrequency: 0.15,
-      nicikFrequency: 2.0,
+      meteorFrequency: 1,
+      nicikFrequency: 1.8,
       angryBirdBuffChance: 0.06,
       bulletFrequencyBuffChance: 0.06,
       extraLifeBuffChance: 0.04,
       threeBulletsBuffChance: 0.05,
       scoreForNextLevel: 5,
-      timeLimit: 30,
+      sinicaSize: 60.0,
+      // timeLimit: 30,
       history: [
         HistoryModel(
             title: '',
@@ -75,6 +77,20 @@ final Map<int, LevelModel> levels = {
                     isCorrect: false),
                 Answer(answerText: "ЛЭТИ", isCorrect: true),
               ],
+              correctCard: HistoryModel(
+                title: 'ПРАВИЛЬНО',
+                description:
+                    'Синица угадала место! Первым шагом в истории предприятии стало создание научной лаборатории в Ленинградском электротехническом институте (ЛЭТИ) под руководством проректора В.И. Тимохина.',
+                isResultCard: true,
+                isCorrect: true,
+              ),
+              incorrectCard: HistoryModel(
+                title: 'НЕПРАВИЛЬНО',
+                description:
+                    'На самом деле Синица оказалась в стенах Ленинградского электротехнического университета (ЛЭТИ), именно здесь родилась лаборатория под руководством проректора В.И. Тимохина, которая стала отправной точкой в жизни компании.',
+                isResultCard: true,
+                isCorrect: false,
+              ),
             ),
           ],
         ),
@@ -91,20 +107,6 @@ final Map<int, LevelModel> levels = {
             pathImg: 'assets/images/modulesImages/Module2Image2.png',
             isImageOnly: true),
       ],
-      correctCard: HistoryModel(
-        title: 'ПРАВИЛЬНО',
-        description:
-            'Синица угадала место! Первым шагом в истории предприятии стало создание научной лаборатории в Ленинградском электротехническом институте (ЛЭТИ) под руководством проректора В.И. Тимохина.',
-        isResultCard: true,
-        isCorrect: true,
-      ),
-      incorrectCard: HistoryModel(
-        title: 'НЕПРАВИЛЬНО',
-        description:
-            'На самом деле Синица оказалась в стенах Ленинградского электротехнического университета (ЛЭТИ), именно здесь родилась лаборатория под руководством проректора В.И. Тимохина, которая стала отправной точкой в жизни компании.',
-        isResultCard: true,
-        isCorrect: false,
-      ),
       historyButtonPath: 'assets/images/modulesImages/Module2Btn.png'),
   3: LevelModel(
       levelNumber: 3,
@@ -113,15 +115,15 @@ final Map<int, LevelModel> levels = {
       meteorSpeed: 170,
       nicikSpeed: 220,
       bulletFrequency: 0.37,
-      meteorFrequency: 1.2,
+      meteorFrequency: 0.8,
       nicikFrequency: 2.0,
       angryBirdBuffChance: 0.07,
       bulletFrequencyBuffChance: 0.07,
       extraLifeBuffChance: 0.05,
       threeBulletsBuffChance: 0.06,
       scoreForNextLevel: 7,
-      timeLimit: 60,
-      sinicaSize: 70.0,
+      // timeLimit: 60,
+      sinicaSize: 75.0,
       history: [
         HistoryModel(
             title: '',
@@ -157,6 +159,20 @@ final Map<int, LevelModel> levels = {
                         "Деятельность, связанная с использованием вычислительной техники и информационных технологий",
                     isCorrect: false),
               ],
+              correctCard: HistoryModel(
+                title: 'ПРАВИЛЬНО',
+                description:
+                    'Ура! Регистрация пройдена, теперь НИЦ СПб ЭТУ независимая коммерческая компания, которая помогает решать сложные проблемы обработки, идентификации и распознавания сигналов.',
+                isResultCard: true,
+                isCorrect: true,
+              ),
+              incorrectCard: HistoryModel(
+                title: 'НЕПРАВИЛЬНО',
+                description:
+                    'На самом деле основной сферой деятельности компании стали «Научные исследования и разработки в области естественных и технических наук». ',
+                isResultCard: true,
+                isCorrect: false,
+              ),
             ),
           ],
         ),
@@ -169,29 +185,15 @@ final Map<int, LevelModel> levels = {
             pathImg: 'assets/images/modulesImages/Module2Image2.png',
             isImageOnly: true),
       ],
-      correctCard: HistoryModel(
-        title: 'ПРАВИЛЬНО',
-        description:
-            'Ура! Регистрация пройдена, теперь НИЦ СПб ЭТУ независимая коммерческая компания, которая помогает решать сложные проблемы обработки, идентификации и распознавания сигналов.',
-        isResultCard: true,
-        isCorrect: true,
-      ),
-      incorrectCard: HistoryModel(
-        title: 'НЕПРАВИЛЬНО',
-        description:
-            'На самом деле основной сферой деятельности компании стали «Научные исследования и разработки в области естественных и технических наук». ',
-        isResultCard: true,
-        isCorrect: false,
-      ),
       historyButtonPath: 'assets/images/modulesImages/Module3Btn.png'),
   4: LevelModel(
       levelNumber: 4,
       background: 'background.jpg',
       bulletSpeed: 360,
-      meteorSpeed: 180,
+      meteorSpeed: 190,
       nicikSpeed: 200,
       bulletFrequency: 0.5,
-      meteorFrequency: 0.2,
+      meteorFrequency: 0.6,
       nicikFrequency: 2.0,
       angryBirdBuffChance: 0.05,
       bulletFrequencyBuffChance: 0.05,
@@ -200,9 +202,10 @@ final Map<int, LevelModel> levels = {
       scoreForNextLevel: 15,
       hasNiciks: false,
       hasColoredSinicis: true,
-      coloredSinicaFrequency: 0.2,
-      coloredSinicaSpeed: 200,
-      timeLimit: 120,
+      coloredSinicaFrequency: 1.1,
+      coloredSinicaSpeed: 240,
+      sinicaSize: 60.0,
+      // timeLimit: 120,
       history: [
         HistoryModel(
             title: '',
@@ -229,6 +232,20 @@ final Map<int, LevelModel> levels = {
                 Answer(answerText: "Практика СЗИ", isCorrect: false),
                 Answer(answerText: "Указчик КВ", isCorrect: false),
               ],
+              correctCard: HistoryModel(
+                title: 'ПРАВИЛЬНО',
+                description:
+                    'Верно! Одним из первых фундаментальных проектов компании стал ОКР «Обработка».',
+                isResultCard: true,
+                isCorrect: true,
+              ),
+              incorrectCard: HistoryModel(
+                title: 'НЕПРАВИЛЬНО',
+                description:
+                    'Зафиксируем важное уточнение, именно ОКР «Обработка» стал отправной точкой: с анализа и обработки измерительных данных начался наш путь в отрасли.',
+                isResultCard: true,
+                isCorrect: false,
+              ),
             ),
           ],
         ),
@@ -250,6 +267,20 @@ final Map<int, LevelModel> levels = {
                 Answer(answerText: "Клиентоориентированность", isCorrect: true),
                 Answer(answerText: "Устойчивое развитие", isCorrect: true),
               ],
+              correctCard: HistoryModel(
+                title: 'ПРАВИЛЬНО',
+                description:
+                    'Верно! Все перечисленные ценности являются основополагающими для компании.',
+                isResultCard: true,
+                isCorrect: true,
+              ),
+              incorrectCard: HistoryModel(
+                title: 'НЕПРАВИЛЬНО',
+                description:
+                    'На самом деле все перечисленные ценности важны для компании.',
+                isResultCard: true,
+                isCorrect: false,
+              ),
             ),
           ],
         ),
@@ -262,37 +293,24 @@ final Map<int, LevelModel> levels = {
             isImageOnly: true,
             pathImg: 'assets/images/modulesImages/Module4Image1.png'),
       ],
-      correctCard: HistoryModel(
-        title: 'ПРАВИЛЬНО',
-        description:
-            'Верно! Одним из первых фундаментальных проектов компании стал ОКР «Обработка» (обработка и анализ измерительной информации).',
-        isResultCard: true,
-        isCorrect: true,
-      ),
-      incorrectCard: HistoryModel(
-        title: 'НЕПРАВИЛЬНО',
-        description:
-            'Зафиксируем важное уточнение, именно ОКР «Обработка» стал отправной точкой: с анализа и обработки измерительных данных начался наш путь в отрасли.',
-        isResultCard: true,
-        isCorrect: false,
-      ),
       historyButtonPath: 'assets/images/modulesImages/Module4Btn.png'),
   5: LevelModel(
       levelNumber: 5,
       background: 'background.jpg',
       bulletSpeed: 380,
-      meteorSpeed: 190,
+      meteorSpeed: 210,
       nicikSpeed: 240,
       bulletFrequency: 0.3,
-      meteorFrequency: 1.2,
-      nicikFrequency: 3.0,
+      meteorFrequency: 0.6,
+      nicikFrequency: 2.0,
       angryBirdBuffChance: 0.09,
       bulletFrequencyBuffChance: 0.09,
       extraLifeBuffChance: 0.07,
       threeBulletsBuffChance: 0.08,
       scoreForNextLevel: 17,
       tripleSinicaMode: true,
-      timeLimit: 120,
+      sinicaSize: 60.0,
+      // timeLimit: 120,
       history: [
         HistoryModel(
             title: '',
@@ -324,6 +342,20 @@ final Map<int, LevelModel> levels = {
                         "Гибкий подход организации работы, функционалу и бонусированию.",
                     isCorrect: true),
               ],
+              correctCard: HistoryModel(
+                title: 'ПРАВИЛЬНО',
+                description:
+                    'Построение справедливой системы мотивации. Удержание ключевых специалистов и развитие научно-технического потенциала – приоритет для компании. Мы создаем индивидуальную корпоративную культуру, повышающую вовлеченность сотрудников в работу, при которой стратегически важными направлениями являются программы профессионального роста, корпоративного обучения.',
+                isResultCard: true,
+                isCorrect: true,
+              ),
+              incorrectCard: HistoryModel(
+                title: 'НЕПРАВИЛЬНО',
+                description:
+                    'Построение справедливой системы мотивации. Удержание ключевых специалистов и развитие научно-технического потенциала – приоритет для компании. Мы создаем индивидуальную корпоративную культуру, повышающую вовлеченность сотрудников в работу, при которой стратегически важными направлениями являются программы профессионального роста, корпоративного обучения.',
+                isResultCard: true,
+                isCorrect: false,
+              ),
             ),
           ],
         ),
@@ -336,36 +368,23 @@ final Map<int, LevelModel> levels = {
             isImageOnly: true,
             pathImg: 'assets/images/modulesImages/Module5Image1.png'),
       ],
-      correctCard: HistoryModel(
-        title: 'ПРАВИЛЬНО',
-        description:
-            'Построение справедливой системы мотивации. Удержание ключевых специалистов и развитие научно-технического потенциала – приоритет для компании. Мы создаем индивидуальную корпоративную культуру, повышающую вовлеченность сотрудников в работу, при которой стратегически важными направлениями являются программы профессионального роста, корпоративного обучения.',
-        isResultCard: true,
-        isCorrect: true,
-      ),
-      incorrectCard: HistoryModel(
-        title: 'НЕПРАВИЛЬНО',
-        description:
-            'Построение справедливой системы мотивации. Удержание ключевых специалистов и развитие научно-технического потенциала – приоритет для компании. Мы создаем индивидуальную корпоративную культуру, повышающую вовлеченность сотрудников в работу, при которой стратегически важными направлениями являются программы профессионального роста, корпоративного обучения.',
-        isResultCard: true,
-        isCorrect: false,
-      ),
       historyButtonPath: 'assets/images/modulesImages/Module5Btn.png'),
   6: LevelModel(
     levelNumber: 6,
     background: 'background.jpg',
     bulletSpeed: 400,
-    meteorSpeed: 200,
+    meteorSpeed: 230,
     nicikSpeed: 250,
     bulletFrequency: 0.25,
-    meteorFrequency: 1.0,
-    nicikFrequency: 2.5,
+    meteorFrequency: 0.2,
+    nicikFrequency: 1.8,
     angryBirdBuffChance: 0.10,
     bulletFrequencyBuffChance: 0.10,
     extraLifeBuffChance: 0.08,
     threeBulletsBuffChance: 0.09,
     scoreForNextLevel: 20,
-    timeLimit: 80,
+    sinicaSize: 60.0,
+    // timeLimit: 80,
     history: [
       HistoryModel(
           title: '',
@@ -411,24 +430,24 @@ final Map<int, LevelModel> levels = {
                   answerText: "Победить в конкурсе на лучший Telegram чат.",
                   isCorrect: false),
             ],
+            correctCard: HistoryModel(
+              title: 'ПРАВИЛЬНО',
+              description:
+                  'К стратегическим целям компании относятся пунктуальность как стандарт, ежегодный рост собственного объема работ, возврат на инвестиции, ежегодная рентабельность и HR-прорыв.',
+              isResultCard: true,
+              isCorrect: true,
+            ),
+            incorrectCard: HistoryModel(
+              title: 'НЕПРАВИЛЬНО',
+              description:
+                  'К стратегическим целям компании относятся пунктуальность как стандарт, ежегодный рост собственного объема работ, возврат на инвестиции, ежегодная рентабельность и HR-прорыв.',
+              isResultCard: true,
+              isCorrect: false,
+            ),
           ),
         ],
       ),
     ],
-    correctCard: HistoryModel(
-      title: 'ПРАВИЛЬНО',
-      description:
-          'К стратегическим целям компании относятся пунктуальность как стандарт, ежегодный рост собственного объема работ, возврат на инвестиции, ежегодная рентабельность и HR-прорыв.',
-      isResultCard: true,
-      isCorrect: true,
-    ),
-    incorrectCard: HistoryModel(
-      title: 'НЕПРАВИЛЬНО',
-      description:
-          'К стратегическим целям компании относятся пунктуальность как стандарт, ежегодный рост собственного объема работ, возврат на инвестиции, ежегодная рентабельность и HR-прорыв.',
-      isResultCard: true,
-      isCorrect: false,
-    ),
     historyButtonPath: 'assets/images/modulesImages/Module6Btn.png',
     victorySlideshowImages: [
       'assets/images/EndSlideShow/FinalImage1.png',

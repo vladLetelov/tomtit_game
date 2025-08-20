@@ -17,6 +17,7 @@ class GameOver extends StatefulWidget {
 
 class _GameOverState extends State<GameOver> {
   late bool isLevelPassed;
+  late String scoreUnit; // Добавляем переменную для единицы измерения
 
   @override
   void initState() {
@@ -25,8 +26,20 @@ class _GameOverState extends State<GameOver> {
     isLevelPassed = widget.game.scoreNotifier.value >=
         widget.game.levelModel.scoreForNextLevel;
 
+    // Определяем правильную единицу измерения для счета
+    scoreUnit = _getScoreUnit(widget.game.levelModel.levelNumber);
+
     if (isLevelPassed) {
       _handleLevelCompletion();
+    }
+  }
+
+  // Метод для определения единицы измерения счета в зависимости от уровня
+  String _getScoreUnit(int levelNumber) {
+    if (levelNumber == 4) {
+      return 'птичек'; // Для 4 уровня
+    } else {
+      return 'нициков'; // Для всех остальных уровней
     }
   }
 
@@ -82,8 +95,8 @@ class _GameOverState extends State<GameOver> {
                 textAlign: TextAlign.center,
                 style: TextStyles.defaultStyle,
                 isLevelPassed
-                    ? "Вы прошли уровень набрав ${widget.game.scoreNotifier.value} нициков!"
-                    : "Не повезло, вы набрали ${widget.game.scoreNotifier.value} нициков из ${widget.game.levelModel.scoreForNextLevel}",
+                    ? "Вы прошли уровень набрав ${widget.game.scoreNotifier.value} $scoreUnit!"
+                    : "Не повезло, вы набрали ${widget.game.scoreNotifier.value} $scoreUnit из ${widget.game.levelModel.scoreForNextLevel}",
               ),
               const SizedBox(height: 20),
               Wrap(

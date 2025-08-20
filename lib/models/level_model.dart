@@ -20,8 +20,6 @@ class LevelModel {
   final double scoreForNextLevel;
   final List<HistoryModel> history;
   final String historyButtonPath;
-  final HistoryModel? correctCard;
-  final HistoryModel? incorrectCard;
   final int? timeLimit;
   final double sinicaSize;
   final bool? tripleSinicaMode;
@@ -48,8 +46,6 @@ class LevelModel {
       required this.scoreForNextLevel,
       required this.history,
       required this.historyButtonPath,
-      this.correctCard,
-      this.incorrectCard,
       this.timeLimit,
       this.sinicaSize = 50.0,
       this.tripleSinicaMode = false,

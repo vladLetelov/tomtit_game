@@ -12,7 +12,7 @@ class SinicaComponent extends SpriteComponent
   late Vector2 _dragOffset;
   bool _shouldRemove = false;
   bool _skipDragUpdates = false;
-  
+
   // Переменные для притягивания к черной дыре
   bool _isBeingPulledByBlackHole = false;
   Vector2? _blackHolePosition;
@@ -25,10 +25,10 @@ class SinicaComponent extends SpriteComponent
     anchor = Anchor.center;
     position = Vector2((game.size.x / 2) - 25, game.size.y - 50);
     add(RectangleHitbox());
-    
+
     // Устанавливаем высокий приоритет, чтобы синица была поверх всех объектов
     priority = 10;
-    
+
     super.onLoad();
   }
 
@@ -71,25 +71,34 @@ class SinicaComponent extends SpriteComponent
   @override
   void update(double dt) {
     super.update(dt);
-    
+
     // Логика притягивания к черной дыре
     if (_isBeingPulledByBlackHole && _blackHolePosition != null) {
       final direction = (_blackHolePosition! - position).normalized();
       final movement = direction * _pullSpeed * dt;
       position += movement;
-      
+
       // Добавляем эффект уменьшения размера при приближении к черной дыре
       final distance = position.distanceTo(_blackHolePosition!);
       if (distance < 100) {
         final scaleRatio = distance / 100;
         scale = Vector2.all(scaleRatio.clamp(0.1, 1.0));
       }
-      
+
       // Проверяем, достигла ли синица черной дыры
       if (distance < 30) {
         print('Sinica reached black hole, being absorbed');
         _onAbsorbedByBlackHole();
       }
+    }
+
+    // Телепортация слева-направо
+    if (position.x < -size.x / 100) {
+      position.x = game.size.x + size.x / 100;
+    }
+
+    if (position.x > game.size.x + size.x / 100) {
+      position.x = -size.x / 100;
     }
   }
 

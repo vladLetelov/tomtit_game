@@ -12,7 +12,7 @@ class HistoryCard extends StatefulWidget {
   final int currentIndex;
   final int totalCount;
   final PageController pageController;
-  final Function(bool)? onQuestionAnswered;
+  final Function(bool, String)? onQuestionAnswered;
   final int levelNumber;
 
   const HistoryCard({
@@ -39,6 +39,7 @@ class _HistoryCardState extends State<HistoryCard> {
   bool _resultCardShown = false;
   bool? _lastAnswerCorrect;
   String? _currentQuestionId;
+  int? _singleSelectedIndex;
 
   @override
   void initState() {
@@ -95,11 +96,16 @@ class _HistoryCardState extends State<HistoryCard> {
     if (isAnswered) {
       // Загружаем сохраненные ответы
       for (int i = 0; i < question.answers.length; i++) {
-        _selectedAnswers[_selectedQuestionIndex!][i] =
-            GameScoreManager.getQuestionResultById(
-                    widget.levelNumber, _currentQuestionId!,
-                    answerIndex: i) ??
-                false;
+        final wasSelected = GameScoreManager.getQuestionResultById(
+                widget.levelNumber, _currentQuestionId!,
+                answerIndex: i) ??
+            false;
+        _selectedAnswers[_selectedQuestionIndex!][i] = wasSelected;
+
+        // Для одиночного выбора запоминаем выбранный индекс
+        if (wasSelected && question.isSingleChoice) {
+          _singleSelectedIndex = i;
+        }
       }
     }
 
@@ -121,14 +127,55 @@ class _HistoryCardState extends State<HistoryCard> {
   Future<void> _checkAnswers() async {
     final currentQuestion =
         widget.historyItem.questions![_selectedQuestionIndex!];
+    final isSingleChoice = currentQuestion.isSingleChoice;
+    int correctAnswersCount = 0;
+    int totalCorrectAnswers = 0;
+
+    // Считаем общее количество правильных ответов
+    for (int i = 0; i < currentQuestion.answers.length; i++) {
+      if (currentQuestion.answers[i].isCorrect) {
+        totalCorrectAnswers++;
+      }
+    }
+
+    // Проверяем выбранные ответы
     bool allCorrect = true;
 
-    for (int i = 0; i < currentQuestion.answers.length; i++) {
-      if (currentQuestion.answers[i].isCorrect !=
-          _selectedAnswers[_selectedQuestionIndex!][i]) {
+    if (isSingleChoice) {
+      // Для одиночного выбора: проверяем, выбран ли правильный ответ
+      if (_singleSelectedIndex != null) {
+        final selectedAnswer = currentQuestion.answers[_singleSelectedIndex!];
+        allCorrect = selectedAnswer.isCorrect;
+        correctAnswersCount = allCorrect ? 1 : 0;
+      } else {
         allCorrect = false;
       }
-      // Сохраняем каждый ответ
+    } else {
+      // Для множественного выбора: проверяем все ответы
+      for (int i = 0; i < currentQuestion.answers.length; i++) {
+        final isCorrectAnswer = currentQuestion.answers[i].isCorrect;
+        final isSelected = _selectedAnswers[_selectedQuestionIndex!][i];
+
+        // Если ответ правильный И выбран - считаем
+        if (isCorrectAnswer && isSelected) {
+          correctAnswersCount++;
+        }
+        // Если ответ неправильный И выбран - это ошибка
+        else if (!isCorrectAnswer && isSelected) {
+          allCorrect = false;
+        }
+        // Если ответ правильный НО не выбран - тоже ошибка
+        else if (isCorrectAnswer && !isSelected) {
+          allCorrect = false;
+        }
+      }
+
+      // Проверяем, что все правильные ответы выбраны и нет лишних
+      allCorrect = allCorrect && (correctAnswersCount == totalCorrectAnswers);
+    }
+
+    // Сохраняем каждый ответ
+    for (int i = 0; i < currentQuestion.answers.length; i++) {
       await GameScoreManager.saveQuestionAnswerById(
         widget.levelNumber,
         _currentQuestionId!,
@@ -144,6 +191,15 @@ class _HistoryCardState extends State<HistoryCard> {
       allCorrect,
     );
 
+    // Начисляем очки
+    if (correctAnswersCount > 0) {
+      await GameScoreManager.awardPointsForPartialAnswer(
+        widget.levelNumber,
+        _currentQuestionId!,
+        correctAnswersCount,
+      );
+    }
+
     // Сохраняем, что карточка результата была показана
     await GameScoreManager.saveResultCardShownById(
       widget.levelNumber,
@@ -156,7 +212,7 @@ class _HistoryCardState extends State<HistoryCard> {
     });
 
     if (widget.onQuestionAnswered != null) {
-      widget.onQuestionAnswered!(allCorrect);
+      widget.onQuestionAnswered!(allCorrect, _currentQuestionId!);
     }
   }
 
@@ -277,7 +333,7 @@ class _HistoryCardState extends State<HistoryCard> {
               child: Text(
                 widget.historyItem.description!,
                 style: TextStyles.defaultStyle.copyWith(
-                  fontSize: 13, // уменьшено на 3 пункта
+                  fontSize: 14,
                   color: Colors.white.withOpacity(0.9),
                 ),
                 textAlign: TextAlign.left,
@@ -304,6 +360,7 @@ class _HistoryCardState extends State<HistoryCard> {
   Widget _buildQuestionSection() {
     final questions = widget.historyItem.questions!;
     final currentQuestion = questions[_selectedQuestionIndex!];
+    final isSingleChoice = currentQuestion.isSingleChoice;
 
     return Expanded(
       child: SingleChildScrollView(
@@ -313,7 +370,7 @@ class _HistoryCardState extends State<HistoryCard> {
             Text(
               currentQuestion.questionText,
               style: TextStyles.defaultStyle.copyWith(
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -323,10 +380,13 @@ class _HistoryCardState extends State<HistoryCard> {
               final isCorrectAnswer = currentQuestion.answers[index].isCorrect;
               final isSelected =
                   _selectedAnswers[_selectedQuestionIndex!][index];
+              final wasSelectedByUser =
+                  isSelected; // Ответ был выбран пользователем
 
               Color? buttonColor;
               Color textColor = Colors.white;
               Color borderColor = Colors.white;
+              double borderWidth = 1.0;
 
               if (_isQuestionAnswered) {
                 // Всегда показываем правильные ответы зелёным
@@ -341,10 +401,23 @@ class _HistoryCardState extends State<HistoryCard> {
                   borderColor = Colors.red;
                   textColor = Colors.red;
                 }
+
+                // Добавляем желтую рамку для ответов, выбранных пользователем
+                if (wasSelectedByUser) {
+                  borderColor =
+                      const Color.fromARGB(255, 255, 208, 66); // Желтый цвет
+                  borderWidth = 2.0; // Более толстая рамка
+                }
               } else {
+                // До ответа: желтый фон для выбранных ответов
                 buttonColor = isSelected
-                    ? const Color.fromARGB(255, 255, 208, 66)
+                    ? const Color.fromARGB(255, 255, 208, 66).withOpacity(0.3)
                     : Colors.transparent;
+                // Желтая рамка для выбранных ответов
+                if (isSelected) {
+                  borderColor = const Color.fromARGB(255, 255, 208, 66);
+                  borderWidth = 2.0;
+                }
               }
 
               return Padding(
@@ -357,7 +430,7 @@ class _HistoryCardState extends State<HistoryCard> {
                       borderRadius: BorderRadius.circular(20),
                       side: BorderSide(
                         color: borderColor,
-                        width: 1.0,
+                        width: borderWidth,
                       ),
                     ),
                     elevation: 0,
@@ -366,9 +439,25 @@ class _HistoryCardState extends State<HistoryCard> {
                       ? null
                       : () {
                           setState(() {
-                            _selectedAnswers[_selectedQuestionIndex!][index] =
-                                !_selectedAnswers[_selectedQuestionIndex!]
-                                    [index];
+                            if (isSingleChoice) {
+                              // Для одиночного выбора - сбрасываем все и выбираем текущий
+                              for (int i = 0;
+                                  i <
+                                      _selectedAnswers[_selectedQuestionIndex!]
+                                          .length;
+                                  i++) {
+                                _selectedAnswers[_selectedQuestionIndex!][i] =
+                                    false;
+                              }
+                              _selectedAnswers[_selectedQuestionIndex!][index] =
+                                  true;
+                              _singleSelectedIndex = index;
+                            } else {
+                              // Для множественного выбора - переключаем текущий
+                              _selectedAnswers[_selectedQuestionIndex!][index] =
+                                  !_selectedAnswers[_selectedQuestionIndex!]
+                                      [index];
+                            }
                           });
                         },
                   child: Center(
@@ -376,7 +465,7 @@ class _HistoryCardState extends State<HistoryCard> {
                       currentQuestion.answers[index].answerText,
                       textAlign: TextAlign.center,
                       style: TextStyles.defaultStyle.copyWith(
-                        fontSize: 12,
+                        fontSize: 13,
                         color: textColor,
                         fontWeight: _isQuestionAnswered && isCorrectAnswer
                             ? FontWeight.bold

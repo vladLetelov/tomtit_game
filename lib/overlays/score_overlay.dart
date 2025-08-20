@@ -26,7 +26,7 @@ class ScoreOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 20,
+      top: 80,
       right: 20,
       child: Material(
         color: Colors.transparent,

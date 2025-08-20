@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tomtit_game/levels.dart';
 
 /// Centralized manager for game progress and scores using SharedPreferences.
 class GameScoreManager {
@@ -234,5 +235,113 @@ class GameScoreManager {
       'level_${levelNumber}_question_${questionId}_result_correct',
       isCorrect,
     );
+  }
+
+  /// Возвращает общую сумму очков, набранных на всех уровнях.
+  static int getTotalScore() {
+    // Предполагаем, что уровни нумеруются с 1 до N без пропусков.
+    int totalScore = 0;
+    for (var levelEntry in levels.entries) {
+      totalScore +=
+          getLevelScore(levelEntry.key); // Суммируем очки за каждый уровень
+    }
+    return totalScore;
+  }
+
+  /// Награждает игрока очками за правильный ответ на вопрос
+  static Future<void> awardPointsForCorrectAnswer(
+      int levelNumber, String questionId, int points) async {
+    // Получаем текущие очки за уровень
+    int currentScore = getLevelScore(levelNumber);
+    // Добавляем награду
+    int newScore = currentScore + points;
+    // Сохраняем новые очки
+    await setLevelScore(levelNumber, newScore);
+
+    // Также сохраняем факт награждения за этот конкретный вопрос
+    // чтобы избежать повторного начисления
+    await _prefs!
+        .setBool('level_${levelNumber}_question_${questionId}_awarded', true);
+  }
+
+  /// Проверяет, были ли уже начислены очки за этот вопрос
+  static bool wasQuestionAwarded(int levelNumber, String questionId) {
+    return _prefs!
+            .getBool('level_${levelNumber}_question_${questionId}_awarded') ??
+        false;
+  }
+
+  /// Получает количество очков за правильные ответы на вопросы в уровне
+  static int getQuestionPointsForLevel(int levelNumber) {
+    int totalQuestionPoints = 0;
+
+    // Проходим по всем ключам и ищем награжденные вопросы
+    for (var key in _prefs!.getKeys()) {
+      if (key.startsWith('level_${levelNumber}_question_') &&
+          key.endsWith('_awarded')) {
+        if (_prefs!.getBool(key) == true) {
+          totalQuestionPoints += 1; // По 1 очку за каждый вопрос
+        }
+      }
+    }
+
+    return totalQuestionPoints;
+  }
+
+  /// Получает общее количество правильных ответов на вопросы в уровне
+  static int getCorrectAnswersCount(int levelNumber) {
+    int correctCount = 0;
+
+    for (var key in _prefs!.getKeys()) {
+      if (key.startsWith('level_${levelNumber}_question_') &&
+          !key.contains('_answer_') &&
+          !key.contains('_awarded') &&
+          !key.contains('_result_') &&
+          !key.contains('_shown')) {
+        final isCorrect = _prefs!.getBool(key);
+        if (isCorrect == true) {
+          correctCount++;
+        }
+      }
+    }
+
+    return correctCount;
+  }
+
+  /// Награждает игрока очками за частично правильный ответ
+  static Future<void> awardPointsForPartialAnswer(
+      int levelNumber, String questionId, int points) async {
+    // Проверяем, были ли уже начислены очки за этот вопрос
+    if (wasQuestionAwarded(levelNumber, questionId)) {
+      return; // Не начисляем повторно
+    }
+
+    // Получаем текущие очки за уровень
+    int currentScore = getLevelScore(levelNumber);
+    // Добавляем награду
+    int newScore = currentScore + points;
+    // Сохраняем новые очки
+    await setLevelScore(levelNumber, newScore);
+
+    // Сохраняем факт награждения за этот конкретный вопрос
+    await _prefs!
+        .setBool('level_${levelNumber}_question_${questionId}_awarded', true);
+
+    // Сохраняем количество начисленных очков
+    await _prefs!.setInt(
+        'level_${levelNumber}_question_${questionId}_awarded_points', points);
+  }
+
+  // В классе GameScoreManager добавьте:
+  static const String _lastPlayedLevelKey = 'last_played_level';
+
+  static Future<void> setLastPlayedLevel(int levelNumber) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_lastPlayedLevelKey, levelNumber);
+  }
+
+  static Future<int?> getLastPlayedLevel() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_lastPlayedLevelKey);
   }
 }

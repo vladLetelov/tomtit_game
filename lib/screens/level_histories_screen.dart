@@ -6,6 +6,7 @@ import 'package:tomtit_game/models/level_model.dart';
 import 'package:tomtit_game/overlays/game_over.dart';
 import 'package:tomtit_game/overlays/score_overlay.dart';
 import 'package:tomtit_game/overlays/time_overlay.dart';
+import 'package:tomtit_game/overlays/pause_button_overlay.dart';
 import 'package:tomtit_game/screens/level_selection_screen.dart';
 import 'package:tomtit_game/storage/game_score.dart';
 import 'package:tomtit_game/theme/colors.dart';
@@ -32,13 +33,15 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
   bool _alreadyAnswered = false;
   String? _currentCountdownImage;
   bool _showCountdown = false;
-  final Map<int, bool> _questionResults = {}; // Храним результаты вопросов
+  final Map<String, bool> _questionResults = {};
   final Map<int, bool> _questionAnswers = {};
+  List<HistoryModel> _displayHistory = [];
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    _displayHistory = List.from(widget.level.history);
     _loadQuestionResults();
   }
 
@@ -55,8 +58,8 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
   }
 
   void _loadQuestionResults() async {
-    for (var i = 0; i < widget.level.history.length; i++) {
-      final item = widget.level.history[i];
+    for (var i = 0; i < _displayHistory.length; i++) {
+      final item = _displayHistory[i];
       if (item.questions != null && item.questions!.isNotEmpty) {
         for (var q = 0; q < item.questions!.length; q++) {
           final questionId = item.questions![q].id;
@@ -65,55 +68,69 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
             questionId,
           );
           if (result != null) {
-            _questionResults[i] =
-                result; // Используем индекс истории, а не вопроса
+            _questionResults[questionId] = result;
           }
         }
       }
     }
   }
 
-  void _onQuestionAnswered(bool isCorrect) {
+  void _onQuestionAnswered(bool isCorrect, String questionId) {
     if (_alreadyAnswered) return;
 
     setState(() {
       _alreadyAnswered = true;
       _lastAnswerCorrect = isCorrect;
-      _questionResults[_currentHistoryIndex] = isCorrect; // Сохраняем результат
+      _questionResults[questionId] = isCorrect;
 
-      final resultCard =
-          isCorrect ? widget.level.correctCard : widget.level.incorrectCard;
+      // Находим соответствующий вопрос
+      final currentHistoryItem = _displayHistory[_currentHistoryIndex];
+      Question? question;
 
+      try {
+        question = currentHistoryItem.questions?.firstWhere(
+          (q) => q.id == questionId,
+        );
+      } catch (e) {
+        question = null;
+      }
+
+      HistoryModel? resultCard;
+
+      if (question != null) {
+        // Используем карточку из вопроса, если она есть
+        resultCard = isCorrect ? question.correctCard : question.incorrectCard;
+      }
       if (resultCard != null) {
-        // Проверяем, нет ли уже такой карточки
+        // Проверяем, нет ли уже такой карточки для этого вопроса
         bool hasResultCard = false;
         for (var i = _currentHistoryIndex + 1;
-            i < widget.level.history.length;
+            i < _displayHistory.length;
             i++) {
-          if (widget.level.history[i].isResultCard) {
+          if (_displayHistory[i].isResultCard &&
+              _displayHistory[i].relatedQuestionId == questionId) {
             hasResultCard = true;
             break;
           }
         }
 
         if (!hasResultCard) {
-          widget.level.history.insert(
+          // Вставляем карточку результата в displayHistory
+          _displayHistory.insert(
             _currentHistoryIndex + 1,
             HistoryModel(
               title: resultCard.title,
               description: resultCard.description,
               isResultCard: true,
               isCorrect: resultCard.isCorrect,
+              relatedQuestionId: questionId,
             ),
           );
-        }
-      }
-    });
 
-    Future.delayed(const Duration(milliseconds: 1500), () {
-      if (_pageController.hasClients &&
-          _currentHistoryIndex < widget.level.history.length - 1) {
-        _pageController.jumpToPage(_currentHistoryIndex + 1);
+          // После вставки карточки, обновляем текущий индекс
+          // чтобы он указывал на вставленную карточку
+          _currentHistoryIndex = _currentHistoryIndex + 1;
+        }
       }
     });
   }
@@ -164,12 +181,20 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
           });
         } else {
           timer.cancel();
+          // Сохраняем текущий уровень перед переходом в игру
+          GameScoreManager.setLastPlayedLevel(widget.level.levelNumber);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => GameWidget<TomtitGame>.controlled(
-                gameFactory: () => TomtitGame(levelModel: widget.level),
+                gameFactory: () => TomtitGame(
+                  levelModel: widget.level,
+                  onRestart: () {},
+                  onReturnToMenu: () {},
+                ),
                 overlayBuilderMap: {
+                  'PauseButton': (context, TomtitGame game) =>
+                      PauseButtonOverlay(game),
                   'GameOver': (_, game) => GameOver(game: game),
                   'ScoreOverlay': (_, game) => ScoreOverlay(game: game),
                   'TimeOverlay': (_, game) => TimeOverlay(game: game),
@@ -226,6 +251,9 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
+                        // Сохраняем текущий уровень перед выходом
+                        GameScoreManager.setLastPlayedLevel(
+                            widget.level.levelNumber);
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -270,10 +298,14 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app_outlined, color: Colors.white),
-            onPressed: () => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const LevelSelectionScreen()),
-            ),
+            onPressed: () {
+              // Сохраняем текущий уровень перед выходом
+              GameScoreManager.setLastPlayedLevel(widget.level.levelNumber);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const LevelSelectionScreen()),
+              );
+            },
           ),
         ],
       ),
@@ -296,24 +328,26 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                       : PageView.builder(
                           controller: _pageController,
                           onPageChanged: (index) {
-                            // Запрещаем переход на страницы за пределами списка
-                            if (index < widget.level.history.length) {
+                            if (index < _displayHistory.length) {
                               _onPageChanged(index);
                             } else {
-                              // Если пытаемся перейти дальше - возвращаем на последнюю страницу
                               _pageController
-                                  .jumpToPage(widget.level.history.length - 1);
+                                  .jumpToPage(_displayHistory.length - 1);
                             }
                           },
-                          itemCount: widget.level.history.length,
+                          itemCount: _displayHistory
+                              .length, // Используем displayHistory
                           itemBuilder: (context, index) {
-                            final historyItem = widget.level.history[index];
+                            final historyItem = _displayHistory[index];
 
                             if (historyItem.isResultCard) {
-                              final questionIndex = index - 1;
-                              if (_questionResults.containsKey(questionIndex)) {
+                              final relatedQuestionId =
+                                  historyItem.relatedQuestionId;
+                              if (relatedQuestionId != null &&
+                                  _questionResults
+                                      .containsKey(relatedQuestionId)) {
                                 final isCorrect =
-                                    _questionResults[questionIndex];
+                                    _questionResults[relatedQuestionId];
                                 if (historyItem.isCorrect != isCorrect) {
                                   return Container();
                                 }
@@ -329,16 +363,17 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                                   'assets/images/BackgroundHistoryCard.png',
                               planetImage: 'assets/images/Planets.png',
                               currentIndex: _currentHistoryIndex,
-                              totalCount: widget.level.history.length,
-                              onQuestionAnswered: _onQuestionAnswered,
+                              totalCount: _displayHistory
+                                  .length, // Используем displayHistory
+                              onQuestionAnswered: (isCorrect, questionId) =>
+                                  _onQuestionAnswered(isCorrect, questionId),
                               pageController: _pageController,
-                              levelNumber: widget
-                                  .level.levelNumber, // Добавляем номер уровня
+                              levelNumber: widget.level.levelNumber,
                             );
                           },
                         ),
                 ),
-                if (_currentHistoryIndex == widget.level.history.length - 1 &&
+                if (_currentHistoryIndex == _displayHistory.length - 1 &&
                     !_showCountdown)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 20.0),
