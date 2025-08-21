@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tomtit_game/game/tomtit_game.dart';
+import 'package:tomtit_game/models/level_model.dart';
 import 'package:tomtit_game/storage/game_score.dart';
 
 class ScoreOverlay extends StatelessWidget {
   final TomtitGame game;
+  final LevelModel level;
 
-  const ScoreOverlay({super.key, required this.game});
+  const ScoreOverlay({super.key, required this.game, required this.level});
 
   bool _isLevelPassed() {
     final score = game.scoreNotifier.value;
@@ -44,7 +46,7 @@ class ScoreOverlay extends StatelessWidget {
               ),
               padding: const EdgeInsets.all(8),
               child: Text(
-                'Score: $score',
+                'Уровень ${level.levelNumber}: $score/${level.scoreForNextLevel}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,

@@ -192,7 +192,15 @@ class _HistoryCardState extends State<HistoryCard> {
     );
 
     // Начисляем очки
-    if (correctAnswersCount > 0) {
+    if (allCorrect) {
+      // За полностью правильный ответ - полные очки
+      await GameScoreManager.awardPointsForCorrectAnswer(
+        widget.levelNumber,
+        _currentQuestionId!,
+        totalCorrectAnswers, // или 1, в зависимости от вашей логики
+      );
+    } else if (correctAnswersCount > 0) {
+      // За частично правильный ответ
       await GameScoreManager.awardPointsForPartialAnswer(
         widget.levelNumber,
         _currentQuestionId!,

@@ -251,15 +251,19 @@ class GameScoreManager {
   /// Награждает игрока очками за правильный ответ на вопрос
   static Future<void> awardPointsForCorrectAnswer(
       int levelNumber, String questionId, int points) async {
-    // Получаем текущие очки за уровень
-    int currentScore = getLevelScore(levelNumber);
-    // Добавляем награду
-    int newScore = currentScore + points;
-    // Сохраняем новые очки
-    await setLevelScore(levelNumber, newScore);
+    // Проверяем, были ли уже начислены очки за этот вопрос
+    if (wasQuestionAwarded(levelNumber, questionId)) {
+      return; // Не начисляем повторно
+    }
 
-    // Также сохраняем факт награждения за этот конкретный вопрос
-    // чтобы избежать повторного начисления
+    // Получаем текущие очки за вопросы
+    final int currentQuestionScore = getQuestionPointsForLevel(levelNumber);
+
+    // Сохраняем новые очки за вопросы
+    await _prefs!.setInt(
+        'level_${levelNumber}_question_points', currentQuestionScore + points);
+
+    // Сохраняем факт награждения за этот конкретный вопрос
     await _prefs!
         .setBool('level_${levelNumber}_question_${questionId}_awarded', true);
   }
@@ -273,19 +277,7 @@ class GameScoreManager {
 
   /// Получает количество очков за правильные ответы на вопросы в уровне
   static int getQuestionPointsForLevel(int levelNumber) {
-    int totalQuestionPoints = 0;
-
-    // Проходим по всем ключам и ищем награжденные вопросы
-    for (var key in _prefs!.getKeys()) {
-      if (key.startsWith('level_${levelNumber}_question_') &&
-          key.endsWith('_awarded')) {
-        if (_prefs!.getBool(key) == true) {
-          totalQuestionPoints += 1; // По 1 очку за каждый вопрос
-        }
-      }
-    }
-
-    return totalQuestionPoints;
+    return _prefs!.getInt('level_${levelNumber}_question_points') ?? 0;
   }
 
   /// Получает общее количество правильных ответов на вопросы в уровне
@@ -332,7 +324,6 @@ class GameScoreManager {
         'level_${levelNumber}_question_${questionId}_awarded_points', points);
   }
 
-  // В классе GameScoreManager добавьте:
   static const String _lastPlayedLevelKey = 'last_played_level';
 
   static Future<void> setLastPlayedLevel(int levelNumber) async {
@@ -343,5 +334,12 @@ class GameScoreManager {
   static Future<int?> getLastPlayedLevel() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt(_lastPlayedLevelKey);
+  }
+
+  /// Получает общий счет уровня (игра + вопросы)
+  static int getTotalLevelScore(int levelNumber) {
+    final int gameScore = getLevelScore(levelNumber);
+    final int questionScore = getQuestionPointsForLevel(levelNumber);
+    return gameScore + questionScore;
   }
 }

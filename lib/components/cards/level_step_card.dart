@@ -92,7 +92,7 @@ class LevelStepCard extends StatelessWidget {
                                 PauseButtonOverlay(game),
                             'GameOver': (_, game) => GameOver(game: game),
                             'ScoreOverlay': (_, game) =>
-                                ScoreOverlay(game: game),
+                                ScoreOverlay(game: game, level: level),
                             'TimeOverlay': (_, game) => TimeOverlay(game: game),
                             'VictorySlideshow': (_, game) =>
                                 VictorySlideshow(game: game),

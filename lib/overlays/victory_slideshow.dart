@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tomtit_game/game/tomtit_game.dart';
 import 'package:tomtit_game/screens/level_selection_screen.dart';
+import 'package:tomtit_game/storage/game_score.dart';
 import 'dart:async';
 
 class VictorySlideshow extends StatefulWidget {
@@ -20,6 +21,10 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await GameScoreManager.setLevelScore(
+          widget.game.levelModel.levelNumber, widget.game.scoreNotifier.value);
+    });
     _startSlideshow();
   }
 

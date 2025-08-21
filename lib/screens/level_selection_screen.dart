@@ -16,7 +16,7 @@ class LevelSelectionScreen extends StatefulWidget {
 class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   int _totalScore = 0;
   late ScrollController _scrollController;
-  int? _lastPlayedLevel; // Для запоминания последнего играемого уровня
+  int? _lastPlayedLevel;
 
   @override
   void initState() {
@@ -39,7 +39,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     });
   }
 
-  // Объединяем загрузку прогресса и подсчёт очков в один метод
   Future<void> _loadData() async {
     await GameScoreManager.init();
     _updateTotalScore();
@@ -47,18 +46,25 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
 
   void _updateTotalScore() {
     setState(() {
-      _totalScore = GameScoreManager.getTotalScore();
+      // Используем новый метод для подсчета общего счета
+      _totalScore = _calculateTotalScore();
     });
   }
 
-  // Метод для прокрутки к определенному уровню
+  // Новый метод для подсчета общего счета всех уровней
+  int _calculateTotalScore() {
+    int total = 0;
+    for (var levelEntry in levels.entries) {
+      total += GameScoreManager.getTotalLevelScore(levelEntry.key);
+    }
+    return total;
+  }
+
   void _scrollToLevel(int levelNumber) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
-        // Примерная высота одной карточки уровня + коннектор
-        const double itemHeight = 1000.0; // Настройте под ваш дизайн
+        const double itemHeight = 1000.0;
         final double targetPosition = (levelNumber - 1) * itemHeight;
-
         _scrollController.animateTo(
           targetPosition.clamp(0.0, _scrollController.position.maxScrollExtent),
           duration: const Duration(milliseconds: 500),
@@ -70,7 +76,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Прокручиваем к последнему играемому уровню после построения
     if (_lastPlayedLevel != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollToLevel(_lastPlayedLevel!);
@@ -93,7 +98,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 child: Text(
-                  'Очки: $_totalScore',
+                  'Очки: $_totalScore/82',
                   style: TextStyles.defaultStyle.copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -126,8 +131,9 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     for (var levelEntry in levels.entries) {
       final levelNumber = levelEntry.value.levelNumber;
 
+      // Используем общий счет для проверки разблокировки истории
       final bool isHistoryUnlocked = levelNumber == 1 ||
-          (GameScoreManager.getLevelScore(levelNumber - 1)) >=
+          (GameScoreManager.getTotalLevelScore(levelNumber - 1)) >=
               levels[levelNumber - 1]!.scoreForNextLevel;
 
       final bool isLevelUnlocked =
@@ -143,7 +149,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
           _updateTotalScore();
         },
         onLevelSelected: (levelNumber) {
-          // Сохраняем выбранный уровень как последний играемый
           GameScoreManager.setLastPlayedLevel(levelNumber);
           setState(() {
             _lastPlayedLevel = levelNumber;
@@ -157,7 +162,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     }
 
     return ListView(
-      controller: _scrollController, // Добавляем контроллер прокрутки
+      controller: _scrollController,
       padding: const EdgeInsets.all(16.0),
       children: levelCards,
     );

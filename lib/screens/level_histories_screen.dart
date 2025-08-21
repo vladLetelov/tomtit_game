@@ -27,6 +27,7 @@ class LevelHistoryesScreen extends StatefulWidget {
 }
 
 class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
+  late LevelModel currlevel;
   late PageController _pageController;
   int _currentHistoryIndex = 0;
   bool? _lastAnswerCorrect;
@@ -40,6 +41,7 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
   @override
   void initState() {
     super.initState();
+    currlevel = widget.level;
     _pageController = PageController();
     _displayHistory = List.from(widget.level.history);
     _loadQuestionResults();
@@ -196,7 +198,10 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                   'PauseButton': (context, TomtitGame game) =>
                       PauseButtonOverlay(game),
                   'GameOver': (_, game) => GameOver(game: game),
-                  'ScoreOverlay': (_, game) => ScoreOverlay(game: game),
+                  'ScoreOverlay': (_, game) => ScoreOverlay(
+                        game: game,
+                        level: currlevel,
+                      ),
                   'TimeOverlay': (_, game) => TimeOverlay(game: game),
                 },
               ),
@@ -380,13 +385,16 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                     child: ElevatedButton(
                       onPressed: _showHistoryCompletionDialog,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
+                        backgroundColor: Colors.yellow,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 32, vertical: 16),
+                            horizontal: 60, vertical: 12),
                       ),
                       child: const Text(
-                        'Завершить просмотр',
-                        style: TextStyle(fontSize: 18, color: Colors.black),
+                        'Летим дальше!',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Color.fromARGB(255, 55, 25, 69),
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
