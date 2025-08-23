@@ -33,7 +33,7 @@ class PauseButtonOverlay extends StatelessWidget {
           child: const Icon(
             Icons.pause,
             color: Colors.white,
-            size: 32,
+            size: 24,
           ),
         ),
       ),

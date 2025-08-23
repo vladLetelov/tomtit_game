@@ -7,6 +7,7 @@ import 'package:tomtit_game/overlays/game_over.dart';
 import 'package:tomtit_game/overlays/score_overlay.dart';
 import 'package:tomtit_game/overlays/time_overlay.dart';
 import 'package:tomtit_game/overlays/pause_button_overlay.dart';
+import 'package:tomtit_game/overlays/victory_slideshow.dart';
 import 'package:tomtit_game/screens/level_selection_screen.dart';
 import 'package:tomtit_game/storage/game_score.dart';
 import 'package:tomtit_game/theme/colors.dart';
@@ -59,6 +60,7 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                       level: level,
                     ),
                 'TimeOverlay': (_, game) => TimeOverlay(game: game),
+                'VictorySlideshow': (_, game) => VictorySlideshow(game: game),
               },
             ),
           ),
@@ -237,6 +239,7 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                         level: currlevel,
                       ),
                   'TimeOverlay': (_, game) => TimeOverlay(game: game),
+                  'VictorySlideshow': (_, game) => VictorySlideshow(game: game),
                 },
               ),
             ),
@@ -296,6 +299,8 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                                     ),
                                 'TimeOverlay': (_, game) =>
                                     TimeOverlay(game: game),
+                                'VictorySlideshow': (_, game) =>
+                                    VictorySlideshow(game: game),
                               },
                             ),
                           ),

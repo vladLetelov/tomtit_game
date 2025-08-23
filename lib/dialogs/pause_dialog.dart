@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tomtit_game/game/tomtit_game.dart';
+import 'package:tomtit_game/components/game_buttons/default_game_button.dart';
 
 class PauseDialog extends StatelessWidget {
   const PauseDialog({super.key, required this.game});
@@ -19,63 +20,33 @@ class PauseDialog extends StatelessWidget {
               'ПАУЗА',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  game.resumeGame();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text(
-                  'ПРОДОЛЖИТЬ',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
+            DefaultGameButton(
+              onTap: () {
+                Navigator.of(context).pop();
+                game.resumeGame();
+              },
+              text: 'ПРОДОЛЖИТЬ',
             ),
             const SizedBox(height: 15),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  game.restartGame(); // Вызываем метод перезапуска
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text(
-                  'ПЕРЕЗАПУСТИТЬ УРОВЕНЬ',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
+            DefaultGameButton(
+              onTap: () {
+                Navigator.of(context).pop();
+                game.restartGame();
+              },
+              text: 'ПЕРЕЗАПУСТИТЬ УРОВЕНЬ',
             ),
             const SizedBox(height: 15),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  game.returnToMenu(); // Вызываем метод возврата в меню
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text(
-                  'ВЫЙТИ В МЕНЮ',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
+            DefaultGameButton(
+              onTap: () {
+                Navigator.of(context).pop();
+                game.returnToMenu();
+              },
+              text: 'ВЫЙТИ В МЕНЮ',
             ),
           ],
         ),

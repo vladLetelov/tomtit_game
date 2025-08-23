@@ -49,7 +49,7 @@ class ScoreOverlay extends StatelessWidget {
                 'Уровень ${level.levelNumber}: $score/${level.scoreForNextLevel}',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 24,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),

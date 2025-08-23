@@ -332,8 +332,7 @@ class _HistoryCardState extends State<HistoryCard> {
             Flexible(
               child: Container(
                 constraints: BoxConstraints(
-                  maxHeight:
-                      MediaQuery.of(context).size.height * 0.45, // было 0.6
+                  maxHeight: MediaQuery.of(context).size.height * 0.6,
                 ),
                 child: Image.asset(
                   widget.historyItem.pathImg!,
