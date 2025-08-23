@@ -1,1 +1,1 @@
-enum LevelStep { history, level }
+enum LevelStep { history, game }

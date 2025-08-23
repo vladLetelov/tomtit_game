@@ -10,6 +10,7 @@ import 'package:tomtit_game/overlays/pause_button_overlay.dart';
 import 'package:tomtit_game/screens/level_selection_screen.dart';
 import 'package:tomtit_game/storage/game_score.dart';
 import 'package:tomtit_game/theme/colors.dart';
+import 'package:tomtit_game/enums/level_step.dart';
 import 'package:tomtit_game/components/cards/history_card.dart';
 import 'package:tomtit_game/models/history_model.dart';
 import 'dart:async';
@@ -141,11 +142,13 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
     // Отмечаем, что история текущего уровня пройдена
     await GameScoreManager.setLevelHistoryCompleted(widget.level.levelNumber);
 
+    // Сохраняем, что переходим к игре этого же уровня
+    await GameScoreManager.saveLastLevelStep(LevelStep.game);
+
     // Разблокировать следующий уровень (если текущий < максимум)
     if (widget.level.levelNumber == 1) {
       await GameScoreManager.setLevelRequirementsMet(1);
     } else {
-      // Проверяем, пройдена ли игра предыдущего уровня
       final prevLevelScore =
           GameScoreManager.getLevelScore(widget.level.levelNumber - 1);
       final prevLevelRequiredScore =
@@ -156,6 +159,7 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
             widget.level.levelNumber);
       }
     }
+
     // Для 1 уровня показываем обратный отсчет с картинками
     if (widget.level.levelNumber == 1) {
       await GameScoreManager.setLevelGameUnlocked(1);
@@ -164,7 +168,6 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
         _currentCountdownImage = 'assets/images/Timer/3.png';
       });
 
-      // Создаем список изображений в порядке отсчета
       final countdownImages = [
         'assets/images/Timer/3.png',
         'assets/images/Timer/2.png',
@@ -173,7 +176,6 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
 
       int currentIndex = 0;
 
-      // Запускаем таймер
       Timer.periodic(const Duration(seconds: 1), (timer) {
         currentIndex++;
 
@@ -183,7 +185,6 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
           });
         } else {
           timer.cancel();
-          // Сохраняем текущий уровень перед переходом в игру
           GameScoreManager.setLastPlayedLevel(widget.level.levelNumber);
           Navigator.pushReplacement(
             context,
@@ -221,18 +222,11 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
             child: Center(
               child: Container(
                 padding: const EdgeInsets.all(20.0),
-                constraints: const BoxConstraints(
-                  maxHeight: 500,
-                ),
+                constraints: const BoxConstraints(maxHeight: 500),
                 decoration: BoxDecoration(
                   color: deepDarkPurple.withOpacity(0.9),
-                  border: Border.all(
-                    width: 2,
-                    color: Colors.deepPurple,
-                  ),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(16),
-                  ),
+                  border: Border.all(width: 2, color: Colors.deepPurple),
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -240,23 +234,61 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                   children: [
                     const Text(
                       'История изучена!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 24),
                     ),
                     const SizedBox(height: 10),
                     const Text(
                       'Вы ознакомились с историей!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
-                        // Сохраняем текущий уровень перед выходом
+                        // Переход к игре этого же уровня
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                GameWidget<TomtitGame>.controlled(
+                              gameFactory: () => TomtitGame(
+                                levelModel: widget.level,
+                                onRestart: () {},
+                                onReturnToMenu: () {},
+                              ),
+                              overlayBuilderMap: {
+                                'PauseButton': (context, TomtitGame game) =>
+                                    PauseButtonOverlay(game),
+                                'GameOver': (_, game) => GameOver(game: game),
+                                'ScoreOverlay': (_, game) => ScoreOverlay(
+                                      game: game,
+                                      level: widget.level,
+                                    ),
+                                'TimeOverlay': (_, game) =>
+                                    TimeOverlay(game: game),
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.yellow,
+                        minimumSize: const Size(200, 45),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'Начать игру',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
                         GameScoreManager.setLastPlayedLevel(
                             widget.level.levelNumber);
                         Navigator.pushReplacement(
@@ -277,10 +309,7 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                       ),
                       child: const Text(
                         'В меню',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     ),
                   ],

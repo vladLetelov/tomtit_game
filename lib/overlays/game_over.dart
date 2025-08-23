@@ -5,6 +5,9 @@ import 'package:tomtit_game/screens/level_selection_screen.dart';
 import 'package:tomtit_game/theme/colors.dart';
 import 'package:tomtit_game/theme/styles/text_styles.dart';
 import 'package:tomtit_game/storage/game_score.dart';
+import 'package:tomtit_game/enums/level_step.dart';
+import 'package:tomtit_game/levels.dart';
+import 'package:tomtit_game/screens/level_histories_screen.dart';
 
 class GameOver extends StatefulWidget {
   const GameOver({super.key, required this.game});
@@ -17,7 +20,7 @@ class GameOver extends StatefulWidget {
 
 class _GameOverState extends State<GameOver> {
   late bool isLevelPassed;
-  late String scoreUnit; // Добавляем переменную для единицы измерения
+  late String scoreUnit;
 
   @override
   void initState() {
@@ -26,7 +29,6 @@ class _GameOverState extends State<GameOver> {
     isLevelPassed = widget.game.scoreNotifier.value >=
         widget.game.levelModel.scoreForNextLevel;
 
-    // Определяем правильную единицу измерения для счета
     scoreUnit = _getScoreUnit(widget.game.levelModel.levelNumber);
 
     if (isLevelPassed) {
@@ -34,12 +36,11 @@ class _GameOverState extends State<GameOver> {
     }
   }
 
-  // Метод для определения единицы измерения счета в зависимости от уровня
   String _getScoreUnit(int levelNumber) {
     if (levelNumber == 4) {
-      return 'птичек'; // Для 4 уровня
+      return 'птичек';
     } else {
-      return 'нициков'; // Для всех остальных уровней
+      return 'нициков';
     }
   }
 
@@ -49,15 +50,19 @@ class _GameOverState extends State<GameOver> {
     await GameScoreManager.setLevelCompleted(levelNumber);
     await GameScoreManager.saveLastLevel(levelNumber);
 
-    // Сохраняем лучший счёт
     final previousScore = GameScoreManager.getLevelScore(levelNumber);
     if (widget.game.scoreNotifier.value > previousScore) {
       await GameScoreManager.setLevelScore(
           levelNumber, widget.game.scoreNotifier.value);
     }
 
-    // Делаем доступной историю следующего уровня
-    await GameScoreManager.setLevelHistoryAvailable(levelNumber + 1);
+    // Сохраняем, что переходим к истории следующего уровня
+    await GameScoreManager.saveLastLevelStep(LevelStep.history);
+
+    // Разблокируем историю следующего уровня
+    if (levelNumber < levels.length) {
+      await GameScoreManager.setLevelHistoryAvailable(levelNumber + 1);
+    }
   }
 
   @override
@@ -99,34 +104,96 @@ class _GameOverState extends State<GameOver> {
                     : "Не повезло, вы набрали ${widget.game.scoreNotifier.value} $scoreUnit из ${widget.game.levelModel.scoreForNextLevel}",
               ),
               const SizedBox(height: 20),
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 10,
-                runSpacing: 10,
-                children: [
-                  DefaultGameButton(
-                    onTap: () {
-                      widget.game.removeWhere((component) => true);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              const LevelSelectionScreen(),
+              isLevelPassed
+                  ? Column(
+                      children: [
+                        DefaultGameButton(
+                          onTap: () {
+                            widget.game.removeWhere((component) => true);
+                            // Переход к истории СЛЕДУЮЩЕГО уровня
+                            final nextLevelNumber =
+                                widget.game.levelModel.levelNumber + 1;
+                            if (nextLevelNumber <= levels.length) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LevelHistoryesScreen(
+                                    level: levels[nextLevelNumber]!,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              // Если это последний уровень - в меню
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const LevelSelectionScreen(),
+                                ),
+                              );
+                            }
+                          },
+                          text: "Перейти к следующей истории",
                         ),
-                      );
-                    },
-                    text: 'Выход в меню',
-                  ),
-                  DefaultGameButton(
-                    onTap: () {
-                      widget.game.removeWhere((component) => true);
-                      widget.game.restartGame();
-                      widget.game.overlays.remove('GameOver');
-                    },
-                    text: isLevelPassed ? "Играть заново" : "Попробовать снова",
-                  ),
-                ],
-              ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 10,
+                          runSpacing: 10,
+                          children: [
+                            DefaultGameButton(
+                              onTap: () {
+                                widget.game.removeWhere((component) => true);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        const LevelSelectionScreen(),
+                                  ),
+                                );
+                              },
+                              text: 'Выход в меню',
+                            ),
+                            DefaultGameButton(
+                              onTap: () {
+                                widget.game.removeWhere((component) => true);
+                                widget.game.restartGame();
+                                widget.game.overlays.remove('GameOver');
+                              },
+                              text: "Играть заново",
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        DefaultGameButton(
+                          onTap: () {
+                            widget.game.removeWhere((component) => true);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const LevelSelectionScreen(),
+                              ),
+                            );
+                          },
+                          text: 'Выход в меню',
+                        ),
+                        DefaultGameButton(
+                          onTap: () {
+                            widget.game.removeWhere((component) => true);
+                            widget.game.restartGame();
+                            widget.game.overlays.remove('GameOver');
+                          },
+                          text: "Попробовать снова",
+                        ),
+                      ],
+                    ),
             ],
           ),
         ),

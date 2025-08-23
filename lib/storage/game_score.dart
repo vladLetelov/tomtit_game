@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tomtit_game/levels.dart';
+import 'package:tomtit_game/enums/level_step.dart';
 
 /// Centralized manager for game progress and scores using SharedPreferences.
 class GameScoreManager {
@@ -341,5 +342,27 @@ class GameScoreManager {
     final int gameScore = getLevelScore(levelNumber);
     final int questionScore = getQuestionPointsForLevel(levelNumber);
     return gameScore + questionScore;
+  }
+
+  static Future<void> saveLastLevelStep(LevelStep step) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("lastLevelStep", step.name);
+  }
+
+  static Future<LevelStep> getLastLevelStep() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String stepString = prefs.getString("lastLevelStep") ?? "history";
+
+    return LevelStep.values.firstWhere(
+      (e) => e.name == stepString,
+      orElse: () => LevelStep.history,
+    );
+  }
+
+  // Новый метод для определения следующего шага
+  static LevelStep getNextStep(LevelStep currentStep) {
+    return currentStep == LevelStep.history
+        ? LevelStep.game
+        : LevelStep.history;
   }
 }
