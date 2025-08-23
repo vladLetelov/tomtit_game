@@ -128,15 +128,6 @@ class _HistoryCardState extends State<HistoryCard> {
     final currentQuestion =
         widget.historyItem.questions![_selectedQuestionIndex!];
     final isSingleChoice = currentQuestion.isSingleChoice;
-    int correctAnswersCount = 0;
-    int totalCorrectAnswers = 0;
-
-    // Считаем общее количество правильных ответов
-    for (int i = 0; i < currentQuestion.answers.length; i++) {
-      if (currentQuestion.answers[i].isCorrect) {
-        totalCorrectAnswers++;
-      }
-    }
 
     // Проверяем выбранные ответы
     bool allCorrect = true;
@@ -146,7 +137,6 @@ class _HistoryCardState extends State<HistoryCard> {
       if (_singleSelectedIndex != null) {
         final selectedAnswer = currentQuestion.answers[_singleSelectedIndex!];
         allCorrect = selectedAnswer.isCorrect;
-        correctAnswersCount = allCorrect ? 1 : 0;
       } else {
         allCorrect = false;
       }
@@ -156,22 +146,15 @@ class _HistoryCardState extends State<HistoryCard> {
         final isCorrectAnswer = currentQuestion.answers[i].isCorrect;
         final isSelected = _selectedAnswers[_selectedQuestionIndex!][i];
 
-        // Если ответ правильный И выбран - считаем
-        if (isCorrectAnswer && isSelected) {
-          correctAnswersCount++;
+        // Если ответ правильный И не выбран - ошибка
+        if (isCorrectAnswer && !isSelected) {
+          allCorrect = false;
         }
-        // Если ответ неправильный И выбран - это ошибка
+        // Если ответ неправильный И выбран - ошибка
         else if (!isCorrectAnswer && isSelected) {
           allCorrect = false;
         }
-        // Если ответ правильный НО не выбран - тоже ошибка
-        else if (isCorrectAnswer && !isSelected) {
-          allCorrect = false;
-        }
       }
-
-      // Проверяем, что все правильные ответы выбраны и нет лишних
-      allCorrect = allCorrect && (correctAnswersCount == totalCorrectAnswers);
     }
 
     // Сохраняем каждый ответ
@@ -191,20 +174,18 @@ class _HistoryCardState extends State<HistoryCard> {
       allCorrect,
     );
 
-    // Начисляем очки
+    // Начисляем очки ТОЛЬКО за полностью правильный ответ
     if (allCorrect) {
-      // За полностью правильный ответ - полные очки
       await GameScoreManager.awardPointsForCorrectAnswer(
         widget.levelNumber,
         _currentQuestionId!,
-        totalCorrectAnswers, // или 1, в зависимости от вашей логики
       );
-    } else if (correctAnswersCount > 0) {
-      // За частично правильный ответ
+    } else {
+      // Для неправильных ответов просто отмечаем, что вопрос был отвечен
       await GameScoreManager.awardPointsForPartialAnswer(
         widget.levelNumber,
         _currentQuestionId!,
-        correctAnswersCount,
+        0, // 0 очков за частичный ответ
       );
     }
 

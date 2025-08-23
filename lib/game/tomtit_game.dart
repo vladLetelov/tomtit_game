@@ -220,8 +220,7 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
 
   void onCaughtNicik() async {
     scoreNotifier.value += 1;
-    await GameScoreManager.setLevelScore(
-        levelModel.levelNumber, scoreNotifier.value);
+    await GameScoreManager.setLevelScore(levelModel.levelNumber, 1);
 
     // Для 1 уровня: при наборе 1 очка разблокируем историю 2 уровня
     if (levelModel.levelNumber == 1 && scoreNotifier.value >= 1) {

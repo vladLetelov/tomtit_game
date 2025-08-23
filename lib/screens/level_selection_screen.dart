@@ -51,13 +51,38 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     });
   }
 
-  // Новый метод для подсчета общего счета всех уровней
   int _calculateTotalScore() {
     int total = 0;
+
+    // Очки за пройденные уровни
     for (var levelEntry in levels.entries) {
-      total += GameScoreManager.getTotalLevelScore(levelEntry.key);
+      if (GameScoreManager.isLevelCompleted(levelEntry.key)) {
+        total += 1; // По 1 очку за каждый пройденный уровень
+      }
     }
+
+    // Очки за полностью правильные ответы на вопросы
+    for (var levelEntry in levels.entries) {
+      total += GameScoreManager.getQuestionPointsForLevel(levelEntry.key);
+    }
+
     return total;
+  }
+
+  int _getMaxQuestionPoints() {
+    int maxPoints = 0;
+    for (var levelEntry in levels.entries) {
+      // Предполагаем, что в каждом уровне может быть несколько вопросов
+      // Каждый полностью правильный ответ дает 1 очко
+      if (levelEntry.value.history != null) {
+        for (var historyItem in levelEntry.value.history!) {
+          if (historyItem.questions != null) {
+            maxPoints += historyItem.questions!.length;
+          }
+        }
+      }
+    }
+    return maxPoints;
   }
 
   void _scrollToLevel(int levelNumber) {
@@ -98,7 +123,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 child: Text(
-                  'Очки: $_totalScore/82',
+                  'Ницики: $_totalScore/${levels.length + _getMaxQuestionPoints()}',
                   style: TextStyles.defaultStyle.copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

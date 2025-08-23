@@ -249,26 +249,6 @@ class GameScoreManager {
     return totalScore;
   }
 
-  /// Награждает игрока очками за правильный ответ на вопрос
-  static Future<void> awardPointsForCorrectAnswer(
-      int levelNumber, String questionId, int points) async {
-    // Проверяем, были ли уже начислены очки за этот вопрос
-    if (wasQuestionAwarded(levelNumber, questionId)) {
-      return; // Не начисляем повторно
-    }
-
-    // Получаем текущие очки за вопросы
-    final int currentQuestionScore = getQuestionPointsForLevel(levelNumber);
-
-    // Сохраняем новые очки за вопросы
-    await _prefs!.setInt(
-        'level_${levelNumber}_question_points', currentQuestionScore + points);
-
-    // Сохраняем факт награждения за этот конкретный вопрос
-    await _prefs!
-        .setBool('level_${levelNumber}_question_${questionId}_awarded', true);
-  }
-
   /// Проверяет, были ли уже начислены очки за этот вопрос
   static bool wasQuestionAwarded(int levelNumber, String questionId) {
     return _prefs!
@@ -323,6 +303,26 @@ class GameScoreManager {
     // Сохраняем количество начисленных очков
     await _prefs!.setInt(
         'level_${levelNumber}_question_${questionId}_awarded_points', points);
+  }
+
+  /// Награждает игрока 1 очком за полностью правильный ответ на вопрос
+  static Future<void> awardPointsForCorrectAnswer(
+      int levelNumber, String questionId) async {
+    // Проверяем, были ли уже начислены очки за этот вопрос
+    if (wasQuestionAwarded(levelNumber, questionId)) {
+      return; // Не начисляем повторно
+    }
+
+    // Получаем текущие очки за вопросы
+    final int currentQuestionScore = getQuestionPointsForLevel(levelNumber);
+
+    // Начисляем 1 очко за полностью правильный ответ
+    await _prefs!.setInt(
+        'level_${levelNumber}_question_points', currentQuestionScore + 1);
+
+    // Сохраняем факт награждения за этот конкретный вопрос
+    await _prefs!
+        .setBool('level_${levelNumber}_question_${questionId}_awarded', true);
   }
 
   static const String _lastPlayedLevelKey = 'last_played_level';
