@@ -106,7 +106,12 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
         timeLeftNotifier.value--;
         if (timeLeftNotifier.value <= 0) {
           if (levelModel.levelNumber == 2) {
-            startBlackHoleMode();
+            // На 2 уровне: если набрали 5 очков - черная дыра, иначе - обычное завершение
+            if (scoreNotifier.value >= levelModel.scoreForNextLevel) {
+              startBlackHoleMode(); // Успех - черная дыра
+            } else {
+              endGame(); // Неудача - обычное завершение
+            }
           } else {
             endGame();
           }
@@ -160,16 +165,13 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
         showVictorySlideshow();
         return;
       }
-    }
 
-    if (levelModel.levelNumber == 2) {
-      // Если время вышло на 2-м уровне, НЕ завершаем игру здесь,
-      // а делегируем это методу startBlackHoleMode, который вызовет endGameByBlackHole позже.
-      startBlackHoleMode();
-      return; // Выходим, не устанавливая isGameOver = true
+      // На 2 уровне при успешном прохождении запускаем черную дыру
+      if (levelModel.levelNumber == 2) {
+        startBlackHoleMode();
+        return;
+      }
     }
-
-    isGameOver = true;
 
     showGameOverDialog();
   }
@@ -196,26 +198,34 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
   }
 
   void restartGame() {
-    isGameOver = false;
-    scoreNotifier.value = 0;
-    followerSinicas.clear();
+    try {
+      isGameOver = false;
+      scoreNotifier.value = 0;
+      followerSinicas.clear();
 
-    // Удаляем все overlays перед перезагрузкой
-    overlays.removeAll(overlays.activeOverlays);
+      // Удаляем все overlays перед перезагрузкой
+      overlays.removeAll(overlays.activeOverlays);
 
-    // Останавливаем все таймеры
-    _timeLimitTimer?.stop();
-    _bulletTimer.stop();
-    _meteorTimer.stop();
-    _nicikTimer?.stop();
-    _coloredSinicaTimer?.stop();
+      // Останавливаем все таймеры
+      _timeLimitTimer?.stop();
+      _bulletTimer.stop();
+      _meteorTimer.stop();
+      _nicikTimer?.stop();
+      _coloredSinicaTimer?.stop();
 
-    // Очищаем все компоненты
-    removeAll(children);
+      // Очищаем все компоненты
+      removeAll(children);
 
-    // Загружаем заново
-    onLoad();
-    onRestart();
+      // Загружаем заново
+      onLoad();
+
+      // Вызываем колбэк перезапуска
+      onRestart();
+    } catch (e) {
+      print('Error in restartGame: $e');
+      // Если произошла ошибка, все равно пытаемся перезапустить
+      onRestart();
+    }
   }
 
   void onCaughtNicik() async {
@@ -349,6 +359,7 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
       onReturnToMenu();
     } catch (e) {
       print('Error in returnToMenu: $e');
+      // Все равно вызываем колбэк, даже если произошла ошибка
       onReturnToMenu();
     }
   }

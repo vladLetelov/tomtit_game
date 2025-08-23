@@ -39,6 +39,42 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
   final Map<int, bool> _questionAnswers = {};
   List<HistoryModel> _displayHistory = [];
 
+  // Функция для создания игры с правильными колбэками
+  TomtitGame _createGameWithCallbacks(LevelModel level, BuildContext context) {
+    return TomtitGame(
+      levelModel: level,
+      onRestart: () {
+        // Перезапуск игры
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GameWidget<TomtitGame>.controlled(
+              gameFactory: () => _createGameWithCallbacks(level, context),
+              overlayBuilderMap: {
+                'PauseButton': (context, TomtitGame game) =>
+                    PauseButtonOverlay(game),
+                'GameOver': (_, game) => GameOver(game: game),
+                'ScoreOverlay': (_, game) => ScoreOverlay(
+                      game: game,
+                      level: level,
+                    ),
+                'TimeOverlay': (_, game) => TimeOverlay(game: game),
+              },
+            ),
+          ),
+        );
+      },
+      onReturnToMenu: () {
+        // Возврат в главное меню
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const LevelSelectionScreen()),
+          (route) => false,
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -190,11 +226,8 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => GameWidget<TomtitGame>.controlled(
-                gameFactory: () => TomtitGame(
-                  levelModel: widget.level,
-                  onRestart: () {},
-                  onReturnToMenu: () {},
-                ),
+                gameFactory: () =>
+                    _createGameWithCallbacks(widget.level, context),
                 overlayBuilderMap: {
                   'PauseButton': (context, TomtitGame game) =>
                       PauseButtonOverlay(game),
@@ -245,16 +278,14 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                     ElevatedButton(
                       onPressed: () {
                         // Переход к игре этого же уровня
+                        Navigator.of(context).pop();
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
                                 GameWidget<TomtitGame>.controlled(
-                              gameFactory: () => TomtitGame(
-                                levelModel: widget.level,
-                                onRestart: () {},
-                                onReturnToMenu: () {},
-                              ),
+                              gameFactory: () => _createGameWithCallbacks(
+                                  widget.level, context),
                               overlayBuilderMap: {
                                 'PauseButton': (context, TomtitGame game) =>
                                     PauseButtonOverlay(game),
