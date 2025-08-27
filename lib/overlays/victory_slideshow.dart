@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tomtit_game/game/tomtit_game.dart';
 import 'package:tomtit_game/screens/level_selection_screen.dart';
 import 'package:tomtit_game/storage/game_score.dart';
+import 'package:tomtit_game/levels.dart';
 import 'dart:async';
 
 class VictorySlideshow extends StatefulWidget {
@@ -17,6 +18,7 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
   int _currentIndex = 0;
   Timer? _timer;
   bool _showCompletion = false;
+  int _totalScore = 0;
 
   @override
   void initState() {
@@ -25,6 +27,7 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
       await GameScoreManager.setLevelScore(
           widget.game.levelModel.levelNumber, widget.game.scoreNotifier.value);
     });
+    _loadData();
     _startSlideshow();
   }
 
@@ -48,6 +51,36 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
         });
       }
     });
+  }
+
+  Future<void> _loadData() async {
+    await GameScoreManager.init();
+    _updateTotalScore();
+  }
+
+  void _updateTotalScore() {
+    setState(() {
+      // Используем новый метод для подсчета общего счета
+      _totalScore = _calculateTotalScore();
+    });
+  }
+
+  int _calculateTotalScore() {
+    int total = 0;
+
+    // Очки за пройденные уровни
+    for (var levelEntry in levels.entries) {
+      if (GameScoreManager.isLevelCompleted(levelEntry.key)) {
+        total += 1; // По 1 очку за каждый пройденный уровень
+      }
+    }
+
+    // Очки за полностью правильные ответы на вопросы
+    for (var levelEntry in levels.entries) {
+      total += GameScoreManager.getQuestionPointsForLevel(levelEntry.key);
+    }
+
+    return total;
   }
 
   void _returnToMenu() {
@@ -110,7 +143,38 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+
                   const SizedBox(height: 20),
+
+                  // Отображение количества набранных очков
+                  ValueListenableBuilder(
+                    valueListenable: widget.game.scoreNotifier,
+                    builder: (context, score, child) {
+                      return Text(
+                        'Заработано нициков: $_totalScore',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  GestureDetector(
+                    child: const Text(
+                      'Для их получения напишите нам hr@gmail.com и прикрепите скриншот этого экрана.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
                   ElevatedButton(
                     onPressed: _returnToMenu,
                     style: ElevatedButton.styleFrom(
@@ -123,6 +187,8 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
+
+                  const SizedBox(height: 20),
                 ],
               ),
             ),

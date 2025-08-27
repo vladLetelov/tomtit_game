@@ -5,6 +5,7 @@ import 'package:tomtit_game/levels.dart';
 import 'package:tomtit_game/storage/game_score.dart';
 import 'package:tomtit_game/theme/colors.dart';
 import 'package:tomtit_game/theme/styles/text_styles.dart';
+import 'package:tomtit_game/screens/level_histories_screen.dart';
 
 class LevelSelectionScreen extends StatefulWidget {
   const LevelSelectionScreen({super.key});
@@ -46,7 +47,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
 
   void _updateTotalScore() {
     setState(() {
-      // Используем новый метод для подсчета общего счета
       _totalScore = _calculateTotalScore();
     });
   }
@@ -54,14 +54,12 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   int _calculateTotalScore() {
     int total = 0;
 
-    // Очки за пройденные уровни
     for (var levelEntry in levels.entries) {
       if (GameScoreManager.isLevelCompleted(levelEntry.key)) {
-        total += 1; // По 1 очку за каждый пройденный уровень
+        total += 1;
       }
     }
 
-    // Очки за полностью правильные ответы на вопросы
     for (var levelEntry in levels.entries) {
       total += GameScoreManager.getQuestionPointsForLevel(levelEntry.key);
     }
@@ -72,8 +70,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   int _getMaxQuestionPoints() {
     int maxPoints = 0;
     for (var levelEntry in levels.entries) {
-      // Предполагаем, что в каждом уровне может быть несколько вопросов
-      // Каждый полностью правильный ответ дает 1 очко
       if (levelEntry.value.history != null) {
         for (var historyItem in levelEntry.value.history!) {
           if (historyItem.questions != null) {
@@ -150,16 +146,73 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     );
   }
 
+  void _startTutorial(BuildContext context) {
+    final tutorialLevel = levels[0]!;
+    final navigator = Navigator.of(context);
+
+    navigator.push(
+      MaterialPageRoute(
+        builder: (context) => LevelHistoryesScreen(level: tutorialLevel),
+      ),
+    );
+  }
+
   Future<ListView> _buildLevelCards() async {
     List<Widget> levelCards = [];
+
+    // ДОБАВЛЯЕМ КАРТОЧКУ ОБУЧЕНИЯ В НАЧАЛО СПИСКА
+    levelCards.add(
+      Padding(
+        padding: const EdgeInsets.only(bottom: 16.0),
+        child: Center(
+          // ← ДОБАВЛЯЕМ CENTER ДЛЯ ВЫРАВНИВАНИЯ ПО ЦЕНТРУ
+          child: GestureDetector(
+            onTap: () {
+              _startTutorial(context);
+            },
+            child: Container(
+              width: 300, // ← ШИРИНА
+              height: 600, // ← ВЫСОТА
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset(
+                  levels[0]!.historyButtonPath,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // ДОБАВЛЯЕМ КОННЕКТОР МЕЖДУ ОБУЧЕНИЕМ И ПЕРВЫМ УРОВНЕМ
+    levelCards.add(const Center(child: LevelCardConnector()));
 
     for (var levelEntry in levels.entries) {
       final levelNumber = levelEntry.value.levelNumber;
 
-      // Используем общий счет для проверки разблокировки истории
-      final bool isHistoryUnlocked = levelNumber == 1 ||
-          (GameScoreManager.getTotalLevelScore(levelNumber - 1)) >=
-              levels[levelNumber - 1]!.scoreForNextLevel;
+      // Пропускаем уровень 0 (обучение) в основном списке уровней
+      if (levelNumber == 0) continue;
+
+      final bool isHistoryUnlocked;
+      if (levelNumber == 1) {
+        isHistoryUnlocked = GameScoreManager.isLevelCompleted(0);
+      } else {
+        isHistoryUnlocked =
+            (GameScoreManager.getTotalLevelScore(levelNumber - 1)) >=
+                levels[levelNumber - 1]!.scoreForNextLevel;
+      }
 
       final bool isLevelUnlocked =
           GameScoreManager.isLevelHistoryCompleted(levelNumber) &&
@@ -181,7 +234,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
         },
       ));
 
-      if (levelNumber < levels.length) {
+      if (levelNumber < levels.length - 1) {
         levelCards.add(const Center(child: LevelCardConnector()));
       }
     }

@@ -10,6 +10,8 @@ import 'package:tomtit_game/overlays/time_overlay.dart';
 import 'package:tomtit_game/overlays/victory_slideshow.dart';
 import 'package:tomtit_game/overlays/game_completed.dart';
 import 'package:tomtit_game/overlays/pause_button_overlay.dart';
+import 'package:tomtit_game/overlays/tutorial_completed_overlay.dart';
+
 import 'package:tomtit_game/screens/level_histories_screen.dart';
 import 'package:tomtit_game/components/game_buttons/history_button.dart';
 
@@ -98,6 +100,8 @@ class LevelStepCard extends StatelessWidget {
                                 VictorySlideshow(game: game),
                             'GameCompleted': (_, game) =>
                                 GameCompleted(game: game),
+                            'TutorialCompleted': (_, game) =>
+                                TutorialCompletedOverlay(game: game),
                           },
                         ),
                       ),

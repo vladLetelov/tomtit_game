@@ -42,7 +42,9 @@ class LevelCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Уровень ${level.levelNumber}',
+                          level.levelNumber == 0
+                              ? 'ОБУЧЕНИЕ'
+                              : 'Уровень ${level.levelNumber}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 32.0,

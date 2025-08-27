@@ -38,12 +38,30 @@ class GameCompleted extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+
+              // Отображение количества набранных очков
+              ValueListenableBuilder(
+                valueListenable: game.scoreNotifier,
+                builder: (context, score, child) {
+                  return Text(
+                    'Набрано очков: $score',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 10),
               const Text(
                 'Поздравляем! Вы успешно завершили игру!',
                 style: TextStyle(color: Colors.white, fontSize: 18),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
+
               ElevatedButton(
                 onPressed: () => _returnToMenu(context),
                 style: ElevatedButton.styleFrom(
@@ -54,6 +72,20 @@ class GameCompleted extends StatelessWidget {
                 child: const Text(
                   'В главное меню',
                   style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Ссылка "НАПИШИТЕ НАМ"
+              GestureDetector(
+                child: const Text(
+                  'НАПИШИТЕ НАМ',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 16,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
               ),
             ],

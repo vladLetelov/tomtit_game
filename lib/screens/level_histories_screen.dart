@@ -8,6 +8,7 @@ import 'package:tomtit_game/overlays/score_overlay.dart';
 import 'package:tomtit_game/overlays/time_overlay.dart';
 import 'package:tomtit_game/overlays/pause_button_overlay.dart';
 import 'package:tomtit_game/overlays/victory_slideshow.dart';
+import 'package:tomtit_game/overlays/tutorial_completed_overlay.dart';
 import 'package:tomtit_game/screens/level_selection_screen.dart';
 import 'package:tomtit_game/storage/game_score.dart';
 import 'package:tomtit_game/theme/colors.dart';
@@ -61,6 +62,8 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                     ),
                 'TimeOverlay': (_, game) => TimeOverlay(game: game),
                 'VictorySlideshow': (_, game) => VictorySlideshow(game: game),
+                'TutorialCompleted': (_, game) =>
+                    TutorialCompletedOverlay(game: game),
               },
             ),
           ),
@@ -177,6 +180,31 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
   }
 
   void _showHistoryCompletionDialog() async {
+    // Для обучения особая логика
+    if (widget.level.levelNumber == 0) {
+      // Просто переходим к игре обучения
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GameWidget<TomtitGame>.controlled(
+            gameFactory: () => _createGameWithCallbacks(widget.level, context),
+            overlayBuilderMap: {
+              'PauseButton': (context, TomtitGame game) =>
+                  PauseButtonOverlay(game),
+              'GameOver': (_, game) => GameOver(game: game),
+              'ScoreOverlay': (_, game) =>
+                  ScoreOverlay(game: game, level: widget.level),
+              'TimeOverlay': (_, game) => TimeOverlay(game: game),
+              'VictorySlideshow': (_, game) => VictorySlideshow(game: game),
+              'TutorialCompleted': (_, game) =>
+                  TutorialCompletedOverlay(game: game),
+            },
+          ),
+        ),
+      );
+      return;
+    }
+
     // Отмечаем, что история текущего уровня пройдена
     await GameScoreManager.setLevelHistoryCompleted(widget.level.levelNumber);
 
@@ -240,6 +268,8 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                       ),
                   'TimeOverlay': (_, game) => TimeOverlay(game: game),
                   'VictorySlideshow': (_, game) => VictorySlideshow(game: game),
+                  'TutorialCompleted': (_, game) =>
+                      TutorialCompletedOverlay(game: game),
                 },
               ),
             ),
@@ -301,6 +331,8 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                                     TimeOverlay(game: game),
                                 'VictorySlideshow': (_, game) =>
                                     VictorySlideshow(game: game),
+                                'TutorialCompleted': (_, game) =>
+                                    TutorialCompletedOverlay(game: game),
                               },
                             ),
                           ),

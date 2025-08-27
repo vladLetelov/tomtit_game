@@ -148,11 +148,26 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
     super.onRemove();
   }
 
+  void showTutorialCompletedDialog() {
+    overlays.add("TutorialCompleted");
+  }
+
   void endGame() async {
     isGameOver = true;
 
     // Проверяем, был ли достигнут необходимый счет перед завершением игры
     if (scoreNotifier.value >= levelModel.scoreForNextLevel) {
+      // Для уровня обучения особенная логика
+      if (levelModel.levelNumber == 0) {
+        // Разблокируем уровень 1 после прохождения обучения
+        await GameScoreManager.setLevelCompleted(0);
+        await GameScoreManager.setLevelHistoryCompleted(1);
+        await GameScoreManager.setLevelRequirementsMet(1);
+
+        // Показываем сообщение о завершении обучения
+        showTutorialCompletedDialog();
+        return;
+      }
       await GameScoreManager.setLevelCompleted(levelModel.levelNumber);
       if (levelModel.levelNumber == GameScoreManager.getLastUnlockedLevel()) {
         await GameScoreManager.setLevelUnlocked(levelModel.levelNumber + 1);
@@ -231,6 +246,14 @@ class TomtitGame extends FlameGame with HasCollisionDetection {
   void onCaughtNicik() async {
     scoreNotifier.value += 1;
     await GameScoreManager.setLevelScore(levelModel.levelNumber, 1);
+
+    // Для уровня обучения не сохраняем очки в общий счет
+    if (levelModel.levelNumber == 0) {
+      if (scoreNotifier.value >= levelModel.scoreForNextLevel) {
+        endGame();
+      }
+      return;
+    }
 
     // Для 1 уровня: при наборе 1 очка разблокируем историю 2 уровня
     if (levelModel.levelNumber == 1 && scoreNotifier.value >= 1) {
