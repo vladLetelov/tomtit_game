@@ -165,7 +165,7 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
 
                   GestureDetector(
                     child: const Text(
-                      'Для их получения напишите нам hr@gmail.com и прикрепите скриншот этого экрана.',
+                      'Для их получения напишите нам hr@nicetu.spb.ru и прикрепите скриншот этого экрана.',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,

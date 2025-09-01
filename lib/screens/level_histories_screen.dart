@@ -1,5 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Добавьте этот импорт
+import 'package:flutter/foundation.dart'; // И этот тоже
 import 'package:tomtit_game/game/tomtit_game.dart';
 import 'package:tomtit_game/levels.dart';
 import 'package:tomtit_game/models/level_model.dart';
@@ -40,6 +42,7 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
   final Map<String, bool> _questionResults = {};
   final Map<int, bool> _questionAnswers = {};
   List<HistoryModel> _displayHistory = [];
+  late FocusNode _focusNode;
 
   // Функция для создания игры с правильными колбэками
   TomtitGame _createGameWithCallbacks(LevelModel level, BuildContext context) {
@@ -87,12 +90,61 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
     _pageController = PageController();
     _displayHistory = List.from(widget.level.history);
     _loadQuestionResults();
+    _focusNode = FocusNode();
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _focusNode.dispose();
     super.dispose();
+  }
+
+// Обработчик клавиатурных событий
+  void _handleKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent) {
+      final currentHistoryItem = _displayHistory[_currentHistoryIndex];
+
+      // Проверяем, есть ли активный вопрос, на который еще не ответили
+      bool hasActiveQuestion = false;
+      if (currentHistoryItem.questions != null &&
+          currentHistoryItem.questions!.isNotEmpty) {
+        // Проверяем, был ли уже ответ на вопросы в этой карточке
+        for (var question in currentHistoryItem.questions!) {
+          final result = GameScoreManager.getQuestionResultById(
+            widget.level.levelNumber,
+            question.id,
+          );
+          if (result == null) {
+            hasActiveQuestion = true;
+            break;
+          }
+        }
+      }
+
+      if (!hasActiveQuestion) {
+        if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+          // Стрелка влево - предыдущая карточка
+          if (_currentHistoryIndex > 0) {
+            _pageController.previousPage(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          }
+        } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+          // Стрелка вправо - следующая карточка
+          if (_currentHistoryIndex < _displayHistory.length - 1) {
+            _pageController.nextPage(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          } else if (_currentHistoryIndex == _displayHistory.length - 1) {
+            // Если это последняя карточка, предлагаем перейти дальше
+            _showHistoryCompletionDialog();
+          }
+        }
+      }
+    }
   }
 
   void _onPageChanged(int index) {
@@ -401,7 +453,6 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
           IconButton(
             icon: const Icon(Icons.exit_to_app_outlined, color: Colors.white),
             onPressed: () {
-              // Сохраняем текущий уровень перед выходом
               GameScoreManager.setLastPlayedLevel(widget.level.levelNumber);
               Navigator.pushReplacement(
                 context,
@@ -411,104 +462,152 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/BackgroundHistoryPage.jpg'),
-                fit: BoxFit.cover,
-              ),
+      body: Shortcuts(
+        shortcuts: <LogicalKeySet, Intent>{
+          LogicalKeySet(LogicalKeyboardKey.arrowLeft):
+              const _PreviousCardIntent(),
+          LogicalKeySet(LogicalKeyboardKey.arrowRight): const _NextCardIntent(),
+        },
+        child: Actions(
+          actions: <Type, Action<Intent>>{
+            _PreviousCardIntent: CallbackAction<_PreviousCardIntent>(
+              onInvoke: (_) {
+                if (_currentHistoryIndex > 0) {
+                  _pageController.previousPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                }
+                return null;
+              },
             ),
-            child: Column(
+            _NextCardIntent: CallbackAction<_NextCardIntent>(
+              onInvoke: (_) {
+                if (_currentHistoryIndex < _displayHistory.length - 1) {
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                } else if (_currentHistoryIndex == _displayHistory.length - 1) {
+                  _showHistoryCompletionDialog();
+                }
+                return null;
+              },
+            ),
+          },
+          child: Focus(
+            autofocus: true,
+            child: Stack(
               children: [
-                Expanded(
-                  child: _showCountdown
-                      ? const SizedBox.shrink()
-                      : PageView.builder(
-                          controller: _pageController,
-                          onPageChanged: (index) {
-                            if (index < _displayHistory.length) {
-                              _onPageChanged(index);
-                            } else {
-                              _pageController
-                                  .jumpToPage(_displayHistory.length - 1);
-                            }
-                          },
-                          itemCount: _displayHistory
-                              .length, // Используем displayHistory
-                          itemBuilder: (context, index) {
-                            final historyItem = _displayHistory[index];
+                Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image:
+                          AssetImage('assets/images/BackgroundHistoryPage.jpg'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: _showCountdown
+                            ? const SizedBox.shrink()
+                            : PageView.builder(
+                                controller: _pageController,
+                                onPageChanged: (index) {
+                                  if (index < _displayHistory.length) {
+                                    _onPageChanged(index);
+                                  } else {
+                                    _pageController
+                                        .jumpToPage(_displayHistory.length - 1);
+                                  }
+                                },
+                                itemCount: _displayHistory.length,
+                                itemBuilder: (context, index) {
+                                  final historyItem = _displayHistory[index];
 
-                            if (historyItem.isResultCard) {
-                              final relatedQuestionId =
-                                  historyItem.relatedQuestionId;
-                              if (relatedQuestionId != null &&
-                                  _questionResults
-                                      .containsKey(relatedQuestionId)) {
-                                final isCorrect =
-                                    _questionResults[relatedQuestionId];
-                                if (historyItem.isCorrect != isCorrect) {
-                                  return Container();
-                                }
-                              } else {
-                                return Container();
-                              }
-                            }
+                                  if (historyItem.isResultCard) {
+                                    final relatedQuestionId =
+                                        historyItem.relatedQuestionId;
+                                    if (relatedQuestionId != null &&
+                                        _questionResults
+                                            .containsKey(relatedQuestionId)) {
+                                      final isCorrect =
+                                          _questionResults[relatedQuestionId];
+                                      if (historyItem.isCorrect != isCorrect) {
+                                        return Container();
+                                      }
+                                    } else {
+                                      return Container();
+                                    }
+                                  }
 
-                            return HistoryCard(
-                              historyItem: historyItem,
-                              isActive: index == _currentHistoryIndex,
-                              backgroundImage:
-                                  'assets/images/BackgroundHistoryCard.png',
-                              planetImage: 'assets/images/Planets.png',
-                              currentIndex: _currentHistoryIndex,
-                              totalCount: _displayHistory
-                                  .length, // Используем displayHistory
-                              onQuestionAnswered: (isCorrect, questionId) =>
-                                  _onQuestionAnswered(isCorrect, questionId),
-                              pageController: _pageController,
-                              levelNumber: widget.level.levelNumber,
-                            );
-                          },
+                                  return HistoryCard(
+                                    historyItem: historyItem,
+                                    isActive: index == _currentHistoryIndex,
+                                    backgroundImage:
+                                        'assets/images/BackgroundHistoryCard.png',
+                                    planetImage: 'assets/images/Planets.png',
+                                    currentIndex: _currentHistoryIndex,
+                                    totalCount: _displayHistory.length,
+                                    onQuestionAnswered:
+                                        (isCorrect, questionId) =>
+                                            _onQuestionAnswered(
+                                                isCorrect, questionId),
+                                    pageController: _pageController,
+                                    levelNumber: widget.level.levelNumber,
+                                  );
+                                },
+                              ),
+                      ),
+                      if (_currentHistoryIndex == _displayHistory.length - 1 &&
+                          !_showCountdown)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: ElevatedButton(
+                            onPressed: _showHistoryCompletionDialog,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.yellow,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 60, vertical: 12),
+                            ),
+                            child: const Text(
+                              'Летим дальше!',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Color.fromARGB(255, 55, 25, 69),
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ),
+                    ],
+                  ),
                 ),
-                if (_currentHistoryIndex == _displayHistory.length - 1 &&
-                    !_showCountdown)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: ElevatedButton(
-                      onPressed: _showHistoryCompletionDialog,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.yellow,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 60, vertical: 12),
-                      ),
-                      child: const Text(
-                        'Летим дальше!',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Color.fromARGB(255, 55, 25, 69),
-                            fontWeight: FontWeight.bold),
-                      ),
+                if (_showCountdown && _currentCountdownImage != null)
+                  Center(
+                    child: Image.asset(
+                      _currentCountdownImage!,
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.contain,
                     ),
                   ),
               ],
             ),
           ),
-          if (_showCountdown && _currentCountdownImage != null)
-            Center(
-              child: Image.asset(
-                _currentCountdownImage!,
-                width: 200,
-                height: 200,
-                fit: BoxFit.contain,
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }
+}
+
+// Классы для обработки нажатий клавиш
+class _PreviousCardIntent extends Intent {
+  const _PreviousCardIntent();
+}
+
+class _NextCardIntent extends Intent {
+  const _NextCardIntent();
 }

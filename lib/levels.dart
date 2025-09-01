@@ -442,7 +442,7 @@ final Map<int, LevelModel> levels = {
     bulletFrequencyBuffChance: 0.10,
     extraLifeBuffChance: 0.08,
     threeBulletsBuffChance: 0.09,
-    scoreForNextLevel: 1,
+    scoreForNextLevel: 20,
     sinicaSize: 60.0,
     // timeLimit: 80,
     history: [
