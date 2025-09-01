@@ -3,6 +3,16 @@ import 'package:tomtit_game/models/history_model.dart';
 import 'package:tomtit_game/theme/styles/text_styles.dart';
 import 'package:tomtit_game/components/game_buttons/history_button.dart';
 import 'package:tomtit_game/storage/game_score.dart';
+import 'package:flutter/foundation.dart'; // Добавьте этот импорт
+
+// Утилита для определения платформы
+bool get isDesktop {
+  return [
+    TargetPlatform.windows,
+    TargetPlatform.linux,
+    TargetPlatform.macOS,
+  ].contains(defaultTargetPlatform);
+}
 
 class HistoryCard extends StatefulWidget {
   final HistoryModel historyItem;
@@ -264,7 +274,7 @@ class _HistoryCardState extends State<HistoryCard> {
                             child: Text(
                               widget.historyItem.title,
                               style: TextStyles.defaultStyle.copyWith(
-                                fontSize: 11,
+                                fontSize: isDesktop ? 16 : 11,
                                 fontWeight: FontWeight.bold,
                                 color: widget.historyItem.isResultCard
                                     ? (widget.historyItem.isCorrect ?? false)
@@ -309,7 +319,6 @@ class _HistoryCardState extends State<HistoryCard> {
   }
 
   Widget _buildContentSection() {
-    print('description: ${widget.historyItem.description}');
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
@@ -322,7 +331,7 @@ class _HistoryCardState extends State<HistoryCard> {
               child: Text(
                 widget.historyItem.description!,
                 style: TextStyles.defaultStyle.copyWith(
-                  fontSize: 14,
+                  fontSize: isDesktop ? 19 : 14,
                   color: Colors.white.withOpacity(0.9),
                 ),
                 textAlign: TextAlign.left,
@@ -358,7 +367,7 @@ class _HistoryCardState extends State<HistoryCard> {
             Text(
               currentQuestion.questionText,
               style: TextStyles.defaultStyle.copyWith(
-                fontSize: 14,
+                fontSize: isDesktop ? 19 : 14,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -368,8 +377,7 @@ class _HistoryCardState extends State<HistoryCard> {
               final isCorrectAnswer = currentQuestion.answers[index].isCorrect;
               final isSelected =
                   _selectedAnswers[_selectedQuestionIndex!][index];
-              final wasSelectedByUser =
-                  isSelected; // Ответ был выбран пользователем
+              final wasSelectedByUser = isSelected;
 
               Color? buttonColor;
               Color textColor = Colors.white;
@@ -377,31 +385,24 @@ class _HistoryCardState extends State<HistoryCard> {
               double borderWidth = 1.0;
 
               if (_isQuestionAnswered) {
-                // Всегда показываем правильные ответы зелёным
                 if (isCorrectAnswer) {
                   buttonColor = Colors.green.withOpacity(0.3);
                   borderColor = Colors.green;
                   textColor = Colors.green;
-                }
-                // Показываем выбранные неправильные ответы красным
-                else {
+                } else {
                   buttonColor = Colors.red.withOpacity(0.3);
                   borderColor = Colors.red;
                   textColor = Colors.red;
                 }
 
-                // Добавляем желтую рамку для ответов, выбранных пользователем
                 if (wasSelectedByUser) {
-                  borderColor =
-                      const Color.fromARGB(255, 255, 208, 66); // Желтый цвет
-                  borderWidth = 2.0; // Более толстая рамка
+                  borderColor = const Color.fromARGB(255, 255, 208, 66);
+                  borderWidth = 2.0;
                 }
               } else {
-                // До ответа: желтый фон для выбранных ответов
                 buttonColor = isSelected
                     ? const Color.fromARGB(255, 255, 208, 66).withOpacity(0.3)
                     : Colors.transparent;
-                // Желтая рамка для выбранных ответов
                 if (isSelected) {
                   borderColor = const Color.fromARGB(255, 255, 208, 66);
                   borderWidth = 2.0;
@@ -428,7 +429,6 @@ class _HistoryCardState extends State<HistoryCard> {
                       : () {
                           setState(() {
                             if (isSingleChoice) {
-                              // Для одиночного выбора - сбрасываем все и выбираем текущий
                               for (int i = 0;
                                   i <
                                       _selectedAnswers[_selectedQuestionIndex!]
@@ -441,7 +441,6 @@ class _HistoryCardState extends State<HistoryCard> {
                                   true;
                               _singleSelectedIndex = index;
                             } else {
-                              // Для множественного выбора - переключаем текущий
                               _selectedAnswers[_selectedQuestionIndex!][index] =
                                   !_selectedAnswers[_selectedQuestionIndex!]
                                       [index];
@@ -453,7 +452,7 @@ class _HistoryCardState extends State<HistoryCard> {
                       currentQuestion.answers[index].answerText,
                       textAlign: TextAlign.center,
                       style: TextStyles.defaultStyle.copyWith(
-                        fontSize: 13,
+                        fontSize: isDesktop ? 18 : 13,
                         color: textColor,
                         fontWeight: _isQuestionAnswered && isCorrectAnswer
                             ? FontWeight.bold
@@ -476,8 +475,7 @@ class _HistoryCardState extends State<HistoryCard> {
       child: Column(
         children: [
           if (widget.historyItem.questions != null &&
-              widget.historyItem.questions!
-                  .isNotEmpty) // Убрали проверку на _isQuestionAnswered
+              widget.historyItem.questions!.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
               child: Row(
@@ -570,7 +568,7 @@ class _HistoryCardState extends State<HistoryCard> {
       child: Text(
         text,
         style: TextStyles.defaultStyle.copyWith(
-          fontSize: 16,
+          fontSize: isDesktop ? 21 : 16,
           color: Colors.black.withOpacity(0.7),
         ),
       ),
