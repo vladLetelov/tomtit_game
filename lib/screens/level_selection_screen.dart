@@ -6,6 +6,7 @@ import 'package:tomtit_game/storage/game_score.dart';
 import 'package:tomtit_game/theme/colors.dart';
 import 'package:tomtit_game/theme/styles/text_styles.dart';
 import 'package:tomtit_game/screens/level_histories_screen.dart';
+import 'package:tomtit_game/screens/help_screen.dart';
 
 class LevelSelectionScreen extends StatefulWidget {
   const LevelSelectionScreen({super.key});
@@ -95,57 +96,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (_lastPlayedLevel != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToLevel(_lastPlayedLevel!);
-      });
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: deepDarkPurple,
-        title: const Text('Выберите уровень', style: TextStyles.defaultStyle),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.deepPurple[700],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                child: Text(
-                  'Ницики: $_totalScore/${levels.length + _getMaxQuestionPoints()}',
-                  style: TextStyles.defaultStyle.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: const BoxDecoration(gradient: backgroundGradient),
-        child: FutureBuilder(
-          future: _buildLevelCards(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            return snapshot.data ?? const SizedBox();
-          },
-        ),
-      ),
-    );
-  }
-
   void _startTutorial(BuildContext context) {
     final tutorialLevel = levels[0]!;
     final navigator = Navigator.of(context);
@@ -165,14 +115,13 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
       Padding(
         padding: const EdgeInsets.only(bottom: 16.0),
         child: Center(
-          // ← ДОБАВЛЯЕМ CENTER ДЛЯ ВЫРАВНИВАНИЯ ПО ЦЕНТРУ
           child: GestureDetector(
             onTap: () {
               _startTutorial(context);
             },
             child: Container(
-              width: 300, // ← ШИРИНА
-              height: 600, // ← ВЫСОТА
+              width: 300,
+              height: 600,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
@@ -243,6 +192,72 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
       controller: _scrollController,
       padding: const EdgeInsets.all(16.0),
       children: levelCards,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_lastPlayedLevel != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToLevel(_lastPlayedLevel!);
+      });
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: deepDarkPurple,
+        title: const Text('Выберите уровень', style: TextStyles.defaultStyle),
+        actions: [
+          // Кнопка справки в AppBar - на одной линии с другими элементами
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              icon:
+                  const Icon(Icons.help_outline, color: Colors.white, size: 28),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HelpScreen()),
+                );
+              },
+              tooltip: 'Справка',
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple[700],
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                child: Text(
+                  'Ницики: $_totalScore/${levels.length + _getMaxQuestionPoints()}',
+                  style: TextStyles.defaultStyle.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: const BoxDecoration(gradient: backgroundGradient),
+        child: FutureBuilder(
+          future: _buildLevelCards(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return snapshot.data ?? const SizedBox();
+          },
+        ),
+      ),
     );
   }
 }
