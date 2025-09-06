@@ -100,6 +100,27 @@ class SinicaComponent extends SpriteComponent
     if (position.x > game.size.x + size.x / 100) {
       position.x = -size.x / 100;
     }
+
+    // Применяем ограничения по вертикали (стенки сверху и снизу)
+    position = _applyBoundaryConstraints(position);
+  }
+
+  // Метод для применения ограничений границ
+  Vector2 _applyBoundaryConstraints(Vector2 position) {
+    double newX = position.x;
+    double newY = position.y;
+
+    // Ограничение сверху (верхняя стенка)
+    if (newY < size.y / 2) {
+      newY = size.y / 2;
+    }
+
+    // Ограничение снизу (нижняя стенка)
+    if (newY > game.size.y - size.y / 2) {
+      newY = game.size.y - size.y / 2;
+    }
+
+    return Vector2(newX, newY);
   }
 
   // Метод для начала притягивания к черной дыре

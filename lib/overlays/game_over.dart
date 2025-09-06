@@ -29,18 +29,11 @@ class _GameOverState extends State<GameOver> {
     isLevelPassed = widget.game.scoreNotifier.value >=
         widget.game.levelModel.scoreForNextLevel;
 
-    scoreUnit = _getScoreUnit(widget.game.levelModel.levelNumber);
+    scoreUnit = getScoreUnit(
+        widget.game.scoreNotifier.value, widget.game.levelModel.levelNumber);
 
     if (isLevelPassed) {
       _handleLevelCompletion();
-    }
-  }
-
-  String _getScoreUnit(int levelNumber) {
-    if (levelNumber == 4) {
-      return 'птичек';
-    } else {
-      return 'нициков';
     }
   }
 
@@ -100,8 +93,8 @@ class _GameOverState extends State<GameOver> {
                 textAlign: TextAlign.center,
                 style: TextStyles.defaultStyle,
                 isLevelPassed
-                    ? "Вы прошли уровень набрав ${widget.game.scoreNotifier.value} $scoreUnit!"
-                    : "Не повезло, вы набрали ${widget.game.scoreNotifier.value} $scoreUnit из ${widget.game.levelModel.scoreForNextLevel}",
+                    ? "Вы прошли уровень набрав ${widget.game.scoreNotifier.value} ${getScoreUnit(widget.game.scoreNotifier.value, widget.game.levelModel.levelNumber)}!"
+                    : "Не повезло, вы набрали ${widget.game.scoreNotifier.value} ${getScoreUnit(widget.game.scoreNotifier.value, widget.game.levelModel.levelNumber)} из ${widget.game.levelModel.scoreForNextLevel} ${getScoreUnit(widget.game.levelModel.scoreForNextLevel, widget.game.levelModel.levelNumber)}",
               ),
               const SizedBox(height: 20),
               isLevelPassed
@@ -199,5 +192,33 @@ class _GameOverState extends State<GameOver> {
         ),
       ),
     );
+  }
+}
+
+String getScoreUnit(num count, int levelNumber) {
+  final intCount = count.toInt();
+
+  if (levelNumber == 4) {
+    // Склонение для "птичка"
+    if (intCount % 10 == 1 && intCount % 100 != 11) {
+      return 'птичка';
+    } else if (intCount % 10 >= 2 &&
+        intCount % 10 <= 4 &&
+        (intCount % 100 < 10 || intCount % 100 >= 20)) {
+      return 'птички';
+    } else {
+      return 'птичек';
+    }
+  } else {
+    // Склонение для "ницик"
+    if (intCount % 10 == 1 && intCount % 100 != 11) {
+      return 'ницик';
+    } else if (intCount % 10 >= 2 &&
+        intCount % 10 <= 4 &&
+        (intCount % 100 < 10 || intCount % 100 >= 20)) {
+      return 'ницика';
+    } else {
+      return 'нициков';
+    }
   }
 }

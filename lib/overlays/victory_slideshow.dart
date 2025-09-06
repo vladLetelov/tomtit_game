@@ -97,103 +97,131 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
         'assets/images/BackgroundHistoryPage.jpg';
     final isMobile = MediaQuery.of(context).size.width < 600;
 
-    return Stack(
-      children: [
-        // Фоновое изображение
-        Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(bgImage),
-              fit: isMobile ? BoxFit.cover : BoxFit.contain,
-            ),
-          ),
-        ),
+    return SafeArea(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Учитываем безопасную область
+          final safeAreaHeight = constraints.maxHeight;
+          final safeAreaWidth = constraints.maxWidth;
 
-        // Текущее изображение слайдшоу
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 500),
-          child: Container(
-            key: ValueKey<int>(_currentIndex),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(images[_currentIndex]),
-                fit: BoxFit.contain,
+          return Stack(
+            children: [
+              // Фоновое изображение
+              Container(
+                width: safeAreaWidth,
+                height: safeAreaHeight,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(bgImage),
+                    fit: isMobile ? BoxFit.cover : BoxFit.contain,
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
 
-        // Сообщение о завершении
-        if (_showCompletion)
-          Center(
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'ИГРА ПРОЙДЕНА',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
+              // Текущее изображение слайдшоу
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                child: Container(
+                  key: ValueKey<int>(_currentIndex),
+                  width: safeAreaWidth,
+                  height: safeAreaHeight,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(images[_currentIndex]),
+                      fit: BoxFit.contain,
                     ),
                   ),
+                ),
+              ),
 
-                  const SizedBox(height: 20),
-
-                  // Отображение количества набранных очков
-                  ValueListenableBuilder(
-                    valueListenable: widget.game.scoreNotifier,
-                    builder: (context, score, child) {
-                      return Text(
-                        'Заработано нициков: $_totalScore',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+              // Сообщение о завершении
+              if (_showCompletion)
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'ИГРА ПРОЙДЕНА',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      );
-                    },
-                  ),
 
-                  const SizedBox(height: 10),
+                        const SizedBox(height: 20),
 
-                  GestureDetector(
-                    child: const Text(
-                      'Для их получения напишите нам hr@nicetu.spb.ru и прикрепите скриншот этого экрана.',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                        // Отображение количества набранных очков
+                        ValueListenableBuilder(
+                          valueListenable: widget.game.scoreNotifier,
+                          builder: (context, score, child) {
+                            return Text(
+                              'Заработано ${getNicikUnit(_totalScore)}: $_totalScore',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          },
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        GestureDetector(
+                          child: const Text(
+                            'Для их получения напишите нам hr@nicetu.spb.ru и прикрепите скриншот этого экрана.',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        ElevatedButton(
+                          onPressed: _returnToMenu,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepPurple,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 16),
+                          ),
+                          child: const Text(
+                            'В главное меню',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+                      ],
                     ),
                   ),
-
-                  const SizedBox(height: 10),
-
-                  ElevatedButton(
-                    onPressed: _returnToMenu,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 16),
-                    ),
-                    child: const Text(
-                      'В главное меню',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-                ],
-              ),
-            ),
-          ),
-      ],
+                ),
+            ],
+          );
+        },
+      ),
     );
+  }
+}
+
+String getNicikUnit(num count) {
+  final intCount = count.toInt();
+
+  if (intCount % 10 == 1 && intCount % 100 != 11) {
+    return 'ницик';
+  } else if (intCount % 10 >= 2 &&
+      intCount % 10 <= 4 &&
+      (intCount % 100 < 10 || intCount % 100 >= 20)) {
+    return 'ницика';
+  } else {
+    return 'нициков';
   }
 }

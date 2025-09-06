@@ -3,7 +3,7 @@ import 'package:tomtit_game/models/history_model.dart';
 import 'package:tomtit_game/theme/styles/text_styles.dart';
 import 'package:tomtit_game/components/game_buttons/history_button.dart';
 import 'package:tomtit_game/storage/game_score.dart';
-import 'package:flutter/foundation.dart'; // Добавьте этот импорт
+import 'package:flutter/foundation.dart';
 
 // Утилита для определения платформы
 bool get isDesktop {
@@ -359,111 +359,140 @@ class _HistoryCardState extends State<HistoryCard> {
     final currentQuestion = questions[_selectedQuestionIndex!];
     final isSingleChoice = currentQuestion.isSingleChoice;
 
+    // Рассчитаем максимальную высоту для списка ответов.
+    // Ограничим её 40% от высоты экрана или установим фиксированное значение.
+    double maxAnswerListHeight = MediaQuery.of(context).size.height * 0.3;
+
     return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              currentQuestion.questionText,
-              style: TextStyles.defaultStyle.copyWith(
-                fontSize: isDesktop ? 19 : 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Текст вопроса
+          Text(
+            currentQuestion.questionText,
+            style: TextStyles.defaultStyle.copyWith(
+              fontSize: isDesktop ? 19 : 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Контейнер со Scrollbar и списком ответов
+          Container(
+            constraints: BoxConstraints(
+              maxHeight: maxAnswerListHeight, // Ограничиваем высоту
+            ),
+            child: Scrollbar(
+              thumbVisibility: true, // Делаем ползунок всегда видимым
+              thickness: 6.0, // Толщина ползунка
+              radius: const Radius.circular(3.0), // Закругление углов ползунка
+              child: ListView.separated(
+                // Используем ListView вместо Column для правильной работы прокрутки
+                shrinkWrap: true, // Важно для работы внутри Column
+                physics:
+                    const AlwaysScrollableScrollPhysics(), // Всегда включаем прокрутку
+                itemCount: currentQuestion.answers.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  return _buildAnswerButton(
+                    currentQuestion: currentQuestion,
+                    index: index,
+                    isSingleChoice: isSingleChoice,
+                  );
+                },
               ),
             ),
-            const SizedBox(height: 16),
-            ...List.generate(currentQuestion.answers.length, (index) {
-              final isCorrectAnswer = currentQuestion.answers[index].isCorrect;
-              final isSelected =
-                  _selectedAnswers[_selectedQuestionIndex!][index];
-              final wasSelectedByUser = isSelected;
+          ),
+        ],
+      ),
+    );
+  }
 
-              Color? buttonColor;
-              Color textColor = Colors.white;
-              Color borderColor = Colors.white;
-              double borderWidth = 1.0;
+  Widget _buildAnswerButton({
+    required Question currentQuestion,
+    required int index,
+    required bool isSingleChoice,
+  }) {
+    final isCorrectAnswer = currentQuestion.answers[index].isCorrect;
+    final isSelected = _selectedAnswers[_selectedQuestionIndex!][index];
+    final wasSelectedByUser = isSelected;
 
-              if (_isQuestionAnswered) {
-                if (isCorrectAnswer) {
-                  buttonColor = Colors.green.withOpacity(0.3);
-                  borderColor = Colors.green;
-                  textColor = Colors.green;
+    Color? buttonColor;
+    Color textColor = Colors.white;
+    Color borderColor = Colors.white;
+    double borderWidth = 1.0;
+
+    if (_isQuestionAnswered) {
+      if (isCorrectAnswer) {
+        buttonColor = Colors.green.withOpacity(0.3);
+        borderColor = Colors.green;
+        textColor = Colors.green;
+      } else {
+        buttonColor = Colors.red.withOpacity(0.3);
+        borderColor = Colors.red;
+        textColor = Colors.red;
+      }
+
+      if (wasSelectedByUser) {
+        borderColor = const Color.fromARGB(255, 255, 208, 66);
+        borderWidth = 2.0;
+      }
+    } else {
+      buttonColor = isSelected
+          ? const Color.fromARGB(255, 255, 208, 66).withOpacity(0.3)
+          : Colors.transparent;
+      if (isSelected) {
+        borderColor = const Color.fromARGB(255, 255, 208, 66);
+        borderWidth = 2.0;
+      }
+    }
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: buttonColor,
+        minimumSize:
+            const Size(double.infinity, 40), // Ширина на всю доступную область
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: borderColor,
+            width: borderWidth,
+          ),
+        ),
+        elevation: 0,
+      ),
+      onPressed: _isQuestionAnswered
+          ? null
+          : () {
+              setState(() {
+                if (isSingleChoice) {
+                  // Сброс всех выборов для одиночного выбора
+                  for (int i = 0;
+                      i < _selectedAnswers[_selectedQuestionIndex!].length;
+                      i++) {
+                    _selectedAnswers[_selectedQuestionIndex!][i] = false;
+                  }
+                  _selectedAnswers[_selectedQuestionIndex!][index] = true;
+                  _singleSelectedIndex = index;
                 } else {
-                  buttonColor = Colors.red.withOpacity(0.3);
-                  borderColor = Colors.red;
-                  textColor = Colors.red;
+                  // Переключение выбора для множественного выбора
+                  _selectedAnswers[_selectedQuestionIndex!][index] =
+                      !_selectedAnswers[_selectedQuestionIndex!][index];
                 }
-
-                if (wasSelectedByUser) {
-                  borderColor = const Color.fromARGB(255, 255, 208, 66);
-                  borderWidth = 2.0;
-                }
-              } else {
-                buttonColor = isSelected
-                    ? const Color.fromARGB(255, 255, 208, 66).withOpacity(0.3)
-                    : Colors.transparent;
-                if (isSelected) {
-                  borderColor = const Color.fromARGB(255, 255, 208, 66);
-                  borderWidth = 2.0;
-                }
-              }
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonColor,
-                    minimumSize: const Size(double.infinity, 40),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(
-                        color: borderColor,
-                        width: borderWidth,
-                      ),
-                    ),
-                    elevation: 0,
-                  ),
-                  onPressed: _isQuestionAnswered
-                      ? null
-                      : () {
-                          setState(() {
-                            if (isSingleChoice) {
-                              for (int i = 0;
-                                  i <
-                                      _selectedAnswers[_selectedQuestionIndex!]
-                                          .length;
-                                  i++) {
-                                _selectedAnswers[_selectedQuestionIndex!][i] =
-                                    false;
-                              }
-                              _selectedAnswers[_selectedQuestionIndex!][index] =
-                                  true;
-                              _singleSelectedIndex = index;
-                            } else {
-                              _selectedAnswers[_selectedQuestionIndex!][index] =
-                                  !_selectedAnswers[_selectedQuestionIndex!]
-                                      [index];
-                            }
-                          });
-                        },
-                  child: Center(
-                    child: Text(
-                      currentQuestion.answers[index].answerText,
-                      textAlign: TextAlign.center,
-                      style: TextStyles.defaultStyle.copyWith(
-                        fontSize: isDesktop ? 18 : 13,
-                        color: textColor,
-                        fontWeight: _isQuestionAnswered && isCorrectAnswer
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ],
+              });
+            },
+      child: Center(
+        child: Text(
+          currentQuestion.answers[index].answerText,
+          textAlign: TextAlign.center,
+          style: TextStyles.defaultStyle.copyWith(
+            fontSize: isDesktop ? 18 : 13,
+            color: textColor,
+            fontWeight: _isQuestionAnswered && isCorrectAnswer
+                ? FontWeight.bold
+                : FontWeight.normal,
+          ),
         ),
       ),
     );
