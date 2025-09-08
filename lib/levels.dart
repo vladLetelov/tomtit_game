@@ -518,7 +518,6 @@ final Map<int, LevelModel> levels = {
       'assets/images/EndSlideShow/FinalImage2.png',
       'assets/images/EndSlideShow/FinalImage3.png',
     ],
-    victorySlideshowBackground:
-        'assets/images/EndSlideShow/SlideShowBackground.png',
+    victorySlideshowBackground: 'assets/images/EndSlideShow/test.png',
   ),
 };

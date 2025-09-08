@@ -60,7 +60,6 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
 
   void _updateTotalScore() {
     setState(() {
-      // Используем новый метод для подсчета общего счета
       _totalScore = _calculateTotalScore();
     });
   }
@@ -68,14 +67,12 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
   int _calculateTotalScore() {
     int total = 0;
 
-    // Очки за пройденные уровни
     for (var levelEntry in levels.entries) {
       if (GameScoreManager.isLevelCompleted(levelEntry.key)) {
-        total += 1; // По 1 очку за каждый пройденный уровень
+        total += 1;
       }
     }
 
-    // Очки за полностью правильные ответы на вопросы
     for (var levelEntry in levels.entries) {
       total += GameScoreManager.getQuestionPointsForLevel(levelEntry.key);
     }
@@ -95,118 +92,153 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
     final images = widget.game.levelModel.victorySlideshowImages!;
     final bgImage = widget.game.levelModel.victorySlideshowBackground ??
         'assets/images/BackgroundHistoryPage.jpg';
-    final isMobile = MediaQuery.of(context).size.width < 600;
+    final mediaQuery = MediaQuery.of(context);
+    final isMobile = mediaQuery.size.width < 600;
 
-    return SafeArea(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          // Учитываем безопасную область
-          final safeAreaHeight = constraints.maxHeight;
-          final safeAreaWidth = constraints.maxWidth;
-
-          return Stack(
-            children: [
-              // Фоновое изображение
-              Container(
-                width: safeAreaWidth,
-                height: safeAreaHeight,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(bgImage),
-                    fit: isMobile ? BoxFit.cover : BoxFit.contain,
-                  ),
-                ),
+    return Scaffold(
+      body: Stack(
+        children: [
+          // Фоновое изображение на весь экран (без SafeArea)
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(bgImage),
+                fit: BoxFit.cover, // Всегда cover для заполнения всего экрана
               ),
+            ),
+          ),
 
-              // Текущее изображение слайдшоу
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 500),
-                child: Container(
-                  key: ValueKey<int>(_currentIndex),
-                  width: safeAreaWidth,
-                  height: safeAreaHeight,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(images[_currentIndex]),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
+          // Основной контент в SafeArea
+          SafeArea(
+            bottom: false, // Отключаем нижний SafeArea для фона
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final safePadding = mediaQuery.padding;
+                final viewInsets = mediaQuery.viewInsets;
 
-              // Сообщение о завершении
-              if (_showCompletion)
-                Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text(
-                          'ИГРА ПРОЙДЕНА',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
+                // Доступная высота с учетом SafeArea сверху
+                final availableHeight = constraints.maxHeight - safePadding.top;
+                final availableWidth = constraints.maxWidth;
+
+                final isVerySmallScreen = availableHeight < 400;
+
+                return Stack(
+                  children: [
+                    // Текущее изображение слайдшоу
+                    Center(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 500),
+                        child: Container(
+                          key: ValueKey<int>(_currentIndex),
+                          width: availableWidth * 0.9,
+                          height: availableHeight * 0.8,
+                          margin: EdgeInsets.only(
+                            top: availableHeight * 0.05,
+                            bottom: viewInsets.bottom > 0
+                                ? viewInsets.bottom + 10
+                                : 0,
                           ),
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // Отображение количества набранных очков
-                        ValueListenableBuilder(
-                          valueListenable: widget.game.scoreNotifier,
-                          builder: (context, score, child) {
-                            return Text(
-                              'Заработано ${getNicikUnit(_totalScore)}: $_totalScore',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          },
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        GestureDetector(
-                          child: const Text(
-                            'Для их получения напишите нам hr@nicetu.spb.ru и прикрепите скриншот этого экрана.',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(images[_currentIndex]),
+                              fit: BoxFit.contain,
                             ),
                           ),
                         ),
+                      ),
+                    ),
 
-                        const SizedBox(height: 10),
-
-                        ElevatedButton(
-                          onPressed: _returnToMenu,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 32, vertical: 16),
+                    // Сообщение о завершении
+                    if (_showCompletion)
+                      Positioned(
+                        bottom: viewInsets.bottom +
+                            20, // Учитываем системные элементы
+                        left: 20,
+                        right: 20,
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Text(
-                            'В главное меню',
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          constraints: BoxConstraints(
+                            maxWidth: availableWidth * 0.95,
+                            maxHeight: availableHeight * 0.7,
+                          ),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'ИГРА ПРОЙДЕНА',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: isVerySmallScreen ? 24 : 32,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+
+                                const SizedBox(height: 20),
+
+                                // Отображение количества набранных очков
+                                ValueListenableBuilder(
+                                  valueListenable: widget.game.scoreNotifier,
+                                  builder: (context, score, child) {
+                                    return Text(
+                                      'Заработано ${getNicikUnit(_totalScore)}: $_totalScore',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: isVerySmallScreen ? 16 : 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    );
+                                  },
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                Text(
+                                  'Для их получения напишите нам hr@nicetu.spb.ru и прикрепите скриншот этого экрана.',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: isVerySmallScreen ? 14 : 16,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+
+                                const SizedBox(height: 20),
+
+                                ElevatedButton(
+                                  onPressed: _returnToMenu,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.deepPurple,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 32, vertical: 16),
+                                  ),
+                                  child: Text(
+                                    'В главное меню',
+                                    style: TextStyle(
+                                        fontSize: isVerySmallScreen ? 16 : 18,
+                                        color: Colors.white),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 10),
+                              ],
+                            ),
                           ),
                         ),
-
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          );
-        },
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
