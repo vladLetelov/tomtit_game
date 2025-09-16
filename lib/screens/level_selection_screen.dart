@@ -102,7 +102,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
 
     navigator.push(
       MaterialPageRoute(
-        builder: (context) => LevelHistoryesScreen(level: tutorialLevel),
+        builder: (context) => LevelHistoriesScreen(level: tutorialLevel),
       ),
     );
   }

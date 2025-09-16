@@ -93,7 +93,7 @@ class _GameOverState extends State<GameOver> {
                 textAlign: TextAlign.center,
                 style: TextStyles.defaultStyle,
                 isLevelPassed
-                    ? "Вы прошли уровень набрав ${widget.game.scoreNotifier.value} ${getScoreUnit(widget.game.scoreNotifier.value, widget.game.levelModel.levelNumber)}!"
+                    ? "Вы прошли уровень, набрав ${widget.game.scoreNotifier.value} ${getScoreUnit(widget.game.scoreNotifier.value, widget.game.levelModel.levelNumber)}!"
                     : "Не повезло, вы набрали ${widget.game.scoreNotifier.value} ${getScoreUnit(widget.game.scoreNotifier.value, widget.game.levelModel.levelNumber)} из ${widget.game.levelModel.scoreForNextLevel} ${getScoreUnit(widget.game.levelModel.scoreForNextLevel, widget.game.levelModel.levelNumber)}",
               ),
               const SizedBox(height: 20),
@@ -110,7 +110,7 @@ class _GameOverState extends State<GameOver> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LevelHistoryesScreen(
+                                  builder: (context) => LevelHistoriesScreen(
                                     level: levels[nextLevelNumber]!,
                                   ),
                                 ),

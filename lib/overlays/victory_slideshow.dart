@@ -202,7 +202,7 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
                                 const SizedBox(height: 10),
 
                                 Text(
-                                  'Для их получения напишите нам hr@nicetu.spb.ru и прикрепите скриншот этого экрана.',
+                                  'Для их получения напишите нам на hr@nicetu.spb.ru и прикрепите скриншот этого экрана.',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: isVerySmallScreen ? 14 : 16,
