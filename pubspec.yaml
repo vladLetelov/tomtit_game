@@ -1,5 +1,5 @@
 name: tomtit_game
-description: "A new Flutter project."
+description: "НИЦ игра"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -63,11 +63,41 @@ flutter:
 
   assets:
     - assets/images/background.jpg
+    - assets/images/black_hole.png
     - assets/images/sinica.png
+    - assets/images/sinicaRed.png
+    - assets/images/sinicaBlue.png
     - assets/images/semechko.webp
     - assets/images/meteorit.webp
     - assets/images/nicik.webp
-    - assets/videos/zaglushkaVideo.mp4
+    - assets/images/HistoryBtn4.png
+    - assets/images/HistoryBtn5.png
+    - assets/images/HistoryBtn6.png
+    - assets/images/HistoryBtn7.png
+    - assets/images/BackgroundHistoryCard.png
+    - assets/images/BackgroundHistoryPage.jpg
+    - assets/images/Planets.png
+    - assets/images/modulesImages/InstructionModule.png
+    - assets/images/modulesImages/Module1Btn.png
+    - assets/images/modulesImages/Module2Btn.png
+    - assets/images/modulesImages/Module2Image1.png
+    - assets/images/modulesImages/Module2Image2.png
+    - assets/images/modulesImages/Module3Btn.png
+    - assets/images/modulesImages/Module3Image1.png
+    - assets/images/modulesImages/Module3Image2.png
+    - assets/images/modulesImages/Module4Btn.png
+    - assets/images/modulesImages/Module4Image1.png
+    - assets/images/modulesImages/Module5Btn.png
+    - assets/images/modulesImages/Module5Image1.png
+    - assets/images/modulesImages/Module6Btn.png
+    - assets/images/EndSlideShow/FinalImage1.png
+    - assets/images/EndSlideShow/FinalImage2.png
+    - assets/images/EndSlideShow/FinalImage3.png
+    - assets/images/EndSlideShow/SlideShowBackground.png
+    - assets/images/Timer/1.png
+    - assets/images/Timer/2.png
+    - assets/images/Timer/3.png
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

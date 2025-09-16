@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:tomtit_game/components/game_buttons/default_game_button.dart';
 import 'package:tomtit_game/game/tomtit_game.dart';
 import 'package:tomtit_game/screens/level_selection_screen.dart';
-import 'package:tomtit_game/screens/level_video_screen.dart';
 import 'package:tomtit_game/theme/colors.dart';
 import 'package:tomtit_game/theme/styles/text_styles.dart';
+import 'package:tomtit_game/storage/game_score.dart';
+import 'package:tomtit_game/enums/level_step.dart';
+import 'package:tomtit_game/levels.dart';
+import 'package:tomtit_game/screens/level_histories_screen.dart';
 
 class GameOver extends StatefulWidget {
   const GameOver({super.key, required this.game});
@@ -17,11 +20,42 @@ class GameOver extends StatefulWidget {
 
 class _GameOverState extends State<GameOver> {
   late bool isLevelPassed;
+  late String scoreUnit;
 
   @override
   void initState() {
-    isLevelPassed = widget.game.scoreNotifier.value >= widget.game.levelModel.scoreForNextLevel;
     super.initState();
+
+    isLevelPassed = widget.game.scoreNotifier.value >=
+        widget.game.levelModel.scoreForNextLevel;
+
+    scoreUnit = getScoreUnit(
+        widget.game.scoreNotifier.value, widget.game.levelModel.levelNumber);
+
+    if (isLevelPassed) {
+      _handleLevelCompletion();
+    }
+  }
+
+  void _handleLevelCompletion() async {
+    final levelNumber = widget.game.levelModel.levelNumber;
+
+    await GameScoreManager.setLevelCompleted(levelNumber);
+    await GameScoreManager.saveLastLevel(levelNumber);
+
+    final previousScore = GameScoreManager.getLevelScore(levelNumber);
+    if (widget.game.scoreNotifier.value > previousScore) {
+      await GameScoreManager.setLevelScore(
+          levelNumber, widget.game.scoreNotifier.value);
+    }
+
+    // Сохраняем, что переходим к истории следующего уровня
+    await GameScoreManager.saveLastLevelStep(LevelStep.history);
+
+    // Разблокируем историю следующего уровня
+    if (levelNumber < levels.length) {
+      await GameScoreManager.setLevelHistoryAvailable(levelNumber + 1);
+    }
   }
 
   @override
@@ -41,7 +75,7 @@ class _GameOverState extends State<GameOver> {
               color: Colors.deepPurple,
             ),
             borderRadius: const BorderRadius.all(
-              Radius.circular(16), // Рамка с радиусом 16, как у контейнера
+              Radius.circular(16),
             ),
           ),
           child: Column(
@@ -59,87 +93,132 @@ class _GameOverState extends State<GameOver> {
                 textAlign: TextAlign.center,
                 style: TextStyles.defaultStyle,
                 isLevelPassed
-                    ? "Вы прошли уровень набрав ${widget.game.scoreNotifier.value} нициков!"
-                    : "Не повезло, вы набрали ${widget.game.scoreNotifier.value} нициков из ${widget.game.levelModel.scoreForNextLevel}",
+                    ? "Вы прошли уровень набрав ${widget.game.scoreNotifier.value} ${getScoreUnit(widget.game.scoreNotifier.value, widget.game.levelModel.levelNumber)}!"
+                    : "Не повезло, вы набрали ${widget.game.scoreNotifier.value} ${getScoreUnit(widget.game.scoreNotifier.value, widget.game.levelModel.levelNumber)} из ${widget.game.levelModel.scoreForNextLevel} ${getScoreUnit(widget.game.levelModel.scoreForNextLevel, widget.game.levelModel.levelNumber)}",
               ),
               const SizedBox(height: 20),
               isLevelPassed
                   ? Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  DefaultGameButton(
-                    onTap: () {
-                      widget.game.removeWhere((component) => true);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => LevelVideoScreen(level: widget.game.levelModel),
+                      children: [
+                        DefaultGameButton(
+                          onTap: () {
+                            widget.game.removeWhere((component) => true);
+                            // Переход к истории СЛЕДУЮЩЕГО уровня
+                            final nextLevelNumber =
+                                widget.game.levelModel.levelNumber + 1;
+                            if (nextLevelNumber <= levels.length) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LevelHistoryesScreen(
+                                    level: levels[nextLevelNumber]!,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              // Если это последний уровень - в меню
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const LevelSelectionScreen(),
+                                ),
+                              );
+                            }
+                          },
+                          text: "Перейти к следующей истории",
                         ),
-                      );
-                    },
-                    text: "Перейти к фрагменту истории",
-                  ),
-                  const SizedBox(height: 10),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 10, // Отступ между кнопками
-                    runSpacing: 10, // Отступ между строками кнопок
-                    children: [
-                      DefaultGameButton(
-                        onTap: () {
-                          widget.game.removeWhere((component) => true);
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => LevelSelectionScreen(),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 10,
+                          runSpacing: 10,
+                          children: [
+                            DefaultGameButton(
+                              onTap: () {
+                                widget.game.removeWhere((component) => true);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        const LevelSelectionScreen(),
+                                  ),
+                                );
+                              },
+                              text: 'Выход в меню',
                             ),
-                          );
-                        },
-                        text: 'Выход в меню',
-                      ),
-                      DefaultGameButton(
-                        onTap: () {
-                          widget.game.removeWhere((component) => true);
-                          widget.game.restartGame();
-                          widget.game.overlays.remove('GameOver');
-                        },
-                        text: "Играть заново",
-                      ),
-                    ],
-                  ),
-                ],
-              )
-                  : Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 10,
-                runSpacing: 10,
-                children: [
-                  DefaultGameButton(
-                    onTap: () {
-                      widget.game.removeWhere((component) => true);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => LevelSelectionScreen(),
+                            DefaultGameButton(
+                              onTap: () {
+                                widget.game.removeWhere((component) => true);
+                                widget.game.restartGame();
+                                widget.game.overlays.remove('GameOver');
+                              },
+                              text: "Играть заново",
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                    text: 'Выход в меню',
-                  ),
-                  DefaultGameButton(
-                    onTap: () {
-                      widget.game.removeWhere((component) => true);
-                      widget.game.restartGame();
-                      widget.game.overlays.remove('GameOver');
-                    },
-                    text: "Попробовать снова",
-                  ),
-                ],
-              ),
+                      ],
+                    )
+                  : Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        DefaultGameButton(
+                          onTap: () {
+                            widget.game.removeWhere((component) => true);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const LevelSelectionScreen(),
+                              ),
+                            );
+                          },
+                          text: 'Выход в меню',
+                        ),
+                        DefaultGameButton(
+                          onTap: () {
+                            widget.game.removeWhere((component) => true);
+                            widget.game.restartGame();
+                            widget.game.overlays.remove('GameOver');
+                          },
+                          text: "Попробовать снова",
+                        ),
+                      ],
+                    ),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+String getScoreUnit(num count, int levelNumber) {
+  final intCount = count.toInt();
+
+  if (levelNumber == 4) {
+    // Склонение для "птичка"
+    if (intCount % 10 == 1 && intCount % 100 != 11) {
+      return 'птичка';
+    } else if (intCount % 10 >= 2 &&
+        intCount % 10 <= 4 &&
+        (intCount % 100 < 10 || intCount % 100 >= 20)) {
+      return 'птички';
+    } else {
+      return 'птичек';
+    }
+  } else {
+    // Склонение для "ницик"
+    if (intCount % 10 == 1 && intCount % 100 != 11) {
+      return 'ницик';
+    } else if (intCount % 10 >= 2 &&
+        intCount % 10 <= 4 &&
+        (intCount % 100 < 10 || intCount % 100 >= 20)) {
+      return 'ницика';
+    } else {
+      return 'нициков';
+    }
   }
 }
