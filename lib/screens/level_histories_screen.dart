@@ -19,8 +19,8 @@ import 'package:tomtit_game/components/cards/history_card.dart';
 import 'package:tomtit_game/models/history_model.dart';
 import 'dart:async';
 
-class LevelHistoryesScreen extends StatefulWidget {
-  const LevelHistoryesScreen({
+class LevelHistoriesScreen extends StatefulWidget {
+  const LevelHistoriesScreen({
     super.key,
     required this.level,
   });
@@ -28,10 +28,10 @@ class LevelHistoryesScreen extends StatefulWidget {
   final LevelModel level;
 
   @override
-  State<LevelHistoryesScreen> createState() => _LevelHistoryesScreenState();
+  State<LevelHistoriesScreen> createState() => _LevelHistoriesScreenState();
 }
 
-class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
+class _LevelHistoriesScreenState extends State<LevelHistoriesScreen> {
   late LevelModel currlevel;
   late PageController _pageController;
   int _currentHistoryIndex = 0;
@@ -100,29 +100,39 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
     super.dispose();
   }
 
+  // Проверяет, может ли пользователь навигировать от текущей карточки
+  bool _canNavigateAway() {
+    final currentHistoryItem = _displayHistory[_currentHistoryIndex];
+    
+    // Если карточка является результатом, можно переходить дальше
+    if (currentHistoryItem.isResultCard) {
+      return true;
+    }
+    
+    // Если у карточки нет вопросов, можно переходить дальше  
+    if (currentHistoryItem.questions == null || 
+        currentHistoryItem.questions!.isEmpty) {
+      return true;
+    }
+    
+    // Проверяем, есть ли неотвеченные вопросы в текущей карточке
+    for (var question in currentHistoryItem.questions!) {
+      final result = GameScoreManager.getQuestionResultById(
+        widget.level.levelNumber,
+        question.id,
+      );
+      if (result == null) {
+        return false; // Есть неотвеченный вопрос
+      }
+    }
+    
+    return true; // Все вопросы отвечены
+  }
+
 // Обработчик клавиатурных событий
   void _handleKeyEvent(RawKeyEvent event) {
     if (event is RawKeyDownEvent) {
-      final currentHistoryItem = _displayHistory[_currentHistoryIndex];
-
-      // Проверяем, есть ли активный вопрос, на который еще не ответили
-      bool hasActiveQuestion = false;
-      if (currentHistoryItem.questions != null &&
-          currentHistoryItem.questions!.isNotEmpty) {
-        // Проверяем, был ли уже ответ на вопросы в этой карточке
-        for (var question in currentHistoryItem.questions!) {
-          final result = GameScoreManager.getQuestionResultById(
-            widget.level.levelNumber,
-            question.id,
-          );
-          if (result == null) {
-            hasActiveQuestion = true;
-            break;
-          }
-        }
-      }
-
-      if (!hasActiveQuestion) {
+      if (_canNavigateAway()) {
         if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
           // Стрелка влево - предыдущая карточка
           if (_currentHistoryIndex > 0) {
@@ -229,6 +239,9 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
         }
       }
     });
+    
+    // Обновляем состояние для разблокировки навигации
+    setState(() {});
   }
 
   void _showHistoryCompletionDialog() async {
@@ -448,7 +461,7 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
       appBar: AppBar(
         backgroundColor: deepDarkPurple,
         title: Text(
-            'Фрагмент ${_currentHistoryIndex + 1}/${widget.level.history.length}'),
+            'Фрагмент ${_currentHistoryIndex + 1}/${_displayHistory.length}'),
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app_outlined, color: Colors.white),
@@ -472,7 +485,7 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
           actions: <Type, Action<Intent>>{
             _PreviousCardIntent: CallbackAction<_PreviousCardIntent>(
               onInvoke: (_) {
-                if (_currentHistoryIndex > 0) {
+                if (_canNavigateAway() && _currentHistoryIndex > 0) {
                   _pageController.previousPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
@@ -483,13 +496,15 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
             ),
             _NextCardIntent: CallbackAction<_NextCardIntent>(
               onInvoke: (_) {
-                if (_currentHistoryIndex < _displayHistory.length - 1) {
-                  _pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                } else if (_currentHistoryIndex == _displayHistory.length - 1) {
-                  _showHistoryCompletionDialog();
+                if (_canNavigateAway()) {
+                  if (_currentHistoryIndex < _displayHistory.length - 1) {
+                    _pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  } else if (_currentHistoryIndex == _displayHistory.length - 1) {
+                    _showHistoryCompletionDialog();
+                  }
                 }
                 return null;
               },
@@ -516,6 +531,9 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                             ? const SizedBox.shrink()
                             : PageView.builder(
                                 controller: _pageController,
+                                physics: _canNavigateAway() 
+                                    ? const PageScrollPhysics() 
+                                    : const NeverScrollableScrollPhysics(),
                                 onPageChanged: (index) {
                                   if (index < _displayHistory.length) {
                                     _onPageChanged(index);
@@ -567,7 +585,7 @@ class _LevelHistoryesScreenState extends State<LevelHistoryesScreen> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: ElevatedButton(
-                            onPressed: _showHistoryCompletionDialog,
+                            onPressed: _canNavigateAway() ? _showHistoryCompletionDialog : null,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.yellow,
                               padding: const EdgeInsets.symmetric(

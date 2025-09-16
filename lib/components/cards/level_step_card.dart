@@ -36,7 +36,7 @@ class LevelStepCard extends StatelessWidget {
   void _startHistory(BuildContext context) async {
     final result = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (BuildContext context) => LevelHistoryesScreen(level: level),
+        builder: (BuildContext context) => LevelHistoriesScreen(level: level),
       ),
     );
 
