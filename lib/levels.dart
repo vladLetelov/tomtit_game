@@ -20,6 +20,10 @@ final Map<int, LevelModel> levels = {
     // timeLimit: 60,
     history: [
       HistoryModel(
+          title: 'ИЗУЧЕНИЕ ИСТОРИИ',
+          description:
+              'Для прокрутки слайдов истории на мобильных устройствах необходимо пальцем провести по экрану влево/вправо, если используется ноутбук, то можно использовать тачпад и на нем с помощью двух пальцев пролистывать слайды, а на клавиатуре используются стрелки влево/вправо. P.S. для открытия подробного мануала по управлению на главном экране нажмите на значок ? справа сверху.'),
+      HistoryModel(
           title: '',
           isImageOnly: true,
           pathImg: 'assets/images/modulesImages/InstructionModule.png'),
@@ -35,27 +39,23 @@ final Map<int, LevelModel> levels = {
           title: 'УПРАВЛЕНИЕ',
           description:
               'Для изучения истории необходимо просмотреть все карточки и нажать на кнопку "Летим дальше!". В игровом уровне ваш персонаж - Синица, для управления которой необходимо пальцем или мышкой зажать персонажа и перемещать его по экрану. Не попадайте под летящие метеориты и собирайте монетки. Удачи!'),
-      HistoryModel(
-          title: 'ИЗУЧЕНИЕ ИСТОРИИ',
-          description:
-              'Для прокрутки слайдов истории на мобильных устройствах необходимо пальцем провести по экрану влево/вправо, если используется ноутбук, то можно использовать тачпад и на нем с помощью двух пальцев пролистывать слайды, а на клавиатуре используются стрелки влево/вправо. P.S. для открытия подробного мануала по управлению на главном экране нажмите на значок ? справа сверху.'),
     ],
     historyButtonPath: 'assets/images/modulesImages/InstructionModule.png',
   ),
   1: LevelModel(
     levelNumber: 1,
     background: 'background.jpg',
-    bulletSpeed: 360,
-    meteorSpeed: 180,
+    bulletSpeed: 280,
+    meteorSpeed: 200,
     nicikSpeed: 230,
     bulletFrequency: 0.35,
-    meteorFrequency: 1.4,
-    nicikFrequency: 3.5,
+    meteorFrequency: 0.7,
+    nicikFrequency: 4.5,
     angryBirdBuffChance: 0.08,
     bulletFrequencyBuffChance: 0.08,
     extraLifeBuffChance: 0.06,
     threeBulletsBuffChance: 0.07,
-    scoreForNextLevel: 3,
+    scoreForNextLevel: 5,
     sinicaSize: 60.0,
     // timeLimit: 60,
     history: [
@@ -76,17 +76,17 @@ final Map<int, LevelModel> levels = {
   2: LevelModel(
       levelNumber: 2,
       background: 'background.jpg',
-      bulletSpeed: 320,
-      meteorSpeed: 160,
+      bulletSpeed: 280,
+      meteorSpeed: 220,
       nicikSpeed: 210,
       bulletFrequency: 0.45,
-      meteorFrequency: 1,
-      nicikFrequency: 1.8,
+      meteorFrequency: 0.65,
+      nicikFrequency: 4,
       angryBirdBuffChance: 0.06,
       bulletFrequencyBuffChance: 0.06,
       extraLifeBuffChance: 0.04,
       threeBulletsBuffChance: 0.05,
-      scoreForNextLevel: 5,
+      scoreForNextLevel: 7,
       sinicaSize: 60.0,
       // timeLimit: 30,
       history: [
@@ -156,16 +156,16 @@ final Map<int, LevelModel> levels = {
       levelNumber: 3,
       background: 'background.jpg',
       bulletSpeed: 380,
-      meteorSpeed: 170,
+      meteorSpeed: 220,
       nicikSpeed: 220,
       bulletFrequency: 0.37,
-      meteorFrequency: 0.8,
+      meteorFrequency: 0.6,
       nicikFrequency: 2.0,
       angryBirdBuffChance: 0.07,
       bulletFrequencyBuffChance: 0.07,
       extraLifeBuffChance: 0.05,
       threeBulletsBuffChance: 0.06,
-      scoreForNextLevel: 7,
+      scoreForNextLevel: 10,
       // timeLimit: 60,
       sinicaSize: 75.0,
       history: [
@@ -242,7 +242,7 @@ final Map<int, LevelModel> levels = {
       levelNumber: 4,
       background: 'background.jpg',
       bulletSpeed: 360,
-      meteorSpeed: 190,
+      meteorSpeed: 220,
       nicikSpeed: 200,
       bulletFrequency: 0.5,
       meteorFrequency: 0.6,
@@ -350,7 +350,7 @@ final Map<int, LevelModel> levels = {
       levelNumber: 5,
       background: 'background.jpg',
       bulletSpeed: 380,
-      meteorSpeed: 210,
+      meteorSpeed: 230,
       nicikSpeed: 240,
       bulletFrequency: 0.3,
       meteorFrequency: 0.6,
@@ -369,42 +369,46 @@ final Map<int, LevelModel> levels = {
             isImageOnly: true,
             pathImg: 'assets/images/modulesImages/Module5Btn.png'),
         HistoryModel(
-            title: 'ЧИСЛЕННОСТЬ',
+            title: 'Жизнь НИЦ',
             description:
-                'За последние три года численность сотрудников компании выросла более чем в два раза.'),
+                'За последние года команда компании сильно выросла. И конечно эти года принесли не мало историй с командировок, планерок, встреч, праздников…'),
+        HistoryModel(
+            title: 'Командировки',
+            description:
+                'Воспоминания из командировочных будней…\n«В Краснознаменске у нас Йоды магистры работают, «однако ...Если заявка не ложится в базу данных необходимо нам знать причину …»(с)\n\n«Пельмени ешь? И пиво пьешь? Как это не пьешь!? Ну ведь пельмени ешь? Хорошо, тогда вечером идем дописывать протокол.» (с)\n\n«Один из самых теплых моментов, связанных с НИЦ – это Командировка на Балхаш. Три недели - Пустыня, солнце, + 50 в тени. Три раза сгорел:)»'),
+        HistoryModel(
+            title: 'Праздники',
+            description:
+                'Однажды тяжелым после новогодним утром 2017 В НИЦ…\nxxx: какая въедливая, да ты хуже жены!\nyyy: я - системный аналитик!\n\n«Самое яркое воспоминание, подготовка корпоратива 2013 года. Когда все отделы снимали клипы, и мы готовили программу «Итоги».\n\n«Мне очень запомнилось 23 февраля 2019 года: как праздник, так и сам процесс подготовки. Помню как девушки, соблюдая строгую конспирацию, оставались после работы и коллективно собирали «кружки» и «танки» - как на полноценном профессиональном мастер-классе. В итоге мужская половина отдела была очень довольна — таких подарков вряд ли можно было ожидать».'),
+        HistoryModel(
+            title: 'ЛЮДИ',
+            description:
+                'Талантливые люди – главный актив НИЦ. Мы создаем среду, где каждый специалист может раскрыть свой потенциал и расти вместе с компанией.'),
         HistoryModel(
           title: "ВОПРОС",
           description: "",
           questions: [
             Question(
               id: "level5_question1",
-              questionText: "Что Синица может предложить сотрудникам?",
+              questionText:
+                  "А мы создаем среду, в которой настоящие профессионалы готовы работать и творить годами.\nУгадайте, сколько человек работает в компании более 10-ти лет? ",
               answers: [
-                Answer(
-                    answerText: "Программы заботы о здоровье сотрудников",
-                    isCorrect: true),
-                Answer(
-                    answerText:
-                        "Программы роста, развития и построения карьеры",
-                    isCorrect: true),
-                Answer(
-                    answerText: "Семейные бонусные программы", isCorrect: true),
-                Answer(
-                    answerText:
-                        "Гибкий подход организации работы, функционалу и бонусированию.",
-                    isCorrect: true),
+                Answer(answerText: "10-15 человек", isCorrect: false),
+                Answer(answerText: "30-40 человек", isCorrect: false),
+                Answer(answerText: "70-80 человек", isCorrect: false),
+                Answer(answerText: "Более 100 человек ", isCorrect: true),
               ],
               correctCard: HistoryModel(
                 title: 'ПРАВИЛЬНО',
                 description:
-                    'Построение справедливой системы мотивации. Удержание ключевых специалистов и развитие научно-технического потенциала – приоритет для компании. Мы создаем индивидуальную корпоративную культуру, повышающую вовлеченность сотрудников в работу, при которой стратегически важными направлениями являются программы профессионального роста, корпоративного обучения.',
+                    'Вы правы! В компании на данный момент более 100 человек имеет стаж работы в нице более 10 лет.',
                 isResultCard: true,
                 isCorrect: true,
               ),
               incorrectCard: HistoryModel(
                 title: 'НЕПРАВИЛЬНО',
                 description:
-                    'Построение справедливой системы мотивации. Удержание ключевых специалистов и развитие научно-технического потенциала – приоритет для компании. Мы создаем индивидуальную корпоративную культуру, повышающую вовлеченность сотрудников в работу, при которой стратегически важными направлениями являются программы профессионального роста, корпоративного обучения.',
+                    'Не угадали! В компании на данный момент более 100 человек имеет стаж работы в нице более 10 лет.',
                 isResultCard: true,
                 isCorrect: false,
               ),
@@ -415,14 +419,6 @@ final Map<int, LevelModel> levels = {
             title: 'Социальные программы',
             description:
                 'Построение справедливой системы мотивации. Удержание ключевых специалистов и развитие научно-технического потенциала – приоритет для компании. Мы создаем индивидуальную корпоративную культуру, повышающую вовлеченность сотрудников в работу, при которой стратегически важными направлениями являются программы профессионального роста, корпоративного обучения. '),
-        HistoryModel(
-            title: 'ЛЮДИ',
-            description:
-                'Талантливые люди – главный актив НИЦ. Мы создаем среду, где каждый специалист может раскрыть свой потенциал и расти вместе с компанией.'),
-        HistoryModel(
-            title: 'ЛЮДИ',
-            description:
-                'Опыт передается через систему наставничества. Таланты растут в программах кадрового резерва. Идеи рождаются в научных группах. Диалог ведется на семинарах и междисциплинарных встречах.'),
         HistoryModel(
             title: 'ЛЮДИ',
             description:
@@ -522,6 +518,7 @@ final Map<int, LevelModel> levels = {
       'assets/images/EndSlideShow/FinalImage2.png',
       'assets/images/EndSlideShow/FinalImage3.png',
     ],
-    victorySlideshowBackground: 'assets/images/EndSlideShow/test.png',
+    victorySlideshowBackground:
+        'assets/images/EndSlideShow/SlideShowBackground.png',
   ),
 };

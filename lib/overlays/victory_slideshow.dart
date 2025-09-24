@@ -90,8 +90,12 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
   @override
   Widget build(BuildContext context) {
     final images = widget.game.levelModel.victorySlideshowImages!;
-    final bgImage = widget.game.levelModel.victorySlideshowBackground ??
-        'assets/images/BackgroundHistoryPage.jpg';
+    // Основной фон - всегда BackgroundHistoryPage.jpg
+    const mainBackground = 'assets/images/BackgroundHistoryPage.jpg';
+
+    // Дополнительный фон (если есть) - будет поверх основного
+    final additionalBackground =
+        widget.game.levelModel.victorySlideshowBackground;
     final mediaQuery = MediaQuery.of(context);
     final isMobile = mediaQuery.size.width < 600;
 
@@ -104,11 +108,24 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
             height: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(bgImage),
-                fit: BoxFit.cover, // Всегда cover для заполнения всего экрана
+                image: AssetImage(mainBackground),
+                fit: BoxFit.cover,
               ),
             ),
           ),
+
+          // Дополнительное фоновое изображение (если есть)
+          if (additionalBackground != null)
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(additionalBackground),
+                  fit: isMobile ? BoxFit.cover : BoxFit.contain,
+                ),
+              ),
+            ),
 
           // Основной контент в SafeArea
           SafeArea(

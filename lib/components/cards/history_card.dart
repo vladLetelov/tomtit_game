@@ -228,7 +228,9 @@ class _HistoryCardState extends State<HistoryCard> {
             )
           else
             Container(
-              width: MediaQuery.of(context).size.width * 0.85,
+              width: isDesktop
+                  ? MediaQuery.of(context).size.width * 0.65
+                  : MediaQuery.of(context).size.width * 0.85,
               height: MediaQuery.of(context).size.height * 0.7,
               margin: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -331,7 +333,7 @@ class _HistoryCardState extends State<HistoryCard> {
               child: Text(
                 widget.historyItem.description!,
                 style: TextStyles.defaultStyle.copyWith(
-                  fontSize: isDesktop ? 19 : 14,
+                  fontSize: isDesktop ? 24 : 14,
                   color: Colors.white.withOpacity(0.9),
                 ),
                 textAlign: TextAlign.left,
