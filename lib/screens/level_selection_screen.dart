@@ -3,10 +3,12 @@ import 'package:tomtit_game/components/utils/level_card_connector.dart';
 import 'package:tomtit_game/components/cards/level_step_card.dart';
 import 'package:tomtit_game/levels.dart';
 import 'package:tomtit_game/storage/game_score.dart';
+import 'package:tomtit_game/storage/user_data.dart'; // Добавляем импорт
 import 'package:tomtit_game/theme/colors.dart';
 import 'package:tomtit_game/theme/styles/text_styles.dart';
 import 'package:tomtit_game/screens/level_histories_screen.dart';
 import 'package:tomtit_game/screens/help_screen.dart';
+import 'package:tomtit_game/screens/user_data_screen.dart'; // Добавляем импорт
 
 class LevelSelectionScreen extends StatefulWidget {
   const LevelSelectionScreen({super.key});
@@ -19,13 +21,14 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   int _totalScore = 0;
   late ScrollController _scrollController;
   int? _lastPlayedLevel;
+  bool _isCheckingUserData = true; // Флаг проверки данных пользователя
+  bool _hasUserData = false; // Есть ли данные пользователя
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _loadData();
-    _loadLastPlayedLevel();
+    _checkUserData(); // Сначала проверяем данные пользователя
   }
 
   @override
@@ -34,16 +37,35 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     super.dispose();
   }
 
+  // Проверяем, ввел ли пользователь ФИО
+  Future<void> _checkUserData() async {
+    final hasData = await UserDataManager.hasUserData();
+    setState(() {
+      _hasUserData = hasData;
+      _isCheckingUserData = false;
+    });
+
+    // Если данные есть, загружаем остальные данные
+    if (hasData) {
+      _loadData();
+      _loadLastPlayedLevel();
+    }
+  }
+
   Future<void> _loadLastPlayedLevel() async {
     final lastLevel = await GameScoreManager.getLastPlayedLevel();
-    setState(() {
-      _lastPlayedLevel = lastLevel;
-    });
+    if (mounted) {
+      setState(() {
+        _lastPlayedLevel = lastLevel;
+      });
+    }
   }
 
   Future<void> _loadData() async {
     await GameScoreManager.init();
-    _updateTotalScore();
+    if (mounted) {
+      _updateTotalScore();
+    }
   }
 
   void _updateTotalScore() {
@@ -110,7 +132,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   Future<ListView> _buildLevelCards() async {
     List<Widget> levelCards = [];
 
-    // ДОБАВЛЯЕМ КАРТОЧКУ ОБУЧЕНИЯ В НАЧАЛО СПИСКА
     levelCards.add(
       Padding(
         padding: const EdgeInsets.only(bottom: 16.0),
@@ -145,13 +166,11 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
       ),
     );
 
-    // ДОБАВЛЯЕМ КОННЕКТОР МЕЖДУ ОБУЧЕНИЕМ И ПЕРВЫМ УРОВНЕМ
     levelCards.add(const Center(child: LevelCardConnector()));
 
     for (var levelEntry in levels.entries) {
       final levelNumber = levelEntry.value.levelNumber;
 
-      // Пропускаем уровень 0 (обучение) в основном списке уровней
       if (levelNumber == 0) continue;
 
       final bool isHistoryUnlocked;
@@ -195,8 +214,102 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     );
   }
 
+  // Метод для отображения диалога редактирования ФИО
+  void _showEditNameDialog(BuildContext context) async {
+    final currentName = await UserDataManager.getUserName();
+    final canChangeName = await UserDataManager.isNameChangeAllowed();
+    final controller = TextEditingController(text: currentName);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(canChangeName ? 'Редактирование ФИО' : 'Ваше ФИО'),
+        content: canChangeName
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Фамилия Имя Отчество',
+                      hintText: 'Введите ваше полное ФИО',
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '* ФИО можно сменить ОДИН раз!!!',
+                    style: TextStyles.defaultStyle.copyWith(
+                      fontSize: 12,
+                      color: Colors.red, // Лучше красным для предупреждения
+                    ),
+                  ),
+                ],
+              )
+            : Text(
+                currentName ?? 'Не указано',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Закрыть'),
+          ),
+          if (canChangeName)
+            ElevatedButton(
+              onPressed: () async {
+                if (controller.text.trim().isNotEmpty) {
+                  try {
+                    await UserDataManager.updateUserName(
+                        controller.text.trim());
+                    if (mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('ФИО сохранено')),
+                      );
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Ошибка: $e')),
+                      );
+                    }
+                  }
+                }
+              },
+              child: const Text('Сохранить'),
+            ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Если проверяем данные пользователя, показываем загрузку
+    if (_isCheckingUserData) {
+      return Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(gradient: backgroundGradient),
+          child: const Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
+
+    // Если пользователь не ввел ФИО, показываем экран ввода
+    if (!_hasUserData) {
+      return UserNameScreen(
+        onNameSaved: () {
+          setState(() {
+            _hasUserData = true;
+          });
+          _loadData();
+          _loadLastPlayedLevel();
+        },
+      );
+    }
+
+    // Основной интерфейс выбора уровней
     if (_lastPlayedLevel != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollToLevel(_lastPlayedLevel!);
@@ -206,9 +319,20 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: deepDarkPurple,
-        title: const Text('Выберите уровень', style: TextStyles.defaultStyle),
+        // title: const Text('Выберите уровень', style: TextStyles.defaultStyle),
         actions: [
-          // Кнопка справки в AppBar - на одной линии с другими элементами
+          // Кнопка редактирования ФИО
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              icon: const Icon(Icons.person, color: Colors.white, size: 28),
+              onPressed: () {
+                _showEditNameDialog(context);
+              },
+              tooltip: 'Редактировать ФИО',
+            ),
+          ),
+          // Кнопка справки
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(

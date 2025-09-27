@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tomtit_game/game/tomtit_game.dart';
 import 'package:tomtit_game/screens/level_selection_screen.dart';
 import 'package:tomtit_game/storage/game_score.dart';
+import 'package:tomtit_game/storage/user_data.dart'; // Добавляем импорт
 import 'package:tomtit_game/levels.dart';
 import 'dart:async';
 
@@ -19,6 +20,7 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
   Timer? _timer;
   bool _showCompletion = false;
   int _totalScore = 0;
+  String? _userName;
 
   @override
   void initState() {
@@ -28,6 +30,7 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
           widget.game.levelModel.levelNumber, widget.game.scoreNotifier.value);
     });
     _loadData();
+    _loadUserName(); // Добавляем загрузку имени
     _startSlideshow();
   }
 
@@ -35,6 +38,14 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
   void dispose() {
     _timer?.cancel();
     super.dispose();
+  }
+
+  // Добавляем метод загрузки имени
+  Future<void> _loadUserName() async {
+    final userName = await UserDataManager.getUserName();
+    setState(() {
+      _userName = userName;
+    });
   }
 
   void _startSlideshow() {
@@ -90,10 +101,7 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
   @override
   Widget build(BuildContext context) {
     final images = widget.game.levelModel.victorySlideshowImages!;
-    // Основной фон - всегда BackgroundHistoryPage.jpg
     const mainBackground = 'assets/images/BackgroundHistoryPage.jpg';
-
-    // Дополнительный фон (если есть) - будет поверх основного
     final additionalBackground =
         widget.game.levelModel.victorySlideshowBackground;
     final mediaQuery = MediaQuery.of(context);
@@ -102,7 +110,6 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
     return Scaffold(
       body: Stack(
         children: [
-          // Фоновое изображение на весь экран (без SafeArea)
           Container(
             width: double.infinity,
             height: double.infinity,
@@ -113,8 +120,6 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
               ),
             ),
           ),
-
-          // Дополнительное фоновое изображение (если есть)
           if (additionalBackground != null)
             Container(
               width: double.infinity,
@@ -126,24 +131,18 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
                 ),
               ),
             ),
-
-          // Основной контент в SafeArea
           SafeArea(
-            bottom: false, // Отключаем нижний SafeArea для фона
+            bottom: false,
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final safePadding = mediaQuery.padding;
                 final viewInsets = mediaQuery.viewInsets;
-
-                // Доступная высота с учетом SafeArea сверху
                 final availableHeight = constraints.maxHeight - safePadding.top;
                 final availableWidth = constraints.maxWidth;
-
                 final isVerySmallScreen = availableHeight < 400;
 
                 return Stack(
                   children: [
-                    // Текущее изображение слайдшоу
                     Center(
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 500),
@@ -166,12 +165,9 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
                         ),
                       ),
                     ),
-
-                    // Сообщение о завершении
                     if (_showCompletion)
                       Positioned(
-                        bottom: viewInsets.bottom +
-                            20, // Учитываем системные элементы
+                        bottom: viewInsets.bottom + 20,
                         left: 20,
                         right: 20,
                         child: Container(
@@ -198,22 +194,41 @@ class _VictorySlideshowState extends State<VictorySlideshow> {
                                   textAlign: TextAlign.center,
                                 ),
 
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 10),
 
-                                // Отображение количества набранных очков
-                                ValueListenableBuilder(
-                                  valueListenable: widget.game.scoreNotifier,
-                                  builder: (context, score, child) {
-                                    return Text(
-                                      'Заработано ${getNicikUnit(_totalScore)}: $_totalScore',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: isVerySmallScreen ? 16 : 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    );
-                                  },
+                                // Отображаем ФИО игрока
+                                if (_userName != null)
+                                  Text(
+                                    'Игрок: $_userName',
+                                    style: TextStyle(
+                                      color: Colors.amber,
+                                      fontSize: isVerySmallScreen ? 16 : 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                // Если имя по какой-то причине не загрузилось
+                                if (_userName == null)
+                                  Text(
+                                    'Игрок: Неизвестный',
+                                    style: TextStyle(
+                                      color: Colors.amber,
+                                      fontSize: isVerySmallScreen ? 16 : 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+
+                                const SizedBox(height: 10),
+
+                                Text(
+                                  'Заработано ${getNicikUnit(_totalScore)}: $_totalScore',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: isVerySmallScreen ? 16 : 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
 
                                 const SizedBox(height: 10),
