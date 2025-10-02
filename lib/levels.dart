@@ -4,7 +4,7 @@ import 'package:tomtit_game/models/history_model.dart';
 final Map<int, LevelModel> levels = {
   0: LevelModel(
     levelNumber: 0,
-    background: 'background.jpg',
+    background: 'multSpaceBackground.jpg',
     bulletSpeed: 360,
     meteorSpeed: 180,
     nicikSpeed: 230,
@@ -44,7 +44,7 @@ final Map<int, LevelModel> levels = {
   ),
   1: LevelModel(
     levelNumber: 1,
-    background: 'background.jpg',
+    background: 'multSpaceBackground.jpg',
     bulletSpeed: 280,
     meteorSpeed: 200,
     nicikSpeed: 230,
@@ -75,7 +75,7 @@ final Map<int, LevelModel> levels = {
   ),
   2: LevelModel(
       levelNumber: 2,
-      background: 'background.jpg',
+      background: 'multSpaceBackground.jpg',
       bulletSpeed: 280,
       meteorSpeed: 220,
       nicikSpeed: 210,
@@ -154,7 +154,7 @@ final Map<int, LevelModel> levels = {
       historyButtonPath: 'assets/images/modulesImages/Module2Btn.png'),
   3: LevelModel(
       levelNumber: 3,
-      background: 'background.jpg',
+      background: 'multSpaceBackground.jpg',
       bulletSpeed: 380,
       meteorSpeed: 220,
       nicikSpeed: 220,
@@ -240,7 +240,7 @@ final Map<int, LevelModel> levels = {
       historyButtonPath: 'assets/images/modulesImages/Module3Btn.png'),
   4: LevelModel(
       levelNumber: 4,
-      background: 'background.jpg',
+      background: 'multSpaceBackground.jpg',
       bulletSpeed: 360,
       meteorSpeed: 220,
       nicikSpeed: 200,
@@ -348,7 +348,7 @@ final Map<int, LevelModel> levels = {
       historyButtonPath: 'assets/images/modulesImages/Module4Btn.png'),
   5: LevelModel(
       levelNumber: 5,
-      background: 'background.jpg',
+      background: 'multSpaceBackground.jpg',
       bulletSpeed: 380,
       meteorSpeed: 230,
       nicikSpeed: 240,
@@ -377,13 +377,13 @@ final Map<int, LevelModel> levels = {
             description:
                 'Воспоминания из командировочных будней…\n«В Краснознаменске у нас Йоды магистры работают, «однако ...Если заявка не ложится в базу данных необходимо нам знать причину …»(с)\n\n«Пельмени ешь? И пиво пьешь? Как это не пьешь!? Ну ведь пельмени ешь? Хорошо, тогда вечером идем дописывать протокол.» (с)\n\n«Один из самых теплых моментов, связанных с НИЦ – это Командировка на Балхаш. Три недели - Пустыня, солнце, + 50 в тени. Три раза сгорел:)»'),
         HistoryModel(
-            title: 'Праздники',
-            description:
-                'Однажды тяжелым после новогодним утром 2017 В НИЦ…\nxxx: какая въедливая, да ты хуже жены!\nyyy: я - системный аналитик!\n\n«Самое яркое воспоминание, подготовка корпоратива 2013 года. Когда все отделы снимали клипы, и мы готовили программу «Итоги».\n\n«Мне очень запомнилось 23 февраля 2019 года: как праздник, так и сам процесс подготовки. Помню как девушки, соблюдая строгую конспирацию, оставались после работы и коллективно собирали «кружки» и «танки» - как на полноценном профессиональном мастер-классе. В итоге мужская половина отдела была очень довольна — таких подарков вряд ли можно было ожидать».'),
-        HistoryModel(
             title: 'ЛЮДИ',
             description:
                 'Талантливые люди – главный актив НИЦ. Мы создаем среду, где каждый специалист может раскрыть свой потенциал и расти вместе с компанией.'),
+        HistoryModel(
+            title: 'Праздники',
+            description:
+                'Однажды тяжелым после новогодним утром 2017 В НИЦ…\nxxx: какая въедливая, да ты хуже жены!\nyyy: я - системный аналитик!\n\n«Мне очень запомнилось 23 февраля 2019 года: как праздник, так и сам процесс подготовки. Помню как девушки, соблюдая строгую конспирацию, оставались после работы и коллективно собирали «кружки» и «танки» - как на полноценном профессиональном мастер-классе. В итоге мужская половина отдела была очень довольна — таких подарков вряд ли можно было ожидать».'),
         HistoryModel(
           title: "ВОПРОС",
           description: "",
@@ -431,7 +431,7 @@ final Map<int, LevelModel> levels = {
       historyButtonPath: 'assets/images/modulesImages/Module5Btn.png'),
   6: LevelModel(
     levelNumber: 6,
-    background: 'background.jpg',
+    background: 'multSpaceBackground.jpg',
     bulletSpeed: 400,
     meteorSpeed: 230,
     nicikSpeed: 250,
@@ -519,6 +519,6 @@ final Map<int, LevelModel> levels = {
       'assets/images/EndSlideShow/FinalImage3.png',
     ],
     victorySlideshowBackground:
-        'assets/images/EndSlideShow/SlideShowBackground.png',
+        'assets/images/EndSlideShow/multSpacemultSpaceBackground.jpg',
   ),
 };

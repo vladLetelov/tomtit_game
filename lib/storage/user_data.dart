@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserDataManager {
   static const String _userNameKey = 'user_name';
   static const String _userInitialsKey = 'user_initials';
-  static const String _nameChangeAllowedKey = 'name_change_allowed';
+  static const String _nameSetKey = 'name_set';
 
   static Future<void> init() async {
     await SharedPreferences.getInstance();
@@ -17,35 +17,13 @@ class UserDataManager {
     final initials = _getInitials(fullName);
     await prefs.setString(_userInitialsKey, initials);
 
-    // При первом сохранении разрешаем смену имени
-    if (!prefs.containsKey(_nameChangeAllowedKey)) {
-      await prefs.setBool(_nameChangeAllowedKey, true);
-    }
+    // Помечаем что имя было установлено
+    await prefs.setBool(_nameSetKey, true);
   }
 
-  static Future<bool> isNameChangeAllowed() async {
+  static Future<bool> hasUserData() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_nameChangeAllowedKey) ?? true;
-  }
-
-  static Future<void> disableNameChange() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_nameChangeAllowedKey, false);
-  }
-
-  static Future<void> updateUserName(String fullName) async {
-    final prefs = await SharedPreferences.getInstance();
-    final canChange = prefs.getBool(_nameChangeAllowedKey) ?? true;
-
-    if (canChange) {
-      await prefs.setString(_userNameKey, fullName);
-      final initials = _getInitials(fullName);
-      await prefs.setString(_userInitialsKey, initials);
-      // После изменения отключаем возможность дальнейшего изменения
-      await prefs.setBool(_nameChangeAllowedKey, false);
-    } else {
-      throw Exception('Смена имени запрещена');
-    }
+    return prefs.containsKey(_userNameKey);
   }
 
   static Future<String?> getUserName() async {
@@ -53,14 +31,9 @@ class UserDataManager {
     return prefs.getString(_userNameKey);
   }
 
-  static Future<String?> getUserInitials() async {
+  static Future<bool> canChangeName() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_userInitialsKey);
-  }
-
-  static Future<bool> hasUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.containsKey(_userNameKey);
+    return !(prefs.getBool(_nameSetKey) ?? false);
   }
 
   static String _getInitials(String fullName) {

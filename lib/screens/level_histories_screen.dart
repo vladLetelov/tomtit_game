@@ -103,18 +103,18 @@ class _LevelHistoriesScreenState extends State<LevelHistoriesScreen> {
   // Проверяет, может ли пользователь навигировать от текущей карточки
   bool _canNavigateAway() {
     final currentHistoryItem = _displayHistory[_currentHistoryIndex];
-    
+
     // Если карточка является результатом, можно переходить дальше
     if (currentHistoryItem.isResultCard) {
       return true;
     }
-    
-    // Если у карточки нет вопросов, можно переходить дальше  
-    if (currentHistoryItem.questions == null || 
+
+    // Если у карточки нет вопросов, можно переходить дальше
+    if (currentHistoryItem.questions == null ||
         currentHistoryItem.questions!.isEmpty) {
       return true;
     }
-    
+
     // Проверяем, есть ли неотвеченные вопросы в текущей карточке
     for (var question in currentHistoryItem.questions!) {
       final result = GameScoreManager.getQuestionResultById(
@@ -125,7 +125,7 @@ class _LevelHistoriesScreenState extends State<LevelHistoriesScreen> {
         return false; // Есть неотвеченный вопрос
       }
     }
-    
+
     return true; // Все вопросы отвечены
   }
 
@@ -239,7 +239,7 @@ class _LevelHistoriesScreenState extends State<LevelHistoriesScreen> {
         }
       }
     });
-    
+
     // Обновляем состояние для разблокировки навигации
     setState(() {});
   }
@@ -502,7 +502,8 @@ class _LevelHistoriesScreenState extends State<LevelHistoriesScreen> {
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                     );
-                  } else if (_currentHistoryIndex == _displayHistory.length - 1) {
+                  } else if (_currentHistoryIndex ==
+                      _displayHistory.length - 1) {
                     _showHistoryCompletionDialog();
                   }
                 }
@@ -520,7 +521,7 @@ class _LevelHistoriesScreenState extends State<LevelHistoriesScreen> {
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image:
-                          AssetImage('assets/images/BackgroundHistoryPage.jpg'),
+                          AssetImage('assets/images/multSpaceBackground.jpg'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -531,8 +532,8 @@ class _LevelHistoriesScreenState extends State<LevelHistoriesScreen> {
                             ? const SizedBox.shrink()
                             : PageView.builder(
                                 controller: _pageController,
-                                physics: _canNavigateAway() 
-                                    ? const PageScrollPhysics() 
+                                physics: _canNavigateAway()
+                                    ? const PageScrollPhysics()
                                     : const NeverScrollableScrollPhysics(),
                                 onPageChanged: (index) {
                                   if (index < _displayHistory.length) {
@@ -585,7 +586,9 @@ class _LevelHistoriesScreenState extends State<LevelHistoriesScreen> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: ElevatedButton(
-                            onPressed: _canNavigateAway() ? _showHistoryCompletionDialog : null,
+                            onPressed: _canNavigateAway()
+                                ? _showHistoryCompletionDialog
+                                : null,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.yellow,
                               padding: const EdgeInsets.symmetric(

@@ -62,7 +62,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/background.jpg
     - assets/images/black_hole.png
     - assets/images/sinica.png
     - assets/images/sinicaRed.png
@@ -75,7 +74,6 @@ flutter:
     - assets/images/HistoryBtn6.png
     - assets/images/HistoryBtn7.png
     - assets/images/BackgroundHistoryCard.png
-    - assets/images/BackgroundHistoryPage.jpg
     - assets/images/Planets.png
     - assets/images/modulesImages/InstructionModule.png
     - assets/images/modulesImages/Module1Btn.png
@@ -93,7 +91,7 @@ flutter:
     - assets/images/EndSlideShow/FinalImage1.png
     - assets/images/EndSlideShow/FinalImage2.png
     - assets/images/EndSlideShow/FinalImage3.png
-    - assets/images/EndSlideShow/SlideShowBackground.png
+    - assets/images/multSpaceBackground.jpg
     - assets/images/Timer/1.png
     - assets/images/Timer/2.png
     - assets/images/Timer/3.png
